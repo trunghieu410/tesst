@@ -1,0 +1,1506 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "name": "User 1",
+      "email": "user1@example.com",
+      "status": "active",
+      "balance": 34025,
+      "monthlyProfit": 4560,
+      "income": 40869,
+      "createdAt": "2024-04-10T17:00:00.000Z"
+    },
+    {
+      "id": 2,
+      "name": "User 2",
+      "email": "user2@example.com",
+      "status": "active",
+      "balance": 30273,
+      "monthlyProfit": 2793,
+      "income": 101747,
+      "createdAt": "2024-06-06T17:00:00.000Z"
+    },
+    {
+      "id": 3,
+      "name": "User 3",
+      "email": "user3@example.com",
+      "status": "suspended",
+      "balance": 49776,
+      "monthlyProfit": 3780,
+      "income": 70172,
+      "createdAt": "2024-06-25T17:00:00.000Z"
+    },
+    {
+      "id": 4,
+      "name": "User 4",
+      "email": "user4@example.com",
+      "status": "banned",
+      "balance": 17235,
+      "monthlyProfit": 6022,
+      "income": 108105,
+      "createdAt": "2024-06-26T17:00:00.000Z"
+    },
+    {
+      "id": 5,
+      "name": "User 5",
+      "email": "user5@example.com",
+      "status": "active",
+      "balance": 50588,
+      "monthlyProfit": 1005,
+      "income": 58874,
+      "createdAt": "2024-07-14T17:00:00.000Z"
+    },
+    {
+      "id": 6,
+      "name": "User 6",
+      "email": "user6@example.com",
+      "status": "active",
+      "balance": 31914,
+      "monthlyProfit": 2480,
+      "income": 55796,
+      "createdAt": "2024-11-24T17:00:00.000Z"
+    },
+    {
+      "id": 7,
+      "name": "User 7",
+      "email": "user7@example.com",
+      "status": "active",
+      "balance": 13262,
+      "monthlyProfit": 7632,
+      "income": 107621,
+      "createdAt": "2024-08-25T17:00:00.000Z"
+    },
+    {
+      "id": 8,
+      "name": "User 8",
+      "email": "user8@example.com",
+      "status": "suspended",
+      "balance": 47383,
+      "monthlyProfit": 2053,
+      "income": 52888,
+      "createdAt": "2024-04-12T17:00:00.000Z"
+    },
+    {
+      "id": 9,
+      "name": "User 9",
+      "email": "user9@example.com",
+      "status": "banned",
+      "balance": 31416,
+      "monthlyProfit": 10818,
+      "income": 59730,
+      "createdAt": "2024-09-24T17:00:00.000Z"
+    },
+    {
+      "id": 10,
+      "name": "User 10",
+      "email": "user10@example.com",
+      "status": "active",
+      "balance": 48644,
+      "monthlyProfit": 9951,
+      "income": 99385,
+      "createdAt": "2024-09-17T17:00:00.000Z"
+    },
+    {
+      "id": 11,
+      "name": "User 11",
+      "email": "user11@example.com",
+      "status": "active",
+      "balance": 7974,
+      "monthlyProfit": 6484,
+      "income": 74745,
+      "createdAt": "2024-11-15T17:00:00.000Z"
+    },
+    {
+      "id": 12,
+      "name": "User 12",
+      "email": "user12@example.com",
+      "status": "active",
+      "balance": 12934,
+      "monthlyProfit": 9151,
+      "income": 106627,
+      "createdAt": "2024-05-02T17:00:00.000Z"
+    },
+    {
+      "id": 13,
+      "name": "User 13",
+      "email": "user13@example.com",
+      "status": "suspended",
+      "balance": 8155,
+      "monthlyProfit": 8026,
+      "income": 46126,
+      "createdAt": "2024-04-30T17:00:00.000Z"
+    },
+    {
+      "id": 14,
+      "name": "User 14",
+      "email": "user14@example.com",
+      "status": "banned",
+      "balance": 19776,
+      "monthlyProfit": 3135,
+      "income": 73596,
+      "createdAt": "2024-03-04T17:00:00.000Z"
+    },
+    {
+      "id": 15,
+      "name": "User 15",
+      "email": "user15@example.com",
+      "status": "active",
+      "balance": 8068,
+      "monthlyProfit": 10708,
+      "income": 60791,
+      "createdAt": "2024-02-22T17:00:00.000Z"
+    },
+    {
+      "id": 16,
+      "name": "User 16",
+      "email": "user16@example.com",
+      "status": "active",
+      "balance": 48900,
+      "monthlyProfit": 6750,
+      "income": 104592,
+      "createdAt": "2024-09-26T17:00:00.000Z"
+    },
+    {
+      "id": 17,
+      "name": "User 17",
+      "email": "user17@example.com",
+      "status": "active",
+      "balance": 41283,
+      "monthlyProfit": 8212,
+      "income": 33933,
+      "createdAt": "2024-03-25T17:00:00.000Z"
+    },
+    {
+      "id": 18,
+      "name": "User 18",
+      "email": "user18@example.com",
+      "status": "suspended",
+      "balance": 21332,
+      "monthlyProfit": 8768,
+      "income": 19619,
+      "createdAt": "2024-06-03T17:00:00.000Z"
+    },
+    {
+      "id": 19,
+      "name": "User 19",
+      "email": "user19@example.com",
+      "status": "banned",
+      "balance": 6133,
+      "monthlyProfit": 8548,
+      "income": 54773,
+      "createdAt": "2024-04-27T17:00:00.000Z"
+    },
+    {
+      "id": 20,
+      "name": "User 20",
+      "email": "user20@example.com",
+      "status": "active",
+      "balance": 36885,
+      "monthlyProfit": 6073,
+      "income": 84910,
+      "createdAt": "2024-01-13T17:00:00.000Z"
+    },
+    {
+      "id": 21,
+      "name": "User 21",
+      "email": "user21@example.com",
+      "status": "active",
+      "balance": 37222,
+      "monthlyProfit": 4419,
+      "income": 30216,
+      "createdAt": "2024-12-17T17:00:00.000Z"
+    },
+    {
+      "id": 22,
+      "name": "User 22",
+      "email": "user22@example.com",
+      "status": "active",
+      "balance": 39474,
+      "monthlyProfit": 7946,
+      "income": 52753,
+      "createdAt": "2024-07-22T17:00:00.000Z"
+    },
+    {
+      "id": 23,
+      "name": "User 23",
+      "email": "user23@example.com",
+      "status": "suspended",
+      "balance": 11124,
+      "monthlyProfit": 8931,
+      "income": 103973,
+      "createdAt": "2024-11-01T17:00:00.000Z"
+    },
+    {
+      "id": 24,
+      "name": "User 24",
+      "email": "user24@example.com",
+      "status": "banned",
+      "balance": 17974,
+      "monthlyProfit": 4794,
+      "income": 51108,
+      "createdAt": "2024-05-14T17:00:00.000Z"
+    },
+    {
+      "id": 25,
+      "name": "User 25",
+      "email": "user25@example.com",
+      "status": "active",
+      "balance": 52824,
+      "monthlyProfit": 2895,
+      "income": 41586,
+      "createdAt": "2024-11-24T17:00:00.000Z"
+    },
+    {
+      "id": 26,
+      "name": "User 26",
+      "email": "user26@example.com",
+      "status": "active",
+      "balance": 44397,
+      "monthlyProfit": 10885,
+      "income": 47615,
+      "createdAt": "2024-09-27T17:00:00.000Z"
+    },
+    {
+      "id": 27,
+      "name": "User 27",
+      "email": "user27@example.com",
+      "status": "active",
+      "balance": 45648,
+      "monthlyProfit": 4798,
+      "income": 50032,
+      "createdAt": "2024-06-16T17:00:00.000Z"
+    },
+    {
+      "id": 28,
+      "name": "User 28",
+      "email": "user28@example.com",
+      "status": "suspended",
+      "balance": 31463,
+      "monthlyProfit": 8972,
+      "income": 94306,
+      "createdAt": "2024-10-09T17:00:00.000Z"
+    },
+    {
+      "id": 29,
+      "name": "User 29",
+      "email": "user29@example.com",
+      "status": "banned",
+      "balance": 10072,
+      "monthlyProfit": 4356,
+      "income": 45746,
+      "createdAt": "2024-07-19T17:00:00.000Z"
+    },
+    {
+      "id": 30,
+      "name": "User 30",
+      "email": "user30@example.com",
+      "status": "active",
+      "balance": 32211,
+      "monthlyProfit": 2552,
+      "income": 101538,
+      "createdAt": "2024-01-16T17:00:00.000Z"
+    },
+    {
+      "id": 31,
+      "name": "User 31",
+      "email": "user31@example.com",
+      "status": "active",
+      "balance": 44026,
+      "monthlyProfit": 1214,
+      "income": 36930,
+      "createdAt": "2024-09-24T17:00:00.000Z"
+    },
+    {
+      "id": 32,
+      "name": "User 32",
+      "email": "user32@example.com",
+      "status": "active",
+      "balance": 8279,
+      "monthlyProfit": 5114,
+      "income": 94960,
+      "createdAt": "2024-06-30T17:00:00.000Z"
+    },
+    {
+      "id": 33,
+      "name": "User 33",
+      "email": "user33@example.com",
+      "status": "suspended",
+      "balance": 41031,
+      "monthlyProfit": 2817,
+      "income": 38696,
+      "createdAt": "2024-07-15T17:00:00.000Z"
+    },
+    {
+      "id": 34,
+      "name": "User 34",
+      "email": "user34@example.com",
+      "status": "banned",
+      "balance": 32171,
+      "monthlyProfit": 2105,
+      "income": 45619,
+      "createdAt": "2024-06-07T17:00:00.000Z"
+    },
+    {
+      "id": 35,
+      "name": "User 35",
+      "email": "user35@example.com",
+      "status": "active",
+      "balance": 13308,
+      "monthlyProfit": 9767,
+      "income": 41264,
+      "createdAt": "2024-05-20T17:00:00.000Z"
+    },
+    {
+      "id": 36,
+      "name": "User 36",
+      "email": "user36@example.com",
+      "status": "active",
+      "balance": 24407,
+      "monthlyProfit": 9596,
+      "income": 48559,
+      "createdAt": "2024-12-20T17:00:00.000Z"
+    },
+    {
+      "id": 37,
+      "name": "User 37",
+      "email": "user37@example.com",
+      "status": "active",
+      "balance": 40068,
+      "monthlyProfit": 4245,
+      "income": 72558,
+      "createdAt": "2024-02-05T17:00:00.000Z"
+    },
+    {
+      "id": 38,
+      "name": "User 38",
+      "email": "user38@example.com",
+      "status": "suspended",
+      "balance": 25181,
+      "monthlyProfit": 10160,
+      "income": 47082,
+      "createdAt": "2024-09-26T17:00:00.000Z"
+    },
+    {
+      "id": 39,
+      "name": "User 39",
+      "email": "user39@example.com",
+      "status": "banned",
+      "balance": 53773,
+      "monthlyProfit": 6978,
+      "income": 105244,
+      "createdAt": "2024-06-18T17:00:00.000Z"
+    },
+    {
+      "id": 40,
+      "name": "User 40",
+      "email": "user40@example.com",
+      "status": "active",
+      "balance": 43243,
+      "monthlyProfit": 4229,
+      "income": 30232,
+      "createdAt": "2024-06-16T17:00:00.000Z"
+    },
+    {
+      "id": 41,
+      "name": "User 41",
+      "email": "user41@example.com",
+      "status": "active",
+      "balance": 41458,
+      "monthlyProfit": 7408,
+      "income": 40908,
+      "createdAt": "2024-09-05T17:00:00.000Z"
+    },
+    {
+      "id": 42,
+      "name": "User 42",
+      "email": "user42@example.com",
+      "status": "active",
+      "balance": 38220,
+      "monthlyProfit": 3116,
+      "income": 65568,
+      "createdAt": "2024-07-16T17:00:00.000Z"
+    },
+    {
+      "id": 43,
+      "name": "User 43",
+      "email": "user43@example.com",
+      "status": "suspended",
+      "balance": 50079,
+      "monthlyProfit": 2064,
+      "income": 11351,
+      "createdAt": "2024-09-27T17:00:00.000Z"
+    },
+    {
+      "id": 44,
+      "name": "User 44",
+      "email": "user44@example.com",
+      "status": "banned",
+      "balance": 14274,
+      "monthlyProfit": 2770,
+      "income": 108547,
+      "createdAt": "2024-03-22T17:00:00.000Z"
+    },
+    {
+      "id": 45,
+      "name": "User 45",
+      "email": "user45@example.com",
+      "status": "active",
+      "balance": 45497,
+      "monthlyProfit": 9084,
+      "income": 31916,
+      "createdAt": "2024-06-08T17:00:00.000Z"
+    },
+    {
+      "id": 46,
+      "name": "User 46",
+      "email": "user46@example.com",
+      "status": "active",
+      "balance": 13671,
+      "monthlyProfit": 2543,
+      "income": 25296,
+      "createdAt": "2024-07-16T17:00:00.000Z"
+    },
+    {
+      "id": 47,
+      "name": "User 47",
+      "email": "user47@example.com",
+      "status": "active",
+      "balance": 43338,
+      "monthlyProfit": 6482,
+      "income": 61635,
+      "createdAt": "2024-02-29T17:00:00.000Z"
+    },
+    {
+      "id": 48,
+      "name": "User 48",
+      "email": "user48@example.com",
+      "status": "suspended",
+      "balance": 38245,
+      "monthlyProfit": 10640,
+      "income": 93813,
+      "createdAt": "2024-12-10T17:00:00.000Z"
+    },
+    {
+      "id": 49,
+      "name": "User 49",
+      "email": "user49@example.com",
+      "status": "banned",
+      "balance": 51192,
+      "monthlyProfit": 3876,
+      "income": 86408,
+      "createdAt": "2024-10-20T17:00:00.000Z"
+    },
+    {
+      "id": 50,
+      "name": "User 50",
+      "email": "user50@example.com",
+      "status": "active",
+      "balance": 21625,
+      "monthlyProfit": 10974,
+      "income": 86267,
+      "createdAt": "2024-02-21T17:00:00.000Z"
+    },
+    {
+      "id": 51,
+      "name": "User 51",
+      "email": "user51@example.com",
+      "status": "active",
+      "balance": 53860,
+      "monthlyProfit": 4561,
+      "income": 50840,
+      "createdAt": "2024-06-11T17:00:00.000Z"
+    },
+    {
+      "id": 52,
+      "name": "User 52",
+      "email": "user52@example.com",
+      "status": "active",
+      "balance": 43246,
+      "monthlyProfit": 2528,
+      "income": 109253,
+      "createdAt": "2024-01-26T17:00:00.000Z"
+    },
+    {
+      "id": 53,
+      "name": "User 53",
+      "email": "user53@example.com",
+      "status": "suspended",
+      "balance": 51475,
+      "monthlyProfit": 2788,
+      "income": 57045,
+      "createdAt": "2024-10-18T17:00:00.000Z"
+    },
+    {
+      "id": 54,
+      "name": "User 54",
+      "email": "user54@example.com",
+      "status": "banned",
+      "balance": 18859,
+      "monthlyProfit": 10364,
+      "income": 73188,
+      "createdAt": "2024-01-25T17:00:00.000Z"
+    },
+    {
+      "id": 55,
+      "name": "User 55",
+      "email": "user55@example.com",
+      "status": "active",
+      "balance": 27289,
+      "monthlyProfit": 3534,
+      "income": 44486,
+      "createdAt": "2024-02-09T17:00:00.000Z"
+    },
+    {
+      "id": 56,
+      "name": "User 56",
+      "email": "user56@example.com",
+      "status": "active",
+      "balance": 12425,
+      "monthlyProfit": 2150,
+      "income": 71270,
+      "createdAt": "2024-10-05T17:00:00.000Z"
+    },
+    {
+      "id": 57,
+      "name": "User 57",
+      "email": "user57@example.com",
+      "status": "active",
+      "balance": 21099,
+      "monthlyProfit": 10543,
+      "income": 94190,
+      "createdAt": "2024-02-26T17:00:00.000Z"
+    },
+    {
+      "id": 58,
+      "name": "User 58",
+      "email": "user58@example.com",
+      "status": "suspended",
+      "balance": 6892,
+      "monthlyProfit": 9678,
+      "income": 98126,
+      "createdAt": "2024-09-17T17:00:00.000Z"
+    },
+    {
+      "id": 59,
+      "name": "User 59",
+      "email": "user59@example.com",
+      "status": "banned",
+      "balance": 40429,
+      "monthlyProfit": 3683,
+      "income": 15124,
+      "createdAt": "2024-11-25T17:00:00.000Z"
+    },
+    {
+      "id": 60,
+      "name": "User 60",
+      "email": "user60@example.com",
+      "status": "active",
+      "balance": 18416,
+      "monthlyProfit": 9368,
+      "income": 46418,
+      "createdAt": "2024-01-14T17:00:00.000Z"
+    },
+    {
+      "id": 61,
+      "name": "User 61",
+      "email": "user61@example.com",
+      "status": "active",
+      "balance": 30477,
+      "monthlyProfit": 3050,
+      "income": 102882,
+      "createdAt": "2024-03-23T17:00:00.000Z"
+    },
+    {
+      "id": 62,
+      "name": "User 62",
+      "email": "user62@example.com",
+      "status": "active",
+      "balance": 46315,
+      "monthlyProfit": 9402,
+      "income": 63330,
+      "createdAt": "2024-11-09T17:00:00.000Z"
+    },
+    {
+      "id": 63,
+      "name": "User 63",
+      "email": "user63@example.com",
+      "status": "suspended",
+      "balance": 29708,
+      "monthlyProfit": 10722,
+      "income": 93104,
+      "createdAt": "2024-03-22T17:00:00.000Z"
+    },
+    {
+      "id": 64,
+      "name": "User 64",
+      "email": "user64@example.com",
+      "status": "banned",
+      "balance": 47355,
+      "monthlyProfit": 7132,
+      "income": 56844,
+      "createdAt": "2024-06-21T17:00:00.000Z"
+    },
+    {
+      "id": 65,
+      "name": "User 65",
+      "email": "user65@example.com",
+      "status": "active",
+      "balance": 27179,
+      "monthlyProfit": 9015,
+      "income": 104105,
+      "createdAt": "2024-08-23T17:00:00.000Z"
+    },
+    {
+      "id": 66,
+      "name": "User 66",
+      "email": "user66@example.com",
+      "status": "active",
+      "balance": 28117,
+      "monthlyProfit": 3274,
+      "income": 19696,
+      "createdAt": "2024-04-05T17:00:00.000Z"
+    },
+    {
+      "id": 67,
+      "name": "User 67",
+      "email": "user67@example.com",
+      "status": "active",
+      "balance": 27947,
+      "monthlyProfit": 1752,
+      "income": 86072,
+      "createdAt": "2024-11-23T17:00:00.000Z"
+    },
+    {
+      "id": 68,
+      "name": "User 68",
+      "email": "user68@example.com",
+      "status": "suspended",
+      "balance": 43756,
+      "monthlyProfit": 10969,
+      "income": 92452,
+      "createdAt": "2024-10-13T17:00:00.000Z"
+    },
+    {
+      "id": 69,
+      "name": "User 69",
+      "email": "user69@example.com",
+      "status": "banned",
+      "balance": 29130,
+      "monthlyProfit": 4896,
+      "income": 64726,
+      "createdAt": "2024-05-20T17:00:00.000Z"
+    },
+    {
+      "id": 70,
+      "name": "User 70",
+      "email": "user70@example.com",
+      "status": "active",
+      "balance": 51096,
+      "monthlyProfit": 3108,
+      "income": 15285,
+      "createdAt": "2024-02-03T17:00:00.000Z"
+    },
+    {
+      "id": 71,
+      "name": "User 71",
+      "email": "user71@example.com",
+      "status": "active",
+      "balance": 46025,
+      "monthlyProfit": 4298,
+      "income": 104008,
+      "createdAt": "2024-01-16T17:00:00.000Z"
+    },
+    {
+      "id": 72,
+      "name": "User 72",
+      "email": "user72@example.com",
+      "status": "active",
+      "balance": 33798,
+      "monthlyProfit": 6622,
+      "income": 71602,
+      "createdAt": "2024-04-21T17:00:00.000Z"
+    },
+    {
+      "id": 73,
+      "name": "User 73",
+      "email": "user73@example.com",
+      "status": "suspended",
+      "balance": 35786,
+      "monthlyProfit": 6717,
+      "income": 60423,
+      "createdAt": "2024-04-26T17:00:00.000Z"
+    },
+    {
+      "id": 74,
+      "name": "User 74",
+      "email": "user74@example.com",
+      "status": "banned",
+      "balance": 11036,
+      "monthlyProfit": 4488,
+      "income": 107941,
+      "createdAt": "2024-10-01T17:00:00.000Z"
+    },
+    {
+      "id": 75,
+      "name": "User 75",
+      "email": "user75@example.com",
+      "status": "active",
+      "balance": 30494,
+      "monthlyProfit": 2888,
+      "income": 98022,
+      "createdAt": "2024-07-17T17:00:00.000Z"
+    },
+    {
+      "id": 76,
+      "name": "User 76",
+      "email": "user76@example.com",
+      "status": "active",
+      "balance": 41636,
+      "monthlyProfit": 7235,
+      "income": 54822,
+      "createdAt": "2024-07-17T17:00:00.000Z"
+    },
+    {
+      "id": 77,
+      "name": "User 77",
+      "email": "user77@example.com",
+      "status": "active",
+      "balance": 13892,
+      "monthlyProfit": 5790,
+      "income": 47873,
+      "createdAt": "2024-01-12T17:00:00.000Z"
+    },
+    {
+      "id": 78,
+      "name": "User 78",
+      "email": "user78@example.com",
+      "status": "suspended",
+      "balance": 30849,
+      "monthlyProfit": 7197,
+      "income": 34817,
+      "createdAt": "2024-12-20T17:00:00.000Z"
+    },
+    {
+      "id": 79,
+      "name": "User 79",
+      "email": "user79@example.com",
+      "status": "banned",
+      "balance": 12097,
+      "monthlyProfit": 8053,
+      "income": 12553,
+      "createdAt": "2024-04-08T17:00:00.000Z"
+    },
+    {
+      "id": 80,
+      "name": "User 80",
+      "email": "user80@example.com",
+      "status": "active",
+      "balance": 44466,
+      "monthlyProfit": 6391,
+      "income": 21660,
+      "createdAt": "2024-08-16T17:00:00.000Z"
+    },
+    {
+      "id": 81,
+      "name": "User 81",
+      "email": "user81@example.com",
+      "status": "active",
+      "balance": 49820,
+      "monthlyProfit": 10342,
+      "income": 91750,
+      "createdAt": "2024-02-19T17:00:00.000Z"
+    },
+    {
+      "id": 82,
+      "name": "User 82",
+      "email": "user82@example.com",
+      "status": "active",
+      "balance": 24291,
+      "monthlyProfit": 8114,
+      "income": 69071,
+      "createdAt": "2024-08-05T17:00:00.000Z"
+    },
+    {
+      "id": 83,
+      "name": "User 83",
+      "email": "user83@example.com",
+      "status": "suspended",
+      "balance": 18093,
+      "monthlyProfit": 8607,
+      "income": 43982,
+      "createdAt": "2024-08-12T17:00:00.000Z"
+    },
+    {
+      "id": 84,
+      "name": "User 84",
+      "email": "user84@example.com",
+      "status": "banned",
+      "balance": 9327,
+      "monthlyProfit": 2658,
+      "income": 66539,
+      "createdAt": "2024-03-09T17:00:00.000Z"
+    },
+    {
+      "id": 85,
+      "name": "User 85",
+      "email": "user85@example.com",
+      "status": "active",
+      "balance": 28061,
+      "monthlyProfit": 3618,
+      "income": 60196,
+      "createdAt": "2024-12-15T17:00:00.000Z"
+    },
+    {
+      "id": 86,
+      "name": "User 86",
+      "email": "user86@example.com",
+      "status": "active",
+      "balance": 15363,
+      "monthlyProfit": 4899,
+      "income": 70980,
+      "createdAt": "2023-12-31T17:00:00.000Z"
+    },
+    {
+      "id": 87,
+      "name": "User 87",
+      "email": "user87@example.com",
+      "status": "active",
+      "balance": 7149,
+      "monthlyProfit": 7829,
+      "income": 11212,
+      "createdAt": "2024-03-20T17:00:00.000Z"
+    },
+    {
+      "id": 88,
+      "name": "User 88",
+      "email": "user88@example.com",
+      "status": "suspended",
+      "balance": 21596,
+      "monthlyProfit": 6978,
+      "income": 105606,
+      "createdAt": "2024-01-31T17:00:00.000Z"
+    },
+    {
+      "id": 89,
+      "name": "User 89",
+      "email": "user89@example.com",
+      "status": "banned",
+      "balance": 51869,
+      "monthlyProfit": 2509,
+      "income": 100322,
+      "createdAt": "2024-09-25T17:00:00.000Z"
+    },
+    {
+      "id": 90,
+      "name": "User 90",
+      "email": "user90@example.com",
+      "status": "active",
+      "balance": 32238,
+      "monthlyProfit": 9755,
+      "income": 19831,
+      "createdAt": "2024-09-16T17:00:00.000Z"
+    },
+    {
+      "id": 91,
+      "name": "User 91",
+      "email": "user91@example.com",
+      "status": "active",
+      "balance": 53636,
+      "monthlyProfit": 6615,
+      "income": 73026,
+      "createdAt": "2024-01-09T17:00:00.000Z"
+    },
+    {
+      "id": 92,
+      "name": "User 92",
+      "email": "user92@example.com",
+      "status": "active",
+      "balance": 19504,
+      "monthlyProfit": 8299,
+      "income": 38262,
+      "createdAt": "2024-02-19T17:00:00.000Z"
+    },
+    {
+      "id": 93,
+      "name": "User 93",
+      "email": "user93@example.com",
+      "status": "suspended",
+      "balance": 40256,
+      "monthlyProfit": 1647,
+      "income": 50818,
+      "createdAt": "2024-10-09T17:00:00.000Z"
+    },
+    {
+      "id": 94,
+      "name": "User 94",
+      "email": "user94@example.com",
+      "status": "banned",
+      "balance": 26435,
+      "monthlyProfit": 5652,
+      "income": 65636,
+      "createdAt": "2024-08-13T17:00:00.000Z"
+    },
+    {
+      "id": 95,
+      "name": "User 95",
+      "email": "user95@example.com",
+      "status": "active",
+      "balance": 43928,
+      "monthlyProfit": 3529,
+      "income": 88332,
+      "createdAt": "2024-10-04T17:00:00.000Z"
+    },
+    {
+      "id": 96,
+      "name": "User 96",
+      "email": "user96@example.com",
+      "status": "active",
+      "balance": 13766,
+      "monthlyProfit": 1077,
+      "income": 48725,
+      "createdAt": "2024-11-22T17:00:00.000Z"
+    },
+    {
+      "id": 97,
+      "name": "User 97",
+      "email": "user97@example.com",
+      "status": "active",
+      "balance": 17564,
+      "monthlyProfit": 4942,
+      "income": 45043,
+      "createdAt": "2024-01-18T17:00:00.000Z"
+    },
+    {
+      "id": 98,
+      "name": "User 98",
+      "email": "user98@example.com",
+      "status": "suspended",
+      "balance": 30277,
+      "monthlyProfit": 3335,
+      "income": 29932,
+      "createdAt": "2024-12-27T17:00:00.000Z"
+    },
+    {
+      "id": 99,
+      "name": "User 99",
+      "email": "user99@example.com",
+      "status": "banned",
+      "balance": 14845,
+      "monthlyProfit": 1208,
+      "income": 82105,
+      "createdAt": "2024-03-05T17:00:00.000Z"
+    },
+    {
+      "id": 100,
+      "name": "User 100",
+      "email": "user100@example.com",
+      "status": "active",
+      "balance": 37102,
+      "monthlyProfit": 5524,
+      "income": 29926,
+      "createdAt": "2024-02-22T17:00:00.000Z"
+    }
+  ],
+  "campaigns": [
+    {
+      "id": 1,
+      "title": "Campaign 1",
+      "startDate": "2024-06-01",
+      "endDate": "2024-06-28",
+      "status": "scheduled",
+      "description": "This is a description for campaign 1 with various marketing objectives and goals.",
+      "createdAt": "2024-05-31T17:00:00.000Z",
+      "updatedAt": "2024-05-31T17:00:00.000Z"
+    },
+    {
+      "id": 2,
+      "title": "Campaign 2",
+      "startDate": "2024-08-01",
+      "endDate": "2024-08-28",
+      "status": "completed",
+      "description": "This is a description for campaign 2 with various marketing objectives and goals.",
+      "createdAt": "2024-07-31T17:00:00.000Z",
+      "updatedAt": "2024-07-31T17:00:00.000Z"
+    },
+    {
+      "id": 3,
+      "title": "Campaign 3",
+      "startDate": "2024-11-01",
+      "endDate": "2024-11-28",
+      "status": "active",
+      "description": "This is a description for campaign 3 with various marketing objectives and goals.",
+      "createdAt": "2024-10-31T17:00:00.000Z",
+      "updatedAt": "2024-10-31T17:00:00.000Z"
+    },
+    {
+      "id": 4,
+      "title": "Campaign 4",
+      "startDate": "2024-10-01",
+      "endDate": "2024-10-28",
+      "status": "scheduled",
+      "description": "This is a description for campaign 4 with various marketing objectives and goals.",
+      "createdAt": "2024-09-30T17:00:00.000Z",
+      "updatedAt": "2024-09-30T17:00:00.000Z"
+    },
+    {
+      "id": 5,
+      "title": "Campaign 5",
+      "startDate": "2024-04-01",
+      "endDate": "2024-04-28",
+      "status": "completed",
+      "description": "This is a description for campaign 5 with various marketing objectives and goals.",
+      "createdAt": "2024-03-31T17:00:00.000Z",
+      "updatedAt": "2024-03-31T17:00:00.000Z"
+    },
+    {
+      "id": 6,
+      "title": "Campaign 6",
+      "startDate": "2024-11-01",
+      "endDate": "2024-11-28",
+      "status": "active",
+      "description": "This is a description for campaign 6 with various marketing objectives and goals.",
+      "createdAt": "2024-10-31T17:00:00.000Z",
+      "updatedAt": "2024-10-31T17:00:00.000Z"
+    },
+    {
+      "id": 7,
+      "title": "Campaign 7",
+      "startDate": "2024-07-01",
+      "endDate": "2024-07-28",
+      "status": "scheduled",
+      "description": "This is a description for campaign 7 with various marketing objectives and goals.",
+      "createdAt": "2024-06-30T17:00:00.000Z",
+      "updatedAt": "2024-06-30T17:00:00.000Z"
+    },
+    {
+      "id": 8,
+      "title": "Campaign 8",
+      "startDate": "2024-09-01",
+      "endDate": "2024-09-28",
+      "status": "completed",
+      "description": "This is a description for campaign 8 with various marketing objectives and goals.",
+      "createdAt": "2024-08-31T17:00:00.000Z",
+      "updatedAt": "2024-08-31T17:00:00.000Z"
+    },
+    {
+      "id": 9,
+      "title": "Campaign 9",
+      "startDate": "2024-11-01",
+      "endDate": "2024-11-28",
+      "status": "active",
+      "description": "This is a description for campaign 9 with various marketing objectives and goals.",
+      "createdAt": "2024-10-31T17:00:00.000Z",
+      "updatedAt": "2024-10-31T17:00:00.000Z"
+    },
+    {
+      "id": 10,
+      "title": "Campaign 10",
+      "startDate": "2024-11-01",
+      "endDate": "2024-11-28",
+      "status": "scheduled",
+      "description": "This is a description for campaign 10 with various marketing objectives and goals.",
+      "createdAt": "2024-10-31T17:00:00.000Z",
+      "updatedAt": "2024-10-31T17:00:00.000Z"
+    },
+    {
+      "id": 11,
+      "title": "Campaign 11",
+      "startDate": "2024-02-01",
+      "endDate": "2024-02-28",
+      "status": "completed",
+      "description": "This is a description for campaign 11 with various marketing objectives and goals.",
+      "createdAt": "2024-01-31T17:00:00.000Z",
+      "updatedAt": "2024-01-31T17:00:00.000Z"
+    },
+    {
+      "id": 12,
+      "title": "Campaign 12",
+      "startDate": "2024-08-01",
+      "endDate": "2024-08-28",
+      "status": "active",
+      "description": "This is a description for campaign 12 with various marketing objectives and goals.",
+      "createdAt": "2024-07-31T17:00:00.000Z",
+      "updatedAt": "2024-07-31T17:00:00.000Z"
+    },
+    {
+      "id": 13,
+      "title": "Campaign 13",
+      "startDate": "2024-03-01",
+      "endDate": "2024-03-28",
+      "status": "scheduled",
+      "description": "This is a description for campaign 13 with various marketing objectives and goals.",
+      "createdAt": "2024-02-29T17:00:00.000Z",
+      "updatedAt": "2024-02-29T17:00:00.000Z"
+    },
+    {
+      "id": 14,
+      "title": "Campaign 14",
+      "startDate": "2024-12-01",
+      "endDate": "2024-12-28",
+      "status": "completed",
+      "description": "This is a description for campaign 14 with various marketing objectives and goals.",
+      "createdAt": "2024-11-30T17:00:00.000Z",
+      "updatedAt": "2024-11-30T17:00:00.000Z"
+    },
+    {
+      "id": 15,
+      "title": "Campaign 15",
+      "startDate": "2024-01-01",
+      "endDate": "2024-01-28",
+      "status": "active",
+      "description": "This is a description for campaign 15 with various marketing objectives and goals.",
+      "createdAt": "2023-12-31T17:00:00.000Z",
+      "updatedAt": "2023-12-31T17:00:00.000Z"
+    },
+    {
+      "id": 16,
+      "title": "Campaign 16",
+      "startDate": "2024-05-01",
+      "endDate": "2024-05-28",
+      "status": "scheduled",
+      "description": "This is a description for campaign 16 with various marketing objectives and goals.",
+      "createdAt": "2024-04-30T17:00:00.000Z",
+      "updatedAt": "2024-04-30T17:00:00.000Z"
+    },
+    {
+      "id": 17,
+      "title": "Campaign 17",
+      "startDate": "2024-03-01",
+      "endDate": "2024-03-28",
+      "status": "completed",
+      "description": "This is a description for campaign 17 with various marketing objectives and goals.",
+      "createdAt": "2024-02-29T17:00:00.000Z",
+      "updatedAt": "2024-02-29T17:00:00.000Z"
+    },
+    {
+      "id": 18,
+      "title": "Campaign 18",
+      "startDate": "2024-09-01",
+      "endDate": "2024-09-28",
+      "status": "active",
+      "description": "This is a description for campaign 18 with various marketing objectives and goals.",
+      "createdAt": "2024-08-31T17:00:00.000Z",
+      "updatedAt": "2024-08-31T17:00:00.000Z"
+    },
+    {
+      "id": 19,
+      "title": "Campaign 19",
+      "startDate": "2024-07-01",
+      "endDate": "2024-07-28",
+      "status": "scheduled",
+      "description": "This is a description for campaign 19 with various marketing objectives and goals.",
+      "createdAt": "2024-06-30T17:00:00.000Z",
+      "updatedAt": "2024-06-30T17:00:00.000Z"
+    },
+    {
+      "id": 20,
+      "title": "Campaign 20",
+      "startDate": "2024-09-01",
+      "endDate": "2024-09-28",
+      "status": "completed",
+      "description": "This is a description for campaign 20 with various marketing objectives and goals.",
+      "createdAt": "2024-08-31T17:00:00.000Z",
+      "updatedAt": "2024-08-31T17:00:00.000Z"
+    },
+    {
+      "id": 21,
+      "title": "Campaign 21",
+      "startDate": "2024-02-01",
+      "endDate": "2024-02-28",
+      "status": "active",
+      "description": "This is a description for campaign 21 with various marketing objectives and goals.",
+      "createdAt": "2024-01-31T17:00:00.000Z",
+      "updatedAt": "2024-01-31T17:00:00.000Z"
+    },
+    {
+      "id": 22,
+      "title": "Campaign 22",
+      "startDate": "2024-08-01",
+      "endDate": "2024-08-28",
+      "status": "scheduled",
+      "description": "This is a description for campaign 22 with various marketing objectives and goals.",
+      "createdAt": "2024-07-31T17:00:00.000Z",
+      "updatedAt": "2024-07-31T17:00:00.000Z"
+    },
+    {
+      "id": 23,
+      "title": "Campaign 23",
+      "startDate": "2024-05-01",
+      "endDate": "2024-05-28",
+      "status": "completed",
+      "description": "This is a description for campaign 23 with various marketing objectives and goals.",
+      "createdAt": "2024-04-30T17:00:00.000Z",
+      "updatedAt": "2024-04-30T17:00:00.000Z"
+    },
+    {
+      "id": 24,
+      "title": "Campaign 24",
+      "startDate": "2024-04-01",
+      "endDate": "2024-04-28",
+      "status": "active",
+      "description": "This is a description for campaign 24 with various marketing objectives and goals.",
+      "createdAt": "2024-03-31T17:00:00.000Z",
+      "updatedAt": "2024-03-31T17:00:00.000Z"
+    },
+    {
+      "id": 25,
+      "title": "Campaign 25",
+      "startDate": "2024-05-01",
+      "endDate": "2024-05-28",
+      "status": "scheduled",
+      "description": "This is a description for campaign 25 with various marketing objectives and goals.",
+      "createdAt": "2024-04-30T17:00:00.000Z",
+      "updatedAt": "2024-04-30T17:00:00.000Z"
+    },
+    {
+      "id": 26,
+      "title": "Campaign 26",
+      "startDate": "2024-08-01",
+      "endDate": "2024-08-28",
+      "status": "completed",
+      "description": "This is a description for campaign 26 with various marketing objectives and goals.",
+      "createdAt": "2024-07-31T17:00:00.000Z",
+      "updatedAt": "2024-07-31T17:00:00.000Z"
+    },
+    {
+      "id": 27,
+      "title": "Campaign 27",
+      "startDate": "2024-12-01",
+      "endDate": "2024-12-28",
+      "status": "active",
+      "description": "This is a description for campaign 27 with various marketing objectives and goals.",
+      "createdAt": "2024-11-30T17:00:00.000Z",
+      "updatedAt": "2024-11-30T17:00:00.000Z"
+    },
+    {
+      "id": 28,
+      "title": "Campaign 28",
+      "startDate": "2024-05-01",
+      "endDate": "2024-05-28",
+      "status": "scheduled",
+      "description": "This is a description for campaign 28 with various marketing objectives and goals.",
+      "createdAt": "2024-04-30T17:00:00.000Z",
+      "updatedAt": "2024-04-30T17:00:00.000Z"
+    },
+    {
+      "id": 29,
+      "title": "Campaign 29",
+      "startDate": "2024-11-01",
+      "endDate": "2024-11-28",
+      "status": "completed",
+      "description": "This is a description for campaign 29 with various marketing objectives and goals.",
+      "createdAt": "2024-10-31T17:00:00.000Z",
+      "updatedAt": "2024-10-31T17:00:00.000Z"
+    },
+    {
+      "id": 30,
+      "title": "Campaign 30",
+      "startDate": "2024-04-01",
+      "endDate": "2024-04-28",
+      "status": "active",
+      "description": "This is a description for campaign 30 with various marketing objectives and goals.",
+      "createdAt": "2024-03-31T17:00:00.000Z",
+      "updatedAt": "2024-03-31T17:00:00.000Z"
+    },
+    {
+      "id": 31,
+      "title": "Campaign 31",
+      "startDate": "2024-07-01",
+      "endDate": "2024-07-28",
+      "status": "scheduled",
+      "description": "This is a description for campaign 31 with various marketing objectives and goals.",
+      "createdAt": "2024-06-30T17:00:00.000Z",
+      "updatedAt": "2024-06-30T17:00:00.000Z"
+    },
+    {
+      "id": 32,
+      "title": "Campaign 32",
+      "startDate": "2024-07-01",
+      "endDate": "2024-07-28",
+      "status": "completed",
+      "description": "This is a description for campaign 32 with various marketing objectives and goals.",
+      "createdAt": "2024-06-30T17:00:00.000Z",
+      "updatedAt": "2024-06-30T17:00:00.000Z"
+    },
+    {
+      "id": 33,
+      "title": "Campaign 33",
+      "startDate": "2024-12-01",
+      "endDate": "2024-12-28",
+      "status": "active",
+      "description": "This is a description for campaign 33 with various marketing objectives and goals.",
+      "createdAt": "2024-11-30T17:00:00.000Z",
+      "updatedAt": "2024-11-30T17:00:00.000Z"
+    },
+    {
+      "id": 34,
+      "title": "Campaign 34",
+      "startDate": "2024-09-01",
+      "endDate": "2024-09-28",
+      "status": "scheduled",
+      "description": "This is a description for campaign 34 with various marketing objectives and goals.",
+      "createdAt": "2024-08-31T17:00:00.000Z",
+      "updatedAt": "2024-08-31T17:00:00.000Z"
+    },
+    {
+      "id": 35,
+      "title": "Campaign 35",
+      "startDate": "2024-07-01",
+      "endDate": "2024-07-28",
+      "status": "completed",
+      "description": "This is a description for campaign 35 with various marketing objectives and goals.",
+      "createdAt": "2024-06-30T17:00:00.000Z",
+      "updatedAt": "2024-06-30T17:00:00.000Z"
+    },
+    {
+      "id": 36,
+      "title": "Campaign 36",
+      "startDate": "2024-09-01",
+      "endDate": "2024-09-28",
+      "status": "active",
+      "description": "This is a description for campaign 36 with various marketing objectives and goals.",
+      "createdAt": "2024-08-31T17:00:00.000Z",
+      "updatedAt": "2024-08-31T17:00:00.000Z"
+    },
+    {
+      "id": 37,
+      "title": "Campaign 37",
+      "startDate": "2024-11-01",
+      "endDate": "2024-11-28",
+      "status": "scheduled",
+      "description": "This is a description for campaign 37 with various marketing objectives and goals.",
+      "createdAt": "2024-10-31T17:00:00.000Z",
+      "updatedAt": "2024-10-31T17:00:00.000Z"
+    },
+    {
+      "id": 38,
+      "title": "Campaign 38",
+      "startDate": "2024-01-01",
+      "endDate": "2024-01-28",
+      "status": "completed",
+      "description": "This is a description for campaign 38 with various marketing objectives and goals.",
+      "createdAt": "2023-12-31T17:00:00.000Z",
+      "updatedAt": "2023-12-31T17:00:00.000Z"
+    },
+    {
+      "id": 39,
+      "title": "Campaign 39",
+      "startDate": "2024-03-01",
+      "endDate": "2024-03-28",
+      "status": "active",
+      "description": "This is a description for campaign 39 with various marketing objectives and goals.",
+      "createdAt": "2024-02-29T17:00:00.000Z",
+      "updatedAt": "2024-02-29T17:00:00.000Z"
+    },
+    {
+      "id": 40,
+      "title": "Campaign 40",
+      "startDate": "2024-04-01",
+      "endDate": "2024-04-28",
+      "status": "scheduled",
+      "description": "This is a description for campaign 40 with various marketing objectives and goals.",
+      "createdAt": "2024-03-31T17:00:00.000Z",
+      "updatedAt": "2024-03-31T17:00:00.000Z"
+    },
+    {
+      "id": 41,
+      "title": "Campaign 41",
+      "startDate": "2024-02-01",
+      "endDate": "2024-02-28",
+      "status": "completed",
+      "description": "This is a description for campaign 41 with various marketing objectives and goals.",
+      "createdAt": "2024-01-31T17:00:00.000Z",
+      "updatedAt": "2024-01-31T17:00:00.000Z"
+    },
+    {
+      "id": 42,
+      "title": "Campaign 42",
+      "startDate": "2024-10-01",
+      "endDate": "2024-10-28",
+      "status": "active",
+      "description": "This is a description for campaign 42 with various marketing objectives and goals.",
+      "createdAt": "2024-09-30T17:00:00.000Z",
+      "updatedAt": "2024-09-30T17:00:00.000Z"
+    },
+    {
+      "id": 43,
+      "title": "Campaign 43",
+      "startDate": "2024-02-01",
+      "endDate": "2024-02-28",
+      "status": "scheduled",
+      "description": "This is a description for campaign 43 with various marketing objectives and goals.",
+      "createdAt": "2024-01-31T17:00:00.000Z",
+      "updatedAt": "2024-01-31T17:00:00.000Z"
+    },
+    {
+      "id": 44,
+      "title": "Campaign 44",
+      "startDate": "2024-10-01",
+      "endDate": "2024-10-28",
+      "status": "completed",
+      "description": "This is a description for campaign 44 with various marketing objectives and goals.",
+      "createdAt": "2024-09-30T17:00:00.000Z",
+      "updatedAt": "2024-09-30T17:00:00.000Z"
+    },
+    {
+      "id": 45,
+      "title": "Campaign 45",
+      "startDate": "2024-09-01",
+      "endDate": "2024-09-28",
+      "status": "active",
+      "description": "This is a description for campaign 45 with various marketing objectives and goals.",
+      "createdAt": "2024-08-31T17:00:00.000Z",
+      "updatedAt": "2024-08-31T17:00:00.000Z"
+    },
+    {
+      "id": 46,
+      "title": "Campaign 46",
+      "startDate": "2024-04-01",
+      "endDate": "2024-04-28",
+      "status": "scheduled",
+      "description": "This is a description for campaign 46 with various marketing objectives and goals.",
+      "createdAt": "2024-03-31T17:00:00.000Z",
+      "updatedAt": "2024-03-31T17:00:00.000Z"
+    },
+    {
+      "id": 47,
+      "title": "Campaign 47",
+      "startDate": "2024-11-01",
+      "endDate": "2024-11-28",
+      "status": "completed",
+      "description": "This is a description for campaign 47 with various marketing objectives and goals.",
+      "createdAt": "2024-10-31T17:00:00.000Z",
+      "updatedAt": "2024-10-31T17:00:00.000Z"
+    },
+    {
+      "id": 48,
+      "title": "Campaign 48",
+      "startDate": "2024-09-01",
+      "endDate": "2024-09-28",
+      "status": "active",
+      "description": "This is a description for campaign 48 with various marketing objectives and goals.",
+      "createdAt": "2024-08-31T17:00:00.000Z",
+      "updatedAt": "2024-08-31T17:00:00.000Z"
+    },
+    {
+      "id": 49,
+      "title": "Campaign 49",
+      "startDate": "2024-11-01",
+      "endDate": "2024-11-28",
+      "status": "scheduled",
+      "description": "This is a description for campaign 49 with various marketing objectives and goals.",
+      "createdAt": "2024-10-31T17:00:00.000Z",
+      "updatedAt": "2024-10-31T17:00:00.000Z"
+    },
+    {
+      "id": 50,
+      "title": "Campaign 50",
+      "startDate": "2024-04-01",
+      "endDate": "2024-04-28",
+      "status": "completed",
+      "description": "This is a description for campaign 50 with various marketing objectives and goals.",
+      "createdAt": "2024-03-31T17:00:00.000Z",
+      "updatedAt": "2024-03-31T17:00:00.000Z"
+    }
+  ]
+}

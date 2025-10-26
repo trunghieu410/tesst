@@ -1,0 +1,93 @@
+import axios from "axios";
+
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3001";
+
+export const api = axios.create({
+  baseURL: API_URL,
+  headers: {
+    "Content-Type": "application/json",
+  },
+});
+
+// Add auth token to requests
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem("authToken");
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
+
+// Auth API
+export const authApi = {
+  requestOtp: async (email: string) => {
+    const response = await api.post("/auth/request-otp", { email });
+    return response.data;
+  },
+
+  verifyOtp: async (email: string, otp: string) => {
+    const response = await api.post("/auth/verify-otp", { email, otp });
+    return response.data;
+  },
+};
+
+// Users API
+export const usersApi = {
+  getUsers: async (page: number = 1, limit: number = 20) => {
+    const response = await api.get("/users", {
+      params: { _page: page, _limit: limit },
+    });
+    return {
+      data: response.data,
+      total: parseInt(response.headers["x-total-count"] || "0"),
+    };
+  },
+
+  getUser: async (id: string) => {
+    const response = await api.get(`/users/${id}`);
+    return response.data;
+  },
+
+  suspendUser: async (id: string) => {
+    const response = await api.patch(`/users/${id}`, { status: "suspended" });
+    return response.data;
+  },
+
+  banUser: async (id: string) => {
+    const response = await api.patch(`/users/${id}`, { status: "banned" });
+    return response.data;
+  },
+};
+
+// Campaigns API
+export const campaignsApi = {
+  getCampaigns: async (page: number = 1, limit: number = 20) => {
+    const response = await api.get("/campaigns", {
+      params: { _page: page, _limit: limit },
+    });
+    return {
+      data: response.data,
+      total: parseInt(response.headers["x-total-count"] || "0"),
+    };
+  },
+
+  getCampaign: async (id: string) => {
+    const response = await api.get(`/campaigns/${id}`);
+    return response.data;
+  },
+
+  createCampaign: async (data: {
+    title: string;
+    startDate: string;
+    endDate: string;
+    description: string;
+  }) => {
+    const response = await api.post("/campaigns", {
+      ...data,
+      status: "scheduled",
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    });
+    return response.data;
+  },
+};
