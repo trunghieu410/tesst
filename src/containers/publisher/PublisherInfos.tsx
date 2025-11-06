@@ -1,6 +1,7 @@
 import { GoogleIcon } from "@/icon/GoogleIcon";
 import { FacebookIcon } from "@/icon/FacebookIcon";
 import { AppleIcon } from "@/icon/AppleIcon";
+import { ClickToCopy } from "@/components/ClickToCopy";
 
 interface Publisher {
   id: number;
@@ -53,7 +54,12 @@ export function PublisherInfos({ publisher }: PublisherInfosProps) {
           <p className="text-xs leading-4 text-[#677187] w-[110px]">
             Mã giới thiệu
           </p>
-          <p className="text-[14px] leading-4 text-[#021337]">giangdo2131</p>
+          <ClickToCopy
+            className="text-[14px] leading-4 text-[#021337]"
+            showIcon
+          >
+            giangdo2131
+          </ClickToCopy>
         </div>
         <div className="flex gap-2.5">
           <p className="text-xs leading-4 text-[#677187] w-[110px]">
@@ -84,7 +90,12 @@ export function PublisherInfos({ publisher }: PublisherInfosProps) {
           <p className="text-xs leading-4 text-[#677187] w-[110px]">
             Số thẻ ID
           </p>
-          <p className="text-[14px] leading-4 text-[#021337]">017261782</p>
+          <ClickToCopy
+            className="text-[14px] leading-4 text-[#021337]"
+            showIcon
+          >
+            017261782
+          </ClickToCopy>
         </div>
         <div className="flex gap-2.5">
           <p className="text-xs leading-4 text-[#677187] w-[110px]">Địa chỉ</p>
@@ -96,7 +107,9 @@ export function PublisherInfos({ publisher }: PublisherInfosProps) {
           <p className="text-xs leading-4 text-[#677187] w-[110px]">
             Người giới thiệu
           </p>
-          <p className="text-[14px] leading-4 text-[#021337]">EKWR212DA</p>
+          <ClickToCopy className="text-[14px] leading-4" showIcon>
+            EKWR212DA
+          </ClickToCopy>
         </div>
         <div className="flex gap-2.5">
           <p className="text-xs leading-4 text-[#677187] w-[110px]">

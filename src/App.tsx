@@ -3,17 +3,17 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { queryClient } from "@/lib/queryClient";
 import { ToastProvider } from "@/context/toast/toast";
-import { Landing } from "@/containers/Landing";
+import { Landing } from "@/containers/Landing/Landing";
 import { Main } from "@/layout/Main";
-import { Publisher } from "./containers/publisher/Publisher";
-import { Campaign } from "./containers/campaign/Campaign";
-import { Reports } from "./containers/Reports";
-import { Transactions } from "./containers/Transactions";
-import { Wallet } from "./containers/Wallet";
-import { Settings } from "./containers/Settings";
-import { IncomePerTier } from "./containers/IncomePerTier";
-import { CampaignCreate } from "./containers/campaign/CampaignCreate";
-import { Notifications } from "./containers/Notifications";
+import { Publisher } from "./containers/Publisher/Publisher";
+import { Campaign } from "./containers/Campaign/Campaign";
+import { Reports } from "./containers/Reports/Reports";
+import { Transactions } from "./containers/Transactions/Transactions";
+import { Wallet } from "./containers/Wallet/Wallet";
+import { Settings } from "./containers/Settings/Settings";
+import { IncomePerTier } from "./containers/IncomePerTier/IncomePerTier";
+import { CampaignCreate } from "./containers/Campaign/CampaignCreate";
+import { Notifications } from "./containers/Notifications/Notifications";
 
 function App() {
   return (

@@ -117,7 +117,10 @@ export function PublisherDetails({ publisherId }: PublisherDetailsProps) {
           </p>
           <Badge variant="success">Kích hoạt</Badge>
         </div>
-        <PublisherActionsDropdown onSelect={handleActionSelect} />
+        <PublisherActionsDropdown
+          accountState="suspend"
+          onAction={handleActionSelect}
+        />
       </div>
 
       {/* Main Content */}
@@ -138,7 +141,7 @@ export function PublisherDetails({ publisherId }: PublisherDetailsProps) {
 
             return (
               <div
-                className={`relative w-[890px] pb-4 flex-1 overflow-y-auto ${bgColor}`}
+                className={`relative w-full pn:w-[890px] pb-4 flex-1 overflow-y-auto ${bgColor}`}
               >
                 {/* Scrollable Content */}
 

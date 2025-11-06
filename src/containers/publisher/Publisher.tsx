@@ -51,7 +51,6 @@ export function Publisher() {
   }, [selectedCountry, selectedStatus, minMembers, rowsPerPage]);
 
   useEffect(() => {
-    console.log(" publishDashboard Publisher");
     publish("title-change", { title: "Publisher" });
   }, [publish]);
   //

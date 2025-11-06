@@ -196,7 +196,7 @@ export function PublisherMembers({
               #
             </TableHeaderCell>
             <TableHeaderCell
-              className="w-[262px] shrink-0"
+              className="w-[174px] shrink-0"
               data-sticky="left-2"
             >
               Họ tên

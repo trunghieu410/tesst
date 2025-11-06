@@ -13,6 +13,7 @@ interface BadgeProps {
   children: ReactNode;
   variant?: BadgeVariant;
   className?: string;
+  isCircle?: boolean;
 }
 
 const variantStyles: Record<BadgeVariant, string> = {
@@ -29,10 +30,12 @@ export function Badge({
   children,
   variant = "default",
   className = "",
+  isCircle = false,
 }: BadgeProps) {
+  const radius = isCircle ? "rounded-full" : "rounded";
   return (
     <div
-      className={`inline-flex items-center justify-center px-1.5 py-0 rounded h-5 font-medium text-xs leading-4 text-nowrap ${variantStyles[variant]} ${className}`}
+      className={`inline-flex items-center justify-center px-1.5 py-0 h-5 font-medium text-xs leading-4 text-nowrap ${variantStyles[variant]} ${className} ${radius}`}
     >
       {children}
     </div>

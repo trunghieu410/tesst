@@ -1,0 +1,1 @@
+export { IncomePerTier } from "./IncomePerTier";

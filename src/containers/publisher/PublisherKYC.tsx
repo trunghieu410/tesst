@@ -131,18 +131,16 @@ export function PublisherKYC({
 
                 {/* Expand/Collapse Button for Approved/Rejected */}
                 {canExpand && (
-                  <Button
-                    variant="ghost"
-                    size="sm"
+                  <button
                     onClick={() => toggleDocument(doc.id)}
-                    className=" w-8 h-8 p-0"
+                    className=" w-8 h-8 p-0 cursor-pointer"
                   >
                     <ChevronDownIcon
-                      classes={`w-8 h-8 text-[#021337] transition-transform ${
+                      classes={`w-4 h-4 text-[#021337] transition-transform ${
                         isExpanded ? "rotate-180" : ""
                       }`}
                     />
-                  </Button>
+                  </button>
                 )}
               </div>
 

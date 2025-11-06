@@ -4,17 +4,15 @@ interface CopyIconProps {
 
 export const CopyIcon = ({ className = "w-4 h-4" }: CopyIconProps) => (
   <svg
-    className={className}
-    fill="none"
     viewBox="0 0 24 24"
+    className={className}
     stroke="currentColor"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
   >
     <path
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth="2"
-      d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
+      d="M8 4C8 3.44687 8.44688 3 9 3H13.1281C13.3938 3 13.6469 3.10625 13.8344 3.29375L15.7063 5.16563C15.8938 5.35313 16 5.60625 16 5.87187V12C16 12.5531 15.5531 13 15 13H9C8.44688 13 8 12.5531 8 12V4ZM9 2C7.89687 2 7 2.89688 7 4V12C7 13.1031 7.89687 14 9 14H15C16.1031 14 17 13.1031 17 12V5.87187C17 5.34062 16.7906 4.83125 16.4156 4.45625L14.5437 2.58437C14.1687 2.20937 13.6594 2 13.1281 2H9ZM5 6C3.89688 6 3 6.89687 3 8V16C3 17.1031 3.89688 18 5 18H11C12.1031 18 13 17.1031 13 16V15.5H12V16C12 16.5531 11.5531 17 11 17H5C4.44687 17 4 16.5531 4 16V8C4 7.44688 4.44687 7 5 7H5.5V6H5Z"
+      fill="#677187"
     />
   </svg>
 );
-

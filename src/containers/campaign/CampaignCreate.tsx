@@ -22,12 +22,20 @@ export function CampaignCreate() {
     {
       id: "blacklist",
       label: "Blacklist",
-      iconBadge: () => <Badge variant="danger">2</Badge>,
+      iconBadge: () => (
+        <Badge isCircle variant="danger">
+          2
+        </Badge>
+      ),
     },
     {
       id: "whitelist",
       label: "Whitelist",
-      iconBadge: () => <Badge variant="success">2</Badge>,
+      iconBadge: () => (
+        <Badge isCircle variant="success">
+          2
+        </Badge>
+      ),
     },
     { id: "history", label: "Lịch sử thao tác" },
   ];
