@@ -1,10 +1,10 @@
 import { useState } from "react";
-import { Badge } from "@/components/ui/Badge";
-import { Button } from "@/components/ui/Button";
-import { SearchInput } from "@/components/ui/SearchInput";
-import { Dropdown } from "@/components/ui/Dropdown";
-import { MultipleSelectDropdown } from "@/components/ui/MultipleSelectDropdown";
-import { Pagination } from "@/components/ui/Pagination";
+import { Badge } from "@/components/Badge";
+import { Button } from "@/components/Button";
+import { SearchInput } from "@/components/SearchInput";
+import { Dropdown } from "@/components/Dropdown";
+import { MultipleSelectDropdown } from "@/components/MultipleSelectDropdown";
+import { Pagination } from "@/components/Pagination";
 import { InfoIcon } from "@/icon/InfoIcon";
 import {
   Table,
@@ -13,7 +13,7 @@ import {
   TableRow,
   TableHeaderCell,
   TableCell,
-} from "@/components/ui/Table";
+} from "@/components/Table";
 
 interface Member {
   id: number;

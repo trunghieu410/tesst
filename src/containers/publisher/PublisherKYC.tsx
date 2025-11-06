@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { Badge } from "@/components/ui/Badge";
-import { Button } from "@/components/ui/Button";
+import { Badge } from "@/components/Badge";
+import { Button } from "@/components/Button";
 import { PaperclipIcon } from "@/icon/PaperclipIcon";
 import { ChevronDownIcon } from "@/icon/ChevronDownIcon";
 

@@ -3,17 +3,17 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { queryClient } from "@/lib/queryClient";
 import { ToastProvider } from "@/context/toast/toast";
-import { Landing } from "@/pages/Landing";
-import { Dashboard } from "@/pages/Dashboard";
-import { Publisher } from "./pages/Publisher";
-import { Campaign } from "./pages/Campaign";
-import { Reports } from "./pages/Reports";
-import { Transactions } from "./pages/Transactions";
-import { Wallet } from "./pages/Wallet";
-import { Settings } from "./pages/Settings";
-import { IncomePerTier } from "./pages/IncomePerTier";
-import { CampaignCreate } from "./pages/CampaignCreate";
-import { Notifications } from "./pages/Notifications";
+import { Landing } from "@/containers/Landing";
+import { Main } from "@/layout/Main";
+import { Publisher } from "./containers/publisher/Publisher";
+import { Campaign } from "./containers/campaign/Campaign";
+import { Reports } from "./containers/Reports";
+import { Transactions } from "./containers/Transactions";
+import { Wallet } from "./containers/Wallet";
+import { Settings } from "./containers/Settings";
+import { IncomePerTier } from "./containers/IncomePerTier";
+import { CampaignCreate } from "./containers/campaign/CampaignCreate";
+import { Notifications } from "./containers/Notifications";
 
 function App() {
   return (
@@ -22,7 +22,7 @@ function App() {
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Landing />} />
-            <Route path="/dashboard" element={<Dashboard />}>
+            <Route path="/dashboard" element={<Main />}>
               <Route
                 index
                 element={<Navigate to="/dashboard/publishers" replace />}

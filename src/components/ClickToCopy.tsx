@@ -2,7 +2,7 @@ import { useCallback, useState } from "react";
 import { cn } from "@/lib/utils/common";
 import { useToast } from "@/context/toast/useToast";
 import { CopyIcon } from "@/icon/CopyIcon";
-import { Tooltip } from "@/components/ui/Tooltip";
+import { Tooltip } from "@/components/Tooltip";
 
 interface ClickToCopyProps {
   onCopied?: () => void;

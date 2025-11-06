@@ -1,7 +1,7 @@
 import { useEventEmitter } from "@/hooks/useEventEmitter";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { SettingsCard } from "@/components/ui/SettingsCard";
+import { SettingsCard } from "@/components/SettingsCard";
 import { SiteMapIcon } from "@/icon/SiteMapIcon";
 import { UserGroupIcon } from "@/icon/UserGroupIcon";
 import { RoleDirectionIcon } from "@/icon/RoleDirectionIcon";

@@ -1,11 +1,11 @@
-import { Badge } from "@/components/ui/Badge";
-import { CampaignBlacklistTab } from "@/components/dashboard/CampaignBlacklistTab";
-import { CampaignHistoryTab } from "@/components/dashboard/CampaignHistoryTab";
-import { CampaignOverviewTab } from "@/components/dashboard/CampaignOverviewTab";
-import { CampaignWhitelistTab } from "@/components/dashboard/CampaignWhitelistTab";
-import { Tabs } from "@/components/ui/Tabs";
-import { useEventEmitter } from "@/hooks/useEventEmitter";
 import { useEffect } from "react";
+import { Badge } from "@/components/Badge";
+import { Tabs } from "@/components/Tabs";
+import { useEventEmitter } from "@/hooks/useEventEmitter";
+import { CampaignBlacklistTab } from "./CampaignBlacklistTab";
+import { CampaignHistoryTab } from "./CampaignHistoryTab";
+import { CampaignOverviewTab } from "./CampaignOverviewTab";
+import { CampaignWhitelistTab } from "./CampaignWhitelistTab";
 
 export function CampaignCreate() {
   const { publish } = useEventEmitter();

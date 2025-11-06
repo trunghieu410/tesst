@@ -1,5 +1,5 @@
-import { Badge } from "@/components/ui/Badge";
-import type { BadgeVariant } from "@/components/ui/Badge";
+import { Badge } from "@/components/Badge";
+import type { BadgeVariant } from "@/components/Badge";
 import { DangerRedIcon } from "@/icon/DangerRedIcon";
 import {
   Table,
@@ -8,9 +8,9 @@ import {
   TableRow,
   TableHeaderCell,
   TableCell,
-} from "@/components/ui/Table";
-import { Tooltip } from "../ui/Tooltip";
-import { ClickToCopy } from "../ui/ClickToCopy";
+} from "@/components/Table";
+import { Tooltip } from "@/components/Tooltip";
+import { ClickToCopy } from "@/components/ClickToCopy";
 
 interface Publisher {
   id: number;

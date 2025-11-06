@@ -1,8 +1,8 @@
-import { Badge } from "@/components/ui/Badge";
-import { Button } from "@/components/ui/Button";
-import { Dropdown } from "@/components/ui/Dropdown";
-import { Pagination } from "@/components/ui/Pagination";
-import { SearchInput } from "@/components/ui/SearchInput";
+import { Badge } from "@/components/Badge";
+import { Button } from "@/components/Button";
+import { Dropdown } from "@/components/Dropdown";
+import { Pagination } from "@/components/Pagination";
+import { SearchInput } from "@/components/SearchInput";
 import {
   Table,
   TableBody,
@@ -10,7 +10,7 @@ import {
   TableHead,
   TableHeaderCell,
   TableRow,
-} from "@/components/ui/Table";
+} from "@/components/Table";
 import { InfoIcon } from "@/icon/InfoIcon";
 import { useState } from "react";
 
@@ -66,7 +66,7 @@ const mockBlacklistData = [
   },
 ];
 
-export function CampaignWhitelistTab() {
+export function CampaignBlacklistTab() {
   const [blacklistSearch, setBlacklistSearch] = useState("");
   const [blacklistPage, setBlacklistPage] = useState(1);
   const [blacklistRowsPerPage, setBlacklistRowsPerPage] = useState(1000);
@@ -81,9 +81,8 @@ export function CampaignWhitelistTab() {
       <div className="bg-[#e6e9ed] rounded-md px-3 py-2 flex items-center gap-3">
         <InfoIcon className="w-5 h-5 text-[#021337]" />
         <p className="font-normal text-[13px] leading-4 text-[#021337]">
-          Thêm người dùng nội bộ vào whitelist để khi chiến dịch ở trạng thái
-          “Đã lên lịch” thì những người dùng này có thể thấy và test trước khi
-          chiến dịch đến thời điểm triển khai. này.
+          Thêm người dùng vào blacklist để chặn người dùng tham gia chiến dịch
+          này.
         </p>
       </div>
 
