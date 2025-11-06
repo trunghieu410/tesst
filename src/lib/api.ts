@@ -61,15 +61,17 @@ export const usersApi = {
 
 // Publishers API
 export const publishersApi = {
-  getPublishers: async (params: {
-    page?: number;
-    limit?: number;
-    search?: string;
-    country?: string;
-    status?: string;
-    minMembers?: number;
-    dateRange?: string;
-  } = {}) => {
+  getPublishers: async (
+    params: {
+      page?: number;
+      limit?: number;
+      search?: string;
+      country?: string;
+      status?: string;
+      minMembers?: number;
+      dateRange?: string;
+    } = {}
+  ) => {
     const {
       page = 1,
       limit = 20,
@@ -77,7 +79,7 @@ export const publishersApi = {
       country,
       status,
       minMembers,
-      dateRange,
+      // dateRange,
     } = params;
 
     const queryParams = new URLSearchParams({
@@ -86,10 +88,11 @@ export const publishersApi = {
     });
 
     // For now, let's use simpler queries that json-server definitely supports
-    if (search) queryParams.append('q', search);
-    if (country) queryParams.append('country.code', country);
-    if (status) queryParams.append('status', status);
-    if (minMembers !== undefined && minMembers > 0) queryParams.append('members_gte', minMembers.toString());
+    if (search) queryParams.append("q", search);
+    if (country) queryParams.append("country.code", country);
+    if (status) queryParams.append("status", status);
+    if (minMembers !== undefined && minMembers > 0)
+      queryParams.append("members_gte", minMembers.toString());
 
     const response = await api.get(`/publishers?${queryParams.toString()}`);
     return {
@@ -106,15 +109,17 @@ export const publishersApi = {
 
 // Campaigns API
 export const campaignsApi = {
-  getCampaigns: async (params: {
-    page?: number;
-    limit?: number;
-    search?: string;
-    country?: string;
-    imageType?: string;
-    status?: string;
-    dateRange?: string;
-  } = {}) => {
+  getCampaigns: async (
+    params: {
+      page?: number;
+      limit?: number;
+      search?: string;
+      country?: string;
+      imageType?: string;
+      status?: string;
+      dateRange?: string;
+    } = {}
+  ) => {
     const {
       page = 1,
       limit = 20,
@@ -122,7 +127,7 @@ export const campaignsApi = {
       country,
       imageType,
       status,
-      dateRange,
+      // dateRange,
     } = params;
 
     const queryParams = new URLSearchParams({

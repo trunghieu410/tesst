@@ -4,58 +4,14 @@ import { useState } from "react";
 import useClickOutside from "@/hooks/useClickOutside";
 
 interface CampaignLabelsProps {
-  /**
-   * Array of selected tag values
-   */
   value: string[];
-  /**
-   * Callback when selected tags change
-   */
   onChange: (tags: string[]) => void;
-  /**
-   * Array of available tag options (defaults to predefined campaign tags)
-   */
   availableTags?: string[];
-  /**
-   * Label text for the field
-   */
   label?: string;
-  /**
-   * Optional text shown next to label
-   */
   optionalText?: string;
-  /**
-   * Placeholder text for the input
-   */
   placeholder?: string;
-  /**
-   * Additional CSS classes for the container
-   */
   className?: string;
 }
-
-/**
- * CampaignLabels - A reusable multi-select dropdown component for selecting campaign labels/tags.
- *
- * Features:
- * - Multi-select functionality with dropdown
- * - Tag pills with remove buttons
- * - Outside click detection to close dropdown
- * - Customizable available options
- * - TypeScript support
- *
- * @example
- * ```tsx
- * const [selectedTags, setSelectedTags] = useState<string[]>([]);
- *
- * <CampaignLabels
- *   value={selectedTags}
- *   onChange={setSelectedTags}
- *   label="Campaign Tags"
- *   availableTags={["Hot", "New", "Featured"]}
- * />
- * ```
- */
 
 export function CampaignLabels({
   value = [],
@@ -79,7 +35,6 @@ export function CampaignLabels({
 }: CampaignLabelsProps) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
-  // Ref for dropdown container and outside click handling
   const dropdownRef = useClickOutside<HTMLDivElement>(
     () => setIsDropdownOpen(false),
     { enabled: isDropdownOpen }
@@ -122,7 +77,7 @@ export function CampaignLabels({
           onClick={() => setIsDropdownOpen(!isDropdownOpen)}
         >
           {value.map((tag) => (
-            <div
+            <div //values-of-labels
               key={tag}
               className="bg-[#e6e9ed] rounded px-1.5 h-5 flex items-center gap-1"
             >
