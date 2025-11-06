@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { usersApi } from "@/lib/api";
-import { toast } from "sonner";
+import { useToast } from "@/context/toast/useToast";
 
 export function useUsers(page: number = 1, pageSize: number = 20) {
   return useQuery({
@@ -19,32 +19,34 @@ export function useUser(id: string) {
 
 export function useSuspendUser() {
   const queryClient = useQueryClient();
+  const { success, error } = useToast();
 
   return useMutation({
     mutationFn: (id: string) => usersApi.suspendUser(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["users"] });
       queryClient.invalidateQueries({ queryKey: ["user"] });
-      toast.success("User suspended successfully");
+      success("User suspended successfully");
     },
     onError: () => {
-      toast.error("Failed to suspend user");
+      error("Failed to suspend user");
     },
   });
 }
 
 export function useBanUser() {
   const queryClient = useQueryClient();
+  const { success, error } = useToast();
 
   return useMutation({
     mutationFn: (id: string) => usersApi.banUser(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["users"] });
       queryClient.invalidateQueries({ queryKey: ["user"] });
-      toast.success("User banned successfully");
+      success("User banned successfully");
     },
     onError: () => {
-      toast.error("Failed to ban user");
+      error("Failed to ban user");
     },
   });
 }

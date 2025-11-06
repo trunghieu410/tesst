@@ -1,10 +1,11 @@
 import { useMutation } from "@tanstack/react-query";
 import { authApi } from "@/lib/api";
-import { toast } from "sonner";
+import { useToast } from "@/context/toast/useToast";
 import { useNavigate } from "react-router-dom";
 
 export function useAuth() {
   const navigate = useNavigate();
+  const { success, error } = useToast();
 
   const isAuthenticated = () => {
     return !!localStorage.getItem("authToken");
@@ -22,7 +23,7 @@ export function useAuth() {
   const requestOtpMutation = useMutation({
     mutationFn: (email: string) => authApi.requestOtp(email),
     onError: () => {
-      toast.error("Failed to send OTP. Please try again.");
+      error("Failed to send OTP. Please try again.");
     },
   });
 
@@ -31,11 +32,11 @@ export function useAuth() {
       authApi.verifyOtp(email, otp),
     onSuccess: (data) => {
       login(data.token);
-      toast.success("Login successful");
+      success("Login successful");
       navigate("/dashboard");
     },
     onError: () => {
-      toast.error("Invalid OTP — please try again.");
+      error("Invalid OTP — please try again.");
     },
   });
 

@@ -1,7 +1,23 @@
 import jsonServer from "json-server";
+import path from "path";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const server = jsonServer.create();
-const router = jsonServer.router("mock-api/db.json");
+const dbPath = path.join(__dirname, "db.json");
+console.log(`Loading database from: ${dbPath}`);
+
+let router;
+try {
+  router = jsonServer.router(dbPath);
+  console.log('Database loaded successfully');
+} catch (error) {
+  console.error('Error loading database:', error);
+  process.exit(1);
+}
+
 const middlewares = jsonServer.defaults();
 
 server.use(middlewares);
@@ -57,4 +73,5 @@ server.use(router);
 const PORT = 3001;
 server.listen(PORT, () => {
   console.log(`Mock API Server is running on http://localhost:${PORT}`);
+  console.log(`Database path: ${path.join(__dirname, "db.json")}`);
 });

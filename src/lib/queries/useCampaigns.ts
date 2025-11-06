@@ -1,11 +1,26 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { campaignsApi } from "@/lib/api";
-import { toast } from "sonner";
+import { useToast } from "@/context/toast/useToast";
 
-export function useCampaigns(page: number = 1, pageSize: number = 20) {
+export function useCampaigns(
+  page: number = 1,
+  pageSize: number = 20,
+  filters?: {
+    search?: string;
+    country?: string;
+    imageType?: string;
+    status?: string;
+    dateRange?: string;
+  }
+) {
   return useQuery({
-    queryKey: ["campaigns", page, pageSize],
-    queryFn: () => campaignsApi.getCampaigns(page, pageSize),
+    queryKey: ["campaigns", page, pageSize, filters],
+    queryFn: () =>
+      campaignsApi.getCampaigns({
+        page,
+        limit: pageSize,
+        ...filters,
+      }),
   });
 }
 
@@ -19,6 +34,7 @@ export function useCampaign(id: string) {
 
 export function useCreateCampaign() {
   const queryClient = useQueryClient();
+  const { success, error } = useToast();
 
   return useMutation({
     mutationFn: (data: {
@@ -29,10 +45,10 @@ export function useCreateCampaign() {
     }) => campaignsApi.createCampaign(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["campaigns"] });
-      toast.success("Campaign created successfully");
+      success("Campaign created successfully");
     },
     onError: () => {
-      toast.error("Failed to create campaign");
+      error("Failed to create campaign");
     },
   });
 }

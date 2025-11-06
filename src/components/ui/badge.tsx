@@ -1,46 +1,40 @@
-import * as React from "react";
-import { Slot } from "@radix-ui/react-slot";
-import { cva, type VariantProps } from "class-variance-authority";
+import type { ReactNode } from "react";
 
-import { cn } from "@/lib/utils";
+export type BadgeVariant =
+  | "default"
+  | "success"
+  | "error"
+  | "warning"
+  | "pending"
+  | "danger"
+  | "approved";
 
-const badgeVariants = cva(
-  "inline-flex items-center justify-center rounded-full border px-2 py-0.5 text-xs font-medium w-fit whitespace-nowrap shrink-0 [&>svg]:size-3 gap-1 [&>svg]:pointer-events-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive transition-[color,box-shadow] overflow-hidden",
-  {
-    variants: {
-      variant: {
-        default:
-          "border-transparent bg-primary text-primary-foreground [a&]:hover:bg-primary/90",
-        secondary:
-          "border-transparent bg-secondary text-secondary-foreground [a&]:hover:bg-secondary/90",
-        destructive:
-          "border-transparent bg-destructive text-white [a&]:hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60",
-        outline:
-          "text-foreground [a&]:hover:bg-accent [a&]:hover:text-accent-foreground",
-      },
-    },
-    defaultVariants: {
-      variant: "default",
-    },
-  }
-);
-
-function Badge({
-  className,
-  variant,
-  asChild = false,
-  ...props
-}: React.ComponentProps<"span"> &
-  VariantProps<typeof badgeVariants> & { asChild?: boolean }) {
-  const Comp = asChild ? Slot : "span";
-
-  return (
-    <Comp
-      data-slot="badge"
-      className={cn(badgeVariants({ variant }), className)}
-      {...props}
-    />
-  );
+interface BadgeProps {
+  children: ReactNode;
+  variant?: BadgeVariant;
+  className?: string;
 }
 
-export { Badge, badgeVariants };
+const variantStyles: Record<BadgeVariant, string> = {
+  default: "bg-[#dbe1e7] text-[#021337]",
+  success: "bg-[#00a349] text-white",
+  error: "bg-[#e5240c] text-white",
+  danger: "bg-[#e5240c] text-white",
+  warning: "bg-[#ffe2a9] text-[#021337]",
+  pending: "bg-[#e6e9ed] text-[#021337]",
+  approved: "bg-[#acf1d6] text-[#021337]",
+};
+
+export function Badge({
+  children,
+  variant = "default",
+  className = "",
+}: BadgeProps) {
+  return (
+    <div
+      className={`inline-flex items-center justify-center px-1.5 py-0 rounded h-5 font-medium text-xs leading-4 text-nowrap ${variantStyles[variant]} ${className}`}
+    >
+      {children}
+    </div>
+  );
+}

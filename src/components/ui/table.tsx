@@ -1,116 +1,165 @@
-"use client";
+import type { ReactNode } from "react";
+import { cn } from "@/lib/utils/common";
 
-import * as React from "react";
+interface TableProps {
+  children: ReactNode;
+  className?: string;
+  horizontalScrollWithStickyColumns?: boolean;
+}
 
-import { cn } from "@/lib/utils";
+interface TableHeadProps {
+  children: ReactNode;
+  className?: string;
+}
 
-function Table({ className, ...props }: React.ComponentProps<"table">) {
+interface TableBodyProps {
+  children: ReactNode;
+  className?: string;
+}
+
+interface TableRowProps {
+  children: ReactNode;
+  onClick?: () => void;
+  className?: string;
+}
+
+interface TableHeaderCellProps {
+  children: ReactNode;
+  align?: "left" | "center" | "right";
+  className?: string;
+  "data-sticky"?: "left-1" | "left-2" | "right";
+}
+
+interface TableCellProps {
+  children: ReactNode;
+  onClick?: () => void;
+  align?: "left" | "center" | "right";
+  className?: string;
+  "data-sticky"?: "left-1" | "left-2" | "right";
+}
+
+export function Table({
+  children,
+  className = "",
+  horizontalScrollWithStickyColumns = false,
+}: TableProps) {
+  if (horizontalScrollWithStickyColumns) {
+    return (
+      <div className={cn("w-full relative", className)}>
+        <div className="overflow-x-auto">
+          <div className="min-w-max inline-flex">
+            <table className="w-full text-left table-auto">{children}</table>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div
-      data-slot="table-container"
-      className="relative w-full overflow-x-auto"
+      className={cn(
+        "relative flex flex-col w-full h-full overflow-x-auto",
+        className
+      )}
     >
-      <table
-        data-slot="table"
-        className={cn("w-full caption-bottom text-sm", className)}
-        {...props}
-      />
+      <table className="w-full text-left table-auto min-w-max">
+        {children}
+      </table>
     </div>
   );
 }
 
-function TableHeader({ className, ...props }: React.ComponentProps<"thead">) {
-  return (
-    <thead
-      data-slot="table-header"
-      className={cn("[&_tr]:border-b", className)}
-      {...props}
-    />
-  );
+export function TableHead({ children, className = "" }: TableHeadProps) {
+  return <thead className={className}>{children}</thead>;
 }
 
-function TableBody({ className, ...props }: React.ComponentProps<"tbody">) {
-  return (
-    <tbody
-      data-slot="table-body"
-      className={cn("[&_tr:last-child]:border-0", className)}
-      {...props}
-    />
-  );
+export function TableBody({ children, className = "" }: TableBodyProps) {
+  return <tbody className={className}>{children}</tbody>;
 }
 
-function TableFooter({ className, ...props }: React.ComponentProps<"tfoot">) {
-  return (
-    <tfoot
-      data-slot="table-footer"
-      className={cn(
-        "bg-muted/50 border-t font-medium [&>tr]:last:border-b-0",
-        className
-      )}
-      {...props}
-    />
-  );
-}
-
-function TableRow({ className, ...props }: React.ComponentProps<"tr">) {
+export function TableRow({ children, onClick, className = "" }: TableRowProps) {
   return (
     <tr
-      data-slot="table-row"
+      onClick={onClick}
       className={cn(
-        "hover:bg-muted/50 data-[state=selected]:bg-muted border-b transition-colors",
+        onClick && "cursor-pointer",
+        "transition-colors hover:bg-gray-50",
         className
       )}
-      {...props}
-    />
+    >
+      {children}
+    </tr>
   );
 }
 
-function TableHead({ className, ...props }: React.ComponentProps<"th">) {
+export function TableHeaderCell({
+  children,
+  align = "left",
+  className = "",
+  "data-sticky": sticky,
+}: TableHeaderCellProps) {
+  const alignClass = {
+    left: "text-left",
+    center: "text-center",
+    right: "text-right",
+  }[align];
+
   return (
     <th
-      data-slot="table-head"
       className={cn(
-        "text-foreground h-10 px-2 text-left align-middle font-medium whitespace-nowrap [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]",
+        "h-8 px-2.5 py-2 bg-white border-b border-[#cfd6de]",
+        alignClass,
+        sticky === "left-1" && "sticky left-0 z-30 bg-white",
+        sticky === "left-2" &&
+          "sticky left-[70px] z-30 bg-white after:content-[''] after:absolute after:top-0 after:right-0 after:bottom-0 after:w-2.5 after:translate-x-full after:bg-gradient-to-r after:from-black/10 after:to-transparent after:pointer-events-none",
+        sticky === "right" &&
+          "sticky right-0 z-30 bg-white before:content-[''] before:absolute before:top-0 before:left-0 before:bottom-0 before:w-2.5 before:-translate-x-full before:bg-gradient-to-l before:from-black/10 before:to-transparent before:pointer-events-none",
         className
       )}
-      {...props}
-    />
+      data-sticky={sticky}
+    >
+      <div className="font-medium text-xs leading-4 text-[#021337]">
+        {children}
+      </div>
+    </th>
   );
 }
 
-function TableCell({ className, ...props }: React.ComponentProps<"td">) {
+export function TableCell({
+  children,
+  align = "left",
+  className = "",
+  "data-sticky": sticky,
+  onClick,
+}: TableCellProps) {
+  const alignClass = {
+    left: "text-left",
+    center: "text-center",
+    right: "text-right",
+  }[align];
+
   return (
     <td
-      data-slot="table-cell"
       className={cn(
-        "p-2 align-middle whitespace-nowrap [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]",
+        "h-9 px-2.5 py-2 bg-white [tr:not(:last-child)_&]:border-b [tr:not(:last-child)_&]:border-[#cfd6de]",
+        onClick && "cursor-pointer",
+        alignClass,
+        sticky === "left-1" && "sticky left-0 z-30 bg-white",
+        sticky === "left-2" &&
+          "sticky left-[70px] z-30 bg-white after:content-[''] after:absolute after:top-0 after:right-0 after:bottom-0 after:w-2.5 after:translate-x-full after:bg-gradient-to-r after:from-black/10 after:to-transparent after:pointer-events-none",
+        sticky === "right" &&
+          "sticky right-0 z-30 bg-white before:content-[''] before:absolute before:top-0 before:left-0 before:bottom-0 before:w-2.5 before:-translate-x-full before:bg-gradient-to-l before:from-black/10 before:to-transparent before:pointer-events-none",
         className
       )}
-      {...props}
-    />
+      data-sticky={sticky}
+      onClick={onClick}
+    >
+      <div className="font-normal text-sm leading-5 text-[#021337]">
+        {children}
+      </div>
+    </td>
   );
 }
 
-function TableCaption({
-  className,
-  ...props
-}: React.ComponentProps<"caption">) {
-  return (
-    <caption
-      data-slot="table-caption"
-      className={cn("text-muted-foreground mt-4 text-sm", className)}
-      {...props}
-    />
-  );
-}
-
-export {
-  Table,
-  TableHeader,
-  TableBody,
-  TableFooter,
-  TableHead,
-  TableRow,
-  TableCell,
-  TableCaption,
-};
+// Legacy exports for backward compatibility (will be deprecated)
+export const TableHeader = TableHeaderCell;

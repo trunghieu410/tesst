@@ -1,19 +1,23 @@
+import { Sidebar } from "@/layout/Sidebar";
+import { Header } from "@/layout/Header";
 import { Outlet } from "react-router-dom";
-import { SidebarProvider } from "@/components/ui/sidebar";
-import { DashboardSidebar } from "@/components/layout/DashboardSidebar";
-import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 
 export function Dashboard() {
   return (
-    <ProtectedRoute>
-      <SidebarProvider>
-        <div className="flex min-h-screen w-full">
-          <DashboardSidebar />
-          <main className="flex-1 overflow-y-auto p-6">
-            <Outlet />
-          </main>
+    <div className="flex h-screen bg-white overflow-hidden">
+      {/* Sidebar */}
+      <Sidebar />
+
+      {/* Main Content */}
+      <div className="flex-1 flex flex-col overflow-hidden">
+        {/* Header */}
+        <Header defaultTitle="Publisher" />
+
+        {/* Content Area */}
+        <div className="flex-1 overflow-auto">
+          <Outlet />
         </div>
-      </SidebarProvider>
-    </ProtectedRoute>
+      </div>
+    </div>
   );
 }

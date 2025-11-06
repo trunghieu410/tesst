@@ -1,7 +1,5 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { Navbar } from "@/components/layout/Navbar";
-import { Hero } from "@/components/layout/Hero";
 import { LoginModal } from "@/components/auth/LoginModal";
 
 export function Landing() {
@@ -24,14 +22,8 @@ export function Landing() {
     }
   }, [location.state]);
 
-  const handleOpenLogin = () => {
-    setLoginOpen(true);
-  };
-
   return (
     <div className="min-h-screen">
-      <Navbar onLoginClick={handleOpenLogin} />
-      <Hero onGetStartClick={handleOpenLogin} />
       <LoginModal open={loginOpen} onOpenChange={setLoginOpen} />
     </div>
   );

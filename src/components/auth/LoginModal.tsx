@@ -3,20 +3,17 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import {
-  InputOTP,
-  InputOTPGroup,
-  InputOTPSlot,
-} from "@/components/ui/input-otp";
+  X,
+  Mail,
+  Shield,
+  Clock,
+  RefreshCw,
+  ArrowLeft,
+  CheckCircle,
+  Send,
+  AlertCircle,
+  Sparkles,
+} from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 
 const emailSchema = z.object({
@@ -31,17 +28,30 @@ interface LoginModalProps {
 export function LoginModal({ open, onOpenChange }: LoginModalProps) {
   const [step, setStep] = React.useState<"email" | "otp">("email");
   const [email, setEmail] = React.useState("");
-  const [otp, setOtp] = React.useState("");
+  const [otp, setOtp] = React.useState(["", "", "", "", "", ""]);
   const [countdown, setCountdown] = React.useState(0);
   const { requestOtp, verifyOtp, isRequestingOtp, isVerifyingOtp } = useAuth();
+  const otpInputs = React.useRef<(HTMLInputElement | null)[]>([]);
 
   const {
     register,
     handleSubmit,
+    reset: resetForm,
     formState: { errors },
   } = useForm<{ email: string }>({
     resolver: zodResolver(emailSchema),
   });
+
+  /**
+   * Reset all modal state to initial values
+   */
+  const resetModalState = React.useCallback(() => {
+    setStep("email");
+    setEmail("");
+    setOtp(["", "", "", "", "", ""]);
+    setCountdown(0);
+    resetForm();
+  }, [resetForm]);
 
   // Countdown timer
   React.useEffect(() => {
@@ -50,6 +60,24 @@ export function LoginModal({ open, onOpenChange }: LoginModalProps) {
       return () => clearTimeout(timer);
     }
   }, [countdown]);
+
+  // Reset modal state when closed
+  React.useEffect(() => {
+    if (!open) {
+      resetModalState();
+    }
+  }, [open, resetModalState]);
+
+  React.useEffect(() => {
+    if (open) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, [open]);
 
   const onEmailSubmit = (data: { email: string }) => {
     setEmail(data.email);
@@ -61,16 +89,69 @@ export function LoginModal({ open, onOpenChange }: LoginModalProps) {
     });
   };
 
+  /**
+   * Xử lý khi thay đổi giá trị trong ô OTP
+   */
+  const handleOtpChange = (index: number, value: string) => {
+    // Chỉ cho phép nhập 1 chữ số
+    if (!/^[0-9]$/.test(value) && value !== "") {
+      return;
+    }
+
+    const newOtp = [...otp];
+    newOtp[index] = value;
+    setOtp(newOtp);
+
+    // Tự động chuyển focus sang ô tiếp theo nếu đã nhập
+    if (value !== "" && index < 5) {
+      otpInputs.current[index + 1]?.focus();
+    }
+  };
+
+  /**
+   * Xử lý khi bấm phím (Backspace) trong ô OTP
+   */
+  const handleOtpKeyDown = (
+    e: React.KeyboardEvent<HTMLInputElement>,
+    index: number
+  ) => {
+    if (e.key === "Backspace") {
+      // Nếu ô hiện tại rỗng, lùi focus về ô trước đó
+      if (otp[index] === "" && index > 0) {
+        otpInputs.current[index - 1]?.focus();
+      } else {
+        // Nếu ô hiện tại có chữ, chỉ xóa chữ, không lùi focus
+        const newOtp = [...otp];
+        newOtp[index] = "";
+        setOtp(newOtp);
+      }
+    }
+  };
+
+  /**
+   * Xử lý khi paste mã OTP vào ô input
+   */
+  const handleOtpPaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
+    e.preventDefault();
+    const pastedData = e.clipboardData.getData("text").trim();
+
+    // Kiểm tra xem dữ liệu paste có phải là 6 chữ số không
+    if (/^[0-9]{6}$/.test(pastedData)) {
+      const newOtp = pastedData.split("");
+      setOtp(newOtp);
+      // Focus vào ô cuối cùng sau khi paste
+      otpInputs.current[5]?.focus();
+    }
+  };
+
   const onOtpSubmit = () => {
-    if (otp.length === 6) {
+    const otpValue = otp.join("");
+    if (otpValue.length === 6) {
       verifyOtp(
-        { email, otp },
+        { email, otp: otpValue },
         {
           onSuccess: () => {
-            onOpenChange(false);
-            setStep("email");
-            setOtp("");
-            setEmail("");
+            onOpenChange(false); // Reset will happen automatically via useEffect
           },
         }
       );
@@ -81,145 +162,197 @@ export function LoginModal({ open, onOpenChange }: LoginModalProps) {
     requestOtp(email, {
       onSuccess: () => {
         setCountdown(60);
-        setOtp("");
+        setOtp(["", "", "", "", "", ""]);
       },
     });
   };
 
   const handleChangeEmail = () => {
     setStep("email");
-    setOtp("");
+    setOtp(["", "", "", "", "", ""]);
   };
 
-  return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md bg-white border-gray-200">
-        <DialogHeader>
-          <DialogTitle className="text-2xl font-bold text-gray-900">
-            {step === "email" ? "Welcome Back" : "Verify Your Identity"}
-          </DialogTitle>
-          <DialogDescription className="text-gray-600 text-base">
-            {step === "email"
-              ? "Enter your email address to receive a verification code"
-              : `We've sent a 6-digit code to ${email}`}
-          </DialogDescription>
-        </DialogHeader>
+  if (!open) return null;
 
-        {step === "email" ? (
-          <form
-            onSubmit={handleSubmit(onEmailSubmit)}
-            className="space-y-6 pt-2"
-          >
-            <div className="space-y-2">
-              <Label htmlFor="email" className="text-gray-700 font-medium">
-                Email Address
-              </Label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="your.email@example.com"
-                {...register("email")}
-                aria-invalid={!!errors.email}
-                className="bg-gray-50 border-gray-300 text-gray-900 placeholder:text-gray-400 focus:border-blue-500 focus:ring-blue-500/20 h-11"
-              />
-              {errors.email && (
-                <p className="text-sm text-red-600 flex items-center gap-1">
-                  <span>⚠</span> {errors.email.message as string}
-                </p>
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center">
+      {/* Backdrop */}
+      <div
+        className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+        onClick={() => onOpenChange(false)}
+      />
+
+      {/* Dialog */}
+      <div className="relative bg-white rounded-lg shadow-xl w-full max-w-md mx-4">
+        {/* Header */}
+        <div className="flex items-start justify-between p-6 border-b border-gray-200">
+          <div className="flex items-start gap-3">
+            <div
+              className={`p-2.5 rounded-lg ${
+                step === "email"
+                  ? "bg-blue-100 text-blue-600"
+                  : "bg-green-100 text-green-600"
+              }`}
+            >
+              {step === "email" ? (
+                <Sparkles className="w-6 h-6" />
+              ) : (
+                <Shield className="w-6 h-6" />
               )}
             </div>
-            <Button
-              type="submit"
-              className="w-full h-11 bg-linear-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white font-medium shadow-lg shadow-blue-500/20"
-              disabled={isRequestingOtp}
-            >
-              {isRequestingOtp ? "Sending..." : "Send Verification Code"}
-            </Button>
-          </form>
-        ) : (
-          <div className="space-y-6 pt-2">
-            <div className="space-y-3">
-              <Label className="text-gray-700 font-medium text-center block">
-                Enter Verification Code
-              </Label>
-              <div className="flex justify-center py-2">
-                <InputOTP
-                  maxLength={6}
-                  value={otp}
-                  onChange={(value) => setOtp(value)}
-                  className="gap-2"
-                >
-                  <InputOTPGroup className="gap-2">
-                    <InputOTPSlot
-                      index={0}
-                      className="w-12 h-14 text-xl font-bold bg-gray-50 border-gray-300 text-gray-900 focus:border-blue-500 focus:ring-blue-500/20"
-                    />
-                    <InputOTPSlot
-                      index={1}
-                      className="w-12 h-14 text-xl font-bold bg-gray-50 border-gray-300 text-gray-900 focus:border-blue-500 focus:ring-blue-500/20"
-                    />
-                    <InputOTPSlot
-                      index={2}
-                      className="w-12 h-14 text-xl font-bold bg-gray-50 border-gray-300 text-gray-900 focus:border-blue-500 focus:ring-blue-500/20"
-                    />
-                    <InputOTPSlot
-                      index={3}
-                      className="w-12 h-14 text-xl font-bold bg-gray-50 border-gray-300 text-gray-900 focus:border-blue-500 focus:ring-blue-500/20"
-                    />
-                    <InputOTPSlot
-                      index={4}
-                      className="w-12 h-14 text-xl font-bold bg-gray-50 border-gray-300 text-gray-900 focus:border-blue-500 focus:ring-blue-500/20"
-                    />
-                    <InputOTPSlot
-                      index={5}
-                      className="w-12 h-14 text-xl font-bold bg-gray-50 border-gray-300 text-gray-900 focus:border-blue-500 focus:ring-blue-500/20"
-                    />
-                  </InputOTPGroup>
-                </InputOTP>
-              </div>
-              <p className="text-xs text-gray-500 text-center">
-                Use 123456 as the OTP for demo purposes
+            <div>
+              <h2 className="text-2xl font-bold text-gray-900">
+                {step === "email" ? "Welcome Back" : "Verify Your Identity"}
+              </h2>
+              <p className="text-gray-600 text-base mt-1">
+                {step === "email"
+                  ? "Enter your email address to receive a verification code"
+                  : `We've sent a 6-digit code to ${email}`}
               </p>
             </div>
+          </div>
+          <button
+            onClick={() => onOpenChange(false)}
+            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+          >
+            <X className="w-5 h-5 text-gray-600" />
+          </button>
+        </div>
 
-            {countdown > 0 ? (
-              <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
-                <p className="text-center text-sm text-gray-700">
-                  Code expires in{" "}
-                  <span className="font-mono font-bold text-blue-600">
-                    {countdown}s
-                  </span>
+        {/* Content */}
+        <div className="p-6">
+          {step === "email" ? (
+            <form onSubmit={handleSubmit(onEmailSubmit)} className="space-y-6">
+              <div className="space-y-2">
+                <label
+                  htmlFor="email"
+                  className="text-sm font-medium text-gray-700 flex items-center gap-2"
+                >
+                  Email
+                </label>
+                <div className="relative">
+                  <input
+                    id="email"
+                    type="email"
+                    placeholder="your.email@example.com"
+                    {...register("email")}
+                    className="w-full pl-10 pr-3 py-2.5 bg-gray-50 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  />
+                  <Mail className="w-5 h-5 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                </div>
+                {errors.email && (
+                  <p className="text-sm text-red-600 flex items-center gap-1.5">
+                    <AlertCircle className="w-4 h-4" />
+                    {errors.email.message}
+                  </p>
+                )}
+              </div>
+              <button
+                type="submit"
+                disabled={isRequestingOtp}
+                className="w-full py-2.5 bg-linear-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white font-medium rounded-lg shadow-lg shadow-blue-500/20 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2"
+              >
+                {isRequestingOtp ? (
+                  <>
+                    <RefreshCw className="w-4 h-4 animate-spin" />
+                    Sending...
+                  </>
+                ) : (
+                  <>
+                    <Send className="w-4 h-4" />
+                    Send Verification Code
+                  </>
+                )}
+              </button>
+            </form>
+          ) : (
+            <div className="space-y-6">
+              <div className="space-y-3">
+                <label className="block text-sm font-medium text-gray-700 text-center">
+                  Enter Verification Code
+                </label>
+                <div className="flex justify-center gap-2 py-2">
+                  {otp.map((digit, index) => (
+                    <input
+                      key={index}
+                      ref={(el) => {
+                        otpInputs.current[index] = el;
+                      }}
+                      id={`otp-${index}`}
+                      type="text"
+                      maxLength={1}
+                      value={digit}
+                      onChange={(e) => handleOtpChange(index, e.target.value)}
+                      onKeyDown={(e) => handleOtpKeyDown(e, index)}
+                      onPaste={handleOtpPaste}
+                      className="w-12 h-14 text-center text-xl font-bold bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    />
+                  ))}
+                </div>
+                <p className="text-xs text-gray-500 text-center">
+                  Use 123456 as the OTP for demo purposes
                 </p>
               </div>
-            ) : (
-              <Button
-                variant="outline"
-                onClick={handleResendOtp}
-                disabled={isRequestingOtp}
-                className="w-full border-gray-300 text-gray-700 hover:bg-gray-50 hover:text-gray-900"
+
+              {countdown > 0 ? (
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                  <p className="text-center text-sm text-gray-700 flex items-center justify-center gap-2">
+                    <Clock className="w-4 h-4 text-blue-600" />
+                    Code expires in{" "}
+                    <span className="font-mono font-bold text-blue-600">
+                      {countdown}s
+                    </span>
+                  </p>
+                </div>
+              ) : (
+                <button
+                  onClick={handleResendOtp}
+                  disabled={isRequestingOtp}
+                  className="w-full py-2.5 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 hover:text-gray-900 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                >
+                  {isRequestingOtp ? (
+                    <>
+                      <RefreshCw className="w-4 h-4 animate-spin" />
+                      Resending...
+                    </>
+                  ) : (
+                    <>
+                      <RefreshCw className="w-4 h-4" />
+                      Resend Code
+                    </>
+                  )}
+                </button>
+              )}
+
+              <button
+                onClick={onOtpSubmit}
+                disabled={otp.join("").length !== 6 || isVerifyingOtp}
+                className="w-full py-2.5 bg-linear-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white font-medium rounded-lg shadow-lg shadow-blue-500/20 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2"
               >
-                {isRequestingOtp ? "Resending..." : "Resend Code"}
-              </Button>
-            )}
+                {isVerifyingOtp ? (
+                  <>
+                    <RefreshCw className="w-4 h-4 animate-spin" />
+                    Verifying...
+                  </>
+                ) : (
+                  <>
+                    <CheckCircle className="w-4 h-4" />
+                    Verify & Login
+                  </>
+                )}
+              </button>
 
-            <Button
-              onClick={onOtpSubmit}
-              className="w-full h-11 bg-linear-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white font-medium shadow-lg shadow-blue-500/20"
-              disabled={otp.length !== 6 || isVerifyingOtp}
-            >
-              {isVerifyingOtp ? "Verifying..." : "Verify & Login"}
-            </Button>
-
-            <Button
-              variant="ghost"
-              onClick={handleChangeEmail}
-              className="w-full text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-50"
-            >
-              Use a different email
-            </Button>
-          </div>
-        )}
-      </DialogContent>
-    </Dialog>
+              <button
+                onClick={handleChangeEmail}
+                className="w-full py-2.5 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-colors flex items-center justify-center gap-2"
+              >
+                <ArrowLeft className="w-4 h-4" />
+                Use a different email
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
   );
 }
