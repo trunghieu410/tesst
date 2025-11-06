@@ -1,0 +1,195 @@
+---
+alwaysApply: true
+description: Project-wide standards for React, Tailwind, Figma integration, and component development
+---
+
+# OpenKingdom Admin - Project Standards
+
+## Technology Stack
+
+### React 19
+
+- **Always use React 19** features and APIs
+- Leverage React 19's improved features including:
+  - Use the Actions API for form submissions and mutations
+  - Use `useOptimistic` for optimistic UI updates
+  - Use `useFormStatus` for form state management
+  - Use the new `use()` hook for reading Promises and Context
+  - Use Server Components patterns where applicable
+
+### Tailwind CSS 4
+
+- **Always use Tailwind 4** for styling
+- Follow Tailwind 4's updated syntax and features
+- Use Tailwind's utility-first approach consistently
+- Leverage Tailwind 4's improved CSS variables and theme customization
+- Use `@apply` sparingly - prefer utility classes directly in JSX
+
+## Figma Integration
+
+### Figma MCP Usage
+
+- **Always use Figma MCP tools** when working with Figma designs
+- Before implementing any design component, call the appropriate Figma MCP tool:
+  - Use `mcp_Figma_Desktop_get_design_context` to get UI code for designs
+  - Use `mcp_Figma_Desktop_get_screenshot` to visualize the design
+  - Use `mcp_Figma_Desktop_get_variable_defs` to get design tokens and variables
+  - Use `mcp_Figma_Desktop_get_code_connect_map` to find existing component mappings
+
+### Design-to-Code Workflow
+
+1. **Fetch Figma design** using MCP tools first
+2. **Extract design tokens** (colors, spacing, typography) and map to Tailwind config
+3. **Identify reusable patterns** before coding
+4. **Build component** following the structure below
+
+## Component Development Best Practices
+
+### Reusable Component Architecture
+
+- **Create atomic, composable components** that can be reused across the application
+- **Avoid duplication** - if you're writing similar code twice, extract it into a shared component
+- **Follow the component hierarchy**: Atoms → Molecules → Organisms → Templates → Pages
+
+### Component Structure
+
+```typescript
+// 1. Imports
+import { ReactNode } from "react";
+import { cn } from "@/lib/utils";
+
+// 2. Types/Interfaces
+interface ComponentProps {
+  children: ReactNode;
+  variant?: "primary" | "secondary";
+  className?: string;
+}
+
+// 3. Component Definition
+export function Component({
+  children,
+  variant = "primary",
+  className,
+}: ComponentProps) {
+  return (
+    <div
+      className={cn(
+        "base-classes",
+        variant === "primary" && "primary-classes",
+        variant === "secondary" && "secondary-classes",
+        className
+      )}
+    >
+      {children}
+    </div>
+  );
+}
+```
+
+### React Best Practices
+
+- **Use functional components** exclusively
+- **Properly type all props** with TypeScript interfaces
+- **Accept className prop** for style customization using `cn()` utility
+- **Use composition** over prop drilling
+- **Memoize expensive computations** with `useMemo`
+- **Memoize callback functions** with `useCallback` when passing to child components
+- **Extract custom hooks** for reusable logic
+- **Keep components focused** - single responsibility principle
+- **Use proper naming**:
+  - Components: PascalCase (e.g., `UserProfile`)
+  - Hooks: camelCase with "use" prefix (e.g., `useAuth`)
+  - Utilities: camelCase (e.g., `formatDate`)
+
+### Props Best Practices
+
+- **Destructure props** in function parameters
+- **Provide default values** for optional props
+- **Use discriminated unions** for variant props
+- **Spread remaining props** with `...rest` when building wrapper components
+- **Document complex props** with JSDoc comments
+
+### Avoiding Duplication
+
+- **Check existing components** in [src/components/ui/](mdc:src/components/ui) before creating new ones
+- **Extract common patterns** into shared utilities in [src/lib/utils.ts](mdc:src/lib/utils.ts)
+- **Create base components** that can be extended through composition
+- **Use render props or slots** for flexible component APIs
+- **Share constants** through dedicated files like [src/components/ui/tableConstants.ts](mdc:src/components/ui/tableConstants.ts)
+
+### File Organization
+
+- Place reusable UI components in `src/components/ui/`
+- Place feature-specific components in `src/components/[feature]/`
+- Co-locate component-specific types and constants
+- One component per file (except for small, tightly coupled sub-components)
+
+### Example: Building from Figma
+
+```typescript
+// 1. Fetch Figma design using MCP
+// 2. Identify reusable parts
+// 3. Create base component
+
+interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  variant?: "primary" | "secondary" | "ghost";
+  size?: "sm" | "md" | "lg";
+  isLoading?: boolean;
+  children: ReactNode;
+  className?: string;
+}
+
+export function Button({
+  variant = "primary",
+  size = "md",
+  isLoading = false,
+  children,
+  className,
+  disabled,
+  ...rest
+}: ButtonProps) {
+  return (
+    <button
+      className={cn(
+        // Base styles from Figma
+        "inline-flex items-center justify-center font-medium transition-colors",
+        "focus-visible:outline-none focus-visible:ring-2 disabled:opacity-50 disabled:pointer-events-none",
+        // Variants from Figma design system
+        {
+          "bg-blue-600 text-white hover:bg-blue-700": variant === "primary",
+          "bg-gray-200 text-gray-900 hover:bg-gray-300":
+            variant === "secondary",
+          "hover:bg-gray-100": variant === "ghost",
+        },
+        // Sizes from Figma
+        {
+          "h-8 px-3 text-sm": size === "sm",
+          "h-10 px-4": size === "md",
+          "h-12 px-6 text-lg": size === "lg",
+        },
+        className
+      )}
+      disabled={disabled || isLoading}
+      {...rest}
+    >
+      {isLoading ? "Loading..." : children}
+    </button>
+  );
+}
+```
+
+## Testing & Quality
+
+- **Test component reusability** by using it in multiple contexts
+- **Ensure accessibility** (ARIA labels, keyboard navigation, semantic HTML)
+- **Validate responsive design** at different breakpoints
+- **Check for performance** (avoid unnecessary re-renders)
+
+## Key Principles
+
+✅ **DRY (Don't Repeat Yourself)** - Extract and reuse
+✅ **Composition over Configuration** - Build complex UIs from simple pieces
+✅ **Type Safety** - Leverage TypeScript fully
+✅ **Accessibility First** - Make components accessible by default
+✅ **Performance Conscious** - Optimize but don't over-optimize
+✅ **Figma-Driven** - Always reference Figma designs using MCP tools

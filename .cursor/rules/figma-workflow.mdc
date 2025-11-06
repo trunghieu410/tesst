@@ -1,0 +1,223 @@
+---
+description: Detailed workflow for integrating Figma designs using MCP tools
+---
+
+# Figma MCP Integration Workflow
+
+## When to Use Figma MCP
+
+- When implementing any new UI component from Figma
+- When updating existing components to match new Figma designs
+- When extracting design tokens or variables
+- When verifying component implementation against designs
+
+## Step-by-Step Workflow
+
+### 1. Get Design Context
+
+```
+Use: mcp_Figma_Desktop_get_design_context
+Parameters:
+  - nodeId: Extract from Figma URL (e.g., "123:456" from node-id=123-456)
+  - clientLanguages: "typescript"
+  - clientFrameworks: "react"
+```
+
+This provides:
+
+- Complete component structure
+- Styling information
+- Layout details
+- Interactive properties
+
+### 2. Get Visual Reference
+
+```
+Use: mcp_Figma_Desktop_get_screenshot
+Parameters:
+  - nodeId: Same as above
+```
+
+This provides:
+
+- Visual reference for pixel-perfect implementation
+- Context for responsive behavior
+- Design details for edge cases
+
+### 3. Extract Design Variables
+
+```
+Use: mcp_Figma_Desktop_get_variable_defs
+Parameters:
+  - nodeId: Same as above
+```
+
+This provides:
+
+- Color tokens → Map to Tailwind colors
+- Spacing tokens → Map to Tailwind spacing
+- Typography tokens → Map to Tailwind font config
+- Other design system variables
+
+### 4. Check Code Connections
+
+```
+Use: mcp_Figma_Desktop_get_code_connect_map
+Parameters:
+  - nodeId: Same as above
+```
+
+This provides:
+
+- Existing component mappings in codebase
+- Component location and naming
+- Reusable component references
+
+## Implementation Pattern
+
+### Extract Figma URL
+
+```typescript
+// From Figma URL: https://figma.com/design/ABC123/MyDesign?node-id=1-2
+// Extract nodeId: "1:2" (replace hyphen with colon)
+```
+
+### Map Design Tokens to Tailwind
+
+```typescript
+// Figma Variables → tailwind.config.js
+{
+  colors: {
+    primary: '#3B82F6',      // From Figma color/primary
+    secondary: '#6B7280',    // From Figma color/secondary
+  },
+  spacing: {
+    'xs': '0.5rem',          // From Figma spacing/xs
+    'sm': '0.75rem',         // From Figma spacing/sm
+    'md': '1rem',            // From Figma spacing/md
+  },
+  fontSize: {
+    'body': '1rem',          // From Figma text/body
+    'heading': '1.5rem',     // From Figma text/heading
+  }
+}
+```
+
+### Build Component Systematically
+
+1. **Structure**: Match Figma's component hierarchy
+2. **Styling**: Use Tailwind classes that match Figma variables
+3. **Variants**: Implement all Figma component variants
+4. **States**: Handle hover, active, disabled, etc.
+5. **Responsiveness**: Implement Figma's responsive behavior
+
+### Example Implementation
+
+```typescript
+// 1. Retrieved from mcp_Figma_Desktop_get_design_context
+// 2. Extracted design tokens from mcp_Figma_Desktop_get_variable_defs
+// 3. Checked for existing components with mcp_Figma_Desktop_get_code_connect_map
+
+interface CardProps {
+  title: string;
+  description: string;
+  variant?: "default" | "highlighted";
+  className?: string;
+}
+
+export function Card({
+  title,
+  description,
+  variant = "default",
+  className,
+}: CardProps) {
+  return (
+    <div
+      className={cn(
+        // Base styles from Figma
+        "rounded-lg p-6 shadow-sm",
+        // Variants from Figma
+        {
+          "bg-white border border-gray-200": variant === "default",
+          "bg-blue-50 border-2 border-blue-500": variant === "highlighted",
+        },
+        className
+      )}
+    >
+      <h3 className="text-heading font-semibold mb-2">{title}</h3>
+      <p className="text-body text-gray-600">{description}</p>
+    </div>
+  );
+}
+```
+
+## Design System Alignment
+
+### Create Design System Rules
+
+```
+Use: mcp_Figma_Desktop_create_design_system_rules
+```
+
+This helps:
+
+- Generate consistent design system rules for the project
+- Maintain alignment between Figma and code
+- Document design decisions
+
+### Keep Figma and Code in Sync
+
+- Update components when Figma designs change
+- Use consistent naming between Figma and code
+- Document any deviations from Figma in code comments
+- Link Figma components to code components using Code Connect
+
+## Best Practices
+
+### Always Reference Figma
+
+✅ DO: Call Figma MCP before implementing any design
+✅ DO: Use Figma variable names in code comments
+✅ DO: Keep design tokens synchronized
+✅ DO: Verify implementation against Figma screenshot
+
+❌ DON'T: Implement designs from memory
+❌ DON'T: Hardcode values that exist as Figma variables
+❌ DON'T: Create components without checking for existing Figma mappings
+❌ DON'T: Deviate from Figma without documenting why
+
+### Handle Missing Figma Data
+
+If Figma MCP returns incomplete data:
+
+1. Get screenshot for visual reference
+2. Extract what's available from design context
+3. Infer remaining details consistently with existing patterns
+4. Document assumptions in code comments
+
+### Responsive Design
+
+- Check Figma for breakpoint-specific designs
+- Implement mobile-first with Tailwind responsive utilities
+- Test at standard breakpoints: sm (640px), md (768px), lg (1024px), xl (1280px)
+
+## Quick Reference
+
+| Task                     | MCP Tool                     | Primary Use                |
+| ------------------------ | ---------------------------- | -------------------------- |
+| Implement new component  | `get_design_context`         | Get full component details |
+| Visual verification      | `get_screenshot`             | Compare implementation     |
+| Setup design tokens      | `get_variable_defs`          | Extract theme values       |
+| Find existing components | `get_code_connect_map`       | Avoid duplication          |
+| Setup design system      | `create_design_system_rules` | Generate guidelines        |
+
+## Integration with Component Workflow
+
+1. **Receive Task**: "Implement [Component] from Figma"
+2. **Fetch Figma Data**: Use MCP tools to get all design information
+3. **Check Existing**: Look for similar components in codebase
+4. **Extract Patterns**: Identify reusable elements
+5. **Build Component**: Following React best practices
+6. **Verify**: Compare with Figma screenshot
+7. **Document**: Add comments linking to Figma node
+8. **Test**: Ensure functionality and reusability
