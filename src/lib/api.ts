@@ -94,7 +94,9 @@ export const publishersApi = {
     if (minMembers !== undefined && minMembers > 0)
       queryParams.append("members_gte", minMembers.toString());
 
-    const response = await api.get(`/publishers?${queryParams.toString()}`);
+    const response = await api.get(
+      `/admin/publishers?${queryParams.toString()}`
+    );
     return {
       data: response.data,
       total: parseInt(response.headers["x-total-count"] || "0"),
@@ -102,7 +104,11 @@ export const publishersApi = {
   },
 
   getPublisher: async (id: string) => {
-    const response = await api.get(`/publishers/${id}`);
+    const response = await api.get(`/admin/publishers/${id}`);
+    return response.data;
+  },
+  getPublisherOverview: async (id: string) => {
+    const response = await api.get(`/admin/publishers/${id}/overview`);
     return response.data;
   },
 };

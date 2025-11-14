@@ -66,10 +66,8 @@ export function Publisher() {
     minMembers: minMembers ? parseInt(minMembers) : undefined,
     dateRange: dateRange || undefined,
   });
-
-  const publishers = publishersData?.data || [];
-  const totalCount = publishersData?.total || 0;
-  const totalPages = Math.ceil(totalCount / rowsPerPage);
+  const publishers = publishersData?.data.data || [];
+  const pagination = publishersData?.data.pagination;
 
   const handlePublisherClick = (publisherId: string) => {
     publish("show-right-panel", publisherId); // Mở panel
@@ -156,11 +154,11 @@ export function Publisher() {
             {/* Pagination Footer */}
             <div className="flex items-center gap-2 p-2 border-t border-[#b5bcc4] bg-white">
               <p className="font-normal text-sm leading-5 text-[#021337]">
-                {totalCount.toLocaleString()} kết quả
+                {pagination.total.toLocaleString()} kết quả
               </p>
               <Pagination
                 currentPage={currentPage}
-                totalPages={totalPages}
+                totalPages={pagination.totalPages}
                 onPageChange={setCurrentPage}
                 rowsPerPage={rowsPerPage}
                 onRowsPerPageChange={setRowsPerPage}

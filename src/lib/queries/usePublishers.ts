@@ -16,11 +16,12 @@ export function usePublishers(
 ) {
   return useQuery({
     queryKey: ["publishers", page, pageSize, filters],
-    queryFn: () => publishersApi.getPublishers({
-      page,
-      limit: pageSize,
-      ...filters,
-    }),
+    queryFn: () =>
+      publishersApi.getPublishers({
+        page,
+        limit: pageSize,
+        ...filters,
+      }),
   });
 }
 
@@ -28,6 +29,14 @@ export function usePublisher(id: string) {
   return useQuery({
     queryKey: ["publisher", id],
     queryFn: () => publishersApi.getPublisher(id),
+    enabled: !!id,
+  });
+}
+
+export function usePublisherOverview(id: string) {
+  return useQuery({
+    queryKey: ["publisher-overview", id],
+    queryFn: () => publishersApi.getPublisherOverview(id),
     enabled: !!id,
   });
 }

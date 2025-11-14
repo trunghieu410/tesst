@@ -268,8 +268,9 @@ export function ReportsPublishers() {
         </SectionCard>
 
         {/* Second Row: Gender Pie Chart and KYC Stats */}
-        <div className="flex gap-3">
-          <div className="flex-1 min-w-0">
+        <div className="flex flex-col gap-3 md:flex-row">
+          {/* statustable */}
+          <div className="w-full md:flex-1 md:min-w-0">
             <SectionCard
               title="Trạng thái tài khoản"
               contentClassName="pb-4 pt-4.5 px-0"
@@ -278,7 +279,8 @@ export function ReportsPublishers() {
             </SectionCard>
           </div>
 
-          <div className="flex-1 min-w-0">
+          {/* statusKyc */}
+          <div className="w-full md:flex-1 md:min-w-0">
             <SectionCard
               title="KYC"
               showInfoIcon
@@ -290,7 +292,8 @@ export function ReportsPublishers() {
         </div>
 
         {/* Third Row: Activity, Engagement, Gender, and Age */}
-        <div className="grid grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
+          {/* activeBlock */}
           <SectionCard title="Hoạt động" contentClassName="pb-2">
             <div className="mb-2">
               <p className="text-[24px] font-semibold leading-8 text-[#021337]">
@@ -303,6 +306,7 @@ export function ReportsPublishers() {
             <ActivityLineChart data={activityData} color="#021337" />
           </SectionCard>
 
+          {/* tasstBlock */}
           <SectionCard title="Năng động" contentClassName="pb-2">
             <div className="mb-2">
               <p className="text-[24px] font-semibold leading-8 text-[#021337]">
@@ -315,17 +319,19 @@ export function ReportsPublishers() {
             <ActivityLineChart data={activityData} color="#ff3b34" />
           </SectionCard>
 
+          {/* genderBlock */}
           <SectionCard title="Giới tính" contentClassName="pb-2 relative">
             <GenderPieChart data={genderData} />
           </SectionCard>
 
+          {/* ageBlock */}
           <SectionCard title="Tuổi" contentClassName="py-3">
             <AgeBarChart data={ageData} />
           </SectionCard>
         </div>
 
         {/* Bottom Row: Tables */}
-        <div className="grid grid-cols-[530px_1fr] gap-4">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-[530px_1fr]">
           {/*CountriesTable-section*/}
           <SectionCard
             title="89 Quốc gia"
@@ -397,7 +403,7 @@ export function ReportsPublishers() {
               </div>
             )}
           </SectionCard>
-
+          {/*membersTable2-section*/}
           <SectionCard
             title="Thành viên"
             headerActions={

@@ -10,7 +10,10 @@ import { XIcon } from "@/icon/XIcon";
 import { useEventEmitter, useEventListener } from "@/hooks/useEventEmitter";
 import { Tabs } from "../../components/Tabs";
 import { PublisherHistory } from "./PublisherHistory";
-import { usePublisher } from "@/lib/queries/usePublishers";
+import {
+  usePublisher,
+  usePublisherOverview,
+} from "@/lib/queries/usePublishers";
 import { useState } from "react";
 
 const tabs = [
@@ -68,6 +71,14 @@ export function PublisherDetails({
   });
 
   const { data: publisherData, isLoading, error } = usePublisher(publisherId);
+
+  const {
+    data: publisherOverviewData,
+    isLoading: isPublisherOverviewLoading,
+    error: publisherOverviewError,
+  } = usePublisherOverview(publisherId);
+
+  console.log(publisherOverviewData);
 
   const handleClose = () => {
     publish("hide-right-panel");
