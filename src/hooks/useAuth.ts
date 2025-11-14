@@ -31,7 +31,7 @@ export function useAuth() {
     mutationFn: ({ email, otp }: { email: string; otp: string }) =>
       authApi.verifyOtp(email, otp),
     onSuccess: (data) => {
-      login(data.token);
+      login(data.accessToken);
       success("Login successful");
       navigate("/dashboard");
     },

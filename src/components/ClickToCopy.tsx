@@ -124,7 +124,7 @@ export function ClickToCopy({
   return showIcon ? (
     content
   ) : (
-    <Tooltip position="top" tooltipsText="Click to copy">
+    <Tooltip position="right" tooltipsText="Click để sao chép">
       {content}
     </Tooltip>
   );

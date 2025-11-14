@@ -5,7 +5,7 @@ import { LoginModal } from "@/components/auth/LoginModal";
 export function Landing() {
   const navigate = useNavigate();
   const location = useLocation();
-  const [loginOpen, setLoginOpen] = useState(false);
+  const [loginOpen, setLoginOpen] = useState(true);
 
   useEffect(() => {
     // Redirect to dashboard if already authenticated

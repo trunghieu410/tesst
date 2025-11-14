@@ -7,7 +7,8 @@ import { Landing } from "@/containers/Landing/Landing";
 import { Main } from "@/layout/Main";
 import { Publisher } from "./containers/Publisher/Publisher";
 import { Campaign } from "./containers/Campaign/Campaign";
-import { Reports } from "./containers/Reports/Reports";
+import { ReportsPublishers } from "./containers/Reports/ReportsPublishers";
+import { ReportsCampaigns } from "./containers/Reports/ReportsCampaigns";
 import { Transactions } from "./containers/Transactions/Transactions";
 import { Wallet } from "./containers/Wallet/Wallet";
 import { Settings } from "./containers/Settings/Settings";
@@ -35,7 +36,16 @@ function App() {
                 <Route path="create" element={<CampaignCreate />} />
                 {/* <Route path=":campaignId" element={<CampaignDetail />} /> */}
               </Route>
-              <Route path="reports" element={<Reports />} />
+              <Route path="reports">
+                <Route
+                  index
+                  element={
+                    <Navigate to="/dashboard/reports/publishers" replace />
+                  }
+                />
+                <Route path="publishers" element={<ReportsPublishers />} />
+                <Route path="campaigns" element={<ReportsCampaigns />} />
+              </Route>
               <Route path="transactions" element={<Transactions />} />
               <Route path="wallet" element={<Wallet />} />
               <Route path="notifications" element={<Notifications />} />

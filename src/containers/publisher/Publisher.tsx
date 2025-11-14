@@ -71,17 +71,8 @@ export function Publisher() {
   const totalCount = publishersData?.total || 0;
   const totalPages = Math.ceil(totalCount / rowsPerPage);
 
-  const handlePublisherClick = (publisher: {
-    id: number;
-    name: string;
-    email: string;
-    country: { code: string; name: string; flag: string };
-    members: number;
-    createdAt: string;
-    kyc: "not_started" | "approved" | "rejected" | "pending";
-    status: "active" | "deleted" | "suspended";
-  }) => {
-    publish("show-right-panel", publisher); // Mở panel
+  const handlePublisherClick = (publisherId: string) => {
+    publish("show-right-panel", publisherId); // Mở panel
   };
 
   return (

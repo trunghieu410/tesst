@@ -20,23 +20,19 @@ import { HistoricalIcon } from "@/icon/HistoricalIcon";
 import { ClockIcon } from "@/icon/ClockIcon";
 import { DangerIcon } from "@/icon/DangerIcon";
 
-interface Publisher {
-  id: number;
-  name: string;
-  email: string;
-  country: {
-    code: string;
-    name: string;
-    flag: string;
-  };
-  members: number;
-  createdAt: string;
-  kyc: "not_started" | "approved" | "rejected" | "pending";
-  status: "active" | "deleted" | "suspended";
-}
+import type { PublisherType } from "@/types";
 
 interface PublisherOverviewProps {
-  publisher: Publisher;
+  publisher: PublisherType & {
+    memberCount: {
+      total: number;
+      byTier: {
+        tier1: number;
+        tier2: number;
+        tier3: number;
+      };
+    };
+  };
 }
 
 const mockWallets = [
@@ -84,7 +80,10 @@ export function PublisherOverview({ publisher }: PublisherOverviewProps) {
               <InfoIcon className="w-4 h-4 shrink-0" />
             </div>
             <p className="font-semibold text-base leading-6 text-center text-[#021337] w-full">
-              {publisher.members + 1900 + 80 + 10}
+              {publisher.memberCount.total +
+                publisher.memberCount.byTier.tier1 +
+                publisher.memberCount.byTier.tier2 +
+                publisher.memberCount.byTier.tier3}
             </p>
           </div>
 
@@ -94,7 +93,7 @@ export function PublisherOverview({ publisher }: PublisherOverviewProps) {
               Tầng 1
             </p>
             <p className="font-semibold text-base leading-6 text-[#021337] text-center w-full">
-              1900
+              {publisher.memberCount.byTier.tier1}
             </p>
           </div>
 
@@ -104,7 +103,7 @@ export function PublisherOverview({ publisher }: PublisherOverviewProps) {
               Tầng 2
             </p>
             <p className="font-semibold text-base leading-6 text-[#021337] text-center w-full">
-              80
+              {publisher.memberCount.byTier.tier2}
             </p>
           </div>
 
@@ -114,7 +113,7 @@ export function PublisherOverview({ publisher }: PublisherOverviewProps) {
               Tầng 3
             </p>
             <p className="font-semibold text-base leading-6 text-[#021337] text-center w-full">
-              10
+              {publisher.memberCount.byTier.tier3}
             </p>
           </div>
         </div>

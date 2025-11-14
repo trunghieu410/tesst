@@ -8,7 +8,7 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "mock-api": "json-server --watch mock-api/db.json --port 3001",
+    "mock-api": "node mock-api/server.js",
     "dev:all": "concurrently \"yarn dev\" \"yarn mock-api\" --names \"APP,API\" --prefix-colors \"cyan,magenta\"",
     "generate-publishers": "node mock-api/generate-publishers.js",
     "generate-campaigns": "node mock-api/generate-campaigns.js"

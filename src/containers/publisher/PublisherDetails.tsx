@@ -7,42 +7,11 @@ import { PublisherMembers } from "./PublisherMembers";
 import { PublisherInfos } from "./PublisherInfos";
 import { DangerIcon } from "@/icon/DangerIcon";
 import { XIcon } from "@/icon/XIcon";
-import { useEventEmitter } from "@/hooks/useEventEmitter";
+import { useEventEmitter, useEventListener } from "@/hooks/useEventEmitter";
 import { Tabs } from "../../components/Tabs";
 import { PublisherHistory } from "./PublisherHistory";
-
-const mockPublishers = [
-  {
-    id: 1,
-    name: "Phan Công Kiều",
-    email: "kieu.phan@gmail.com",
-    country: { code: "VN", name: "Vietnam", flag: "🇻🇳" },
-    members: 0,
-    createdAt: "10.13.2025 - 14:52",
-    kyc: "not_started" as const,
-    status: "active" as const,
-  },
-  {
-    id: 2,
-    name: "Hậu Hoàng",
-    email: "queen@gmail.com",
-    country: { code: "MY", name: "Malaysia", flag: "🇲🇾" },
-    members: 100,
-    createdAt: "10.11.2025 - 13:50",
-    kyc: "pending" as const,
-    status: "suspended" as const,
-  },
-  {
-    id: 3,
-    name: "Trung Nguyễn",
-    email: "trung@gmail.com",
-    country: { code: "ID", name: "Indonesia", flag: "🇮🇩" },
-    members: 342,
-    createdAt: "10.12.2025 - 13:50",
-    kyc: "rejected" as const,
-    status: "deleted" as const,
-  },
-];
+import { usePublisher } from "@/lib/queries/usePublishers";
+import { useState } from "react";
 
 const tabs = [
   {
@@ -72,8 +41,33 @@ interface PublisherDetailsProps {
   publisherId?: number;
 }
 
-export function PublisherDetails({ publisherId }: PublisherDetailsProps) {
+export function PublisherDetails({
+  publisherId: propPublisherId,
+}: PublisherDetailsProps) {
   const { publish } = useEventEmitter();
+
+  // Normalize ID to API format (pub-X or just use as-is if already in correct format)
+  const normalizeId = (id: string | number | undefined): string => {
+    if (!id) return "";
+    const idStr = id.toString();
+    // If it's already in pub-X format, use it; otherwise assume it's a number and convert
+    if (idStr.startsWith("pub-")) {
+      return idStr;
+    }
+    // If it's a plain number, convert to pub-X format
+    return `pub-${idStr}`;
+  };
+
+  const [publisherId, setPublisherId] = useState<string>(
+    normalizeId(propPublisherId)
+  );
+
+  // Listen for publisher selection from the table
+  useEventListener<string>("show-right-panel", (id) => {
+    setPublisherId(normalizeId(id));
+  });
+
+  const { data: publisherData, isLoading, error } = usePublisher(publisherId);
 
   const handleClose = () => {
     publish("hide-right-panel");
@@ -84,11 +78,15 @@ export function PublisherDetails({ publisherId }: PublisherDetailsProps) {
     console.log("Selected action:", action);
   };
 
-  const publisher =
-    mockPublishers.find((p) => p.id === Number(publisherId)) ||
-    mockPublishers[1];
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-full">
+        <p>Loading...</p>
+      </div>
+    );
+  }
 
-  if (!publisher) {
+  if (error || !publisherData) {
     return (
       <div className="flex items-center justify-center h-full">
         <p>Publisher not found</p>
@@ -113,7 +111,7 @@ export function PublisherDetails({ publisherId }: PublisherDetailsProps) {
         <div className="w-20 h-20 rounded-[80px] bg-gray-200" />
         <div className="flex-1">
           <p className="font-semibold text-xl leading-7 text-[#021337]">
-            {publisher.name}
+            {publisherData.fullName}
           </p>
           <Badge variant="success">Kích hoạt</Badge>
         </div>
@@ -125,7 +123,7 @@ export function PublisherDetails({ publisherId }: PublisherDetailsProps) {
 
       {/* Main Content */}
       <div className="flex-1 flex flex-col min-h-0">
-        {publisher.status === "suspended" && (
+        {publisherData.accountStatus === "suspended" && (
           <div className="bg-[#FFD3D5] px-3 py-2 flex items-center gap-3">
             <DangerIcon className="w-5 h-5 text-[#021337]" />
             <p className="font-normal text-[13px] leading-4 text-[#021337]">
@@ -146,11 +144,11 @@ export function PublisherDetails({ publisherId }: PublisherDetailsProps) {
                 {/* Scrollable Content */}
 
                 {activeTab === "overview" && (
-                  <PublisherOverview publisher={publisher} />
+                  <PublisherOverview publisher={publisherData} />
                 )}
 
                 {activeTab === "info" && (
-                  <PublisherInfos publisher={publisher} />
+                  <PublisherInfos publisher={publisherData} />
                 )}
 
                 {activeTab === "kyc" && <PublisherKYC />}

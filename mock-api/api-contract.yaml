@@ -1,0 +1,2164 @@
+openapi: 3.1.0
+info:
+  title: OpenK Admin Backend API
+  version: 1.0.0
+  description: >
+    Contract for the OpenK Admin backend services. All protected endpoints require a JWT
+    bearer token obtained from the OTP authentication flow.
+servers:
+  - url: https://{host}/api
+    description: Primary deployment
+    variables:
+      host:
+        default: localhost:3000
+        description: API hostname without protocol
+tags:
+  - name: Health
+  - name: Auth
+  - name: Publishers
+  - name: Campaigns
+  - name: Analytics
+  - name: Notifications
+  - name: Reports
+  - name: Settings
+  - name: Bulk Operations
+  - name: Search
+  - name: Transactions
+  - name: Wallets
+  - name: KYC
+  - name: Audit Logs
+  - name: System
+paths:
+  /health:
+    get:
+      tags: [Health]
+      summary: Health check
+      security: []
+      responses:
+        '200':
+          description: Service health snapshot
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthStatus'
+  /auth/otp/request:
+    post:
+      tags: [Auth]
+      summary: Request OTP code
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequestOtp'
+      responses:
+        '200':
+          description: OTP sent (or treated as sent)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OtpRequestResponse'
+        '429':
+          description: Too many OTP requests
+  /auth/otp/verify:
+    post:
+      tags: [Auth]
+      summary: Verify OTP and issue JWT
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VerifyOtp'
+      responses:
+        '200':
+          description: OTP verified
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OtpVerifyResponse'
+        '401':
+          description: Invalid or expired OTP
+  /admin/publishers:
+    get:
+      tags: [Publishers]
+      summary: List publishers with filters
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/PageParam'
+        - $ref: '#/components/parameters/LimitParam'
+        - name: search
+          in: query
+          schema:
+            type: string
+          description: Search by email, full name, or referral code
+        - name: createdFrom
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: createdTo
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: countries
+          in: query
+          schema:
+            type: array
+            items:
+              type: string
+          style: form
+          explode: false
+        - name: accountStatuses
+          in: query
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/PublisherAccountStatus'
+          style: form
+          explode: false
+        - name: minMembers
+          in: query
+          schema:
+            type: integer
+            minimum: 0
+        - name: sortBy
+          in: query
+          schema:
+            $ref: '#/components/schemas/PublisherSortBy'
+        - name: sortOrder
+          in: query
+          schema:
+            type: string
+            enum: [asc, desc]
+      responses:
+        '200':
+          description: Publisher list
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublisherListResponse'
+  /admin/publishers/{id}:
+    get:
+      tags: [Publishers]
+      summary: Get publisher profile
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/PublisherIdPath'
+      responses:
+        '200':
+          description: Publisher detail
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublisherDetail'
+        '404':
+          description: Publisher not found
+  /admin/publishers/{id}/overview:
+    get:
+      tags: [Publishers]
+      summary: Get publisher overview snapshot
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/PublisherIdPath'
+      responses:
+        '200':
+          description: Overview data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublisherOverview'
+  /admin/publishers/{id}/members:
+    get:
+      tags: [Publishers]
+      summary: List referral members for a publisher
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/PublisherIdPath'
+        - $ref: '#/components/parameters/PageParam'
+        - $ref: '#/components/parameters/LimitParam'
+        - name: search
+          in: query
+          schema:
+            type: string
+        - name: countries
+          in: query
+          schema:
+            type: array
+            items:
+              type: string
+          style: form
+          explode: false
+        - name: accountStatuses
+          in: query
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/PublisherAccountStatus'
+          style: form
+          explode: false
+        - name: tier
+          in: query
+          schema:
+            $ref: '#/components/schemas/MemberTier'
+      responses:
+        '200':
+          description: Referral members
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublisherMembersResponse'
+  /admin/publishers/{id}/notes:
+    get:
+      tags: [Publishers]
+      summary: List internal notes
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/PublisherIdPath'
+      responses:
+        '200':
+          description: Notes for publisher
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/InternalNote'
+    post:
+      tags: [Publishers]
+      summary: Create an internal note
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/PublisherIdPath'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateNote'
+      responses:
+        '200':
+          description: Updated notes list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/InternalNote'
+  /admin/publishers/{id}/notes/{noteId}:
+    delete:
+      tags: [Publishers]
+      summary: Delete an internal note
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/PublisherIdPath'
+        - name: noteId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Updated notes list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/InternalNote'
+  /admin/publishers/{id}/status:
+    post:
+      tags: [Publishers]
+      summary: Update publisher status
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/PublisherIdPath'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdatePublisherStatus'
+      responses:
+        '200':
+          description: Updated overview
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublisherOverview'
+  /admin/publishers/{id}/kyc/{submissionId}/approve:
+    post:
+      tags: [Publishers]
+      summary: Approve latest KYC submission
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/PublisherIdPath'
+        - $ref: '#/components/parameters/KycSubmissionIdPath'
+      responses:
+        '200':
+          description: KYC submissions with updated status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublisherKycList'
+  /admin/publishers/{id}/kyc/{submissionId}/reject:
+    post:
+      tags: [Publishers]
+      summary: Reject latest KYC submission
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/PublisherIdPath'
+        - $ref: '#/components/parameters/KycSubmissionIdPath'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RejectKyc'
+      responses:
+        '200':
+          description: KYC submissions with updated status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublisherKycList'
+  /admin/publishers/{id}/kyc:
+    get:
+      tags: [Publishers]
+      summary: List KYC submissions
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/PublisherIdPath'
+      responses:
+        '200':
+          description: KYC submissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublisherKycList'
+  /admin/publishers/{id}/disable-2fa:
+    post:
+      tags: [Publishers]
+      summary: Disable publisher 2FA
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/PublisherIdPath'
+      responses:
+        '200':
+          description: Disable acknowledgement
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericSuccess'
+  /admin/publishers/{id}/activity-logs:
+    get:
+      tags: [Publishers]
+      summary: List publisher activity logs
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/PublisherIdPath'
+        - $ref: '#/components/parameters/PageParam'
+        - $ref: '#/components/parameters/LimitParam'
+        - name: actor
+          in: query
+          schema:
+            $ref: '#/components/schemas/ActivityActorFilter'
+      responses:
+        '200':
+          description: Activity log entries
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublisherActivityResponse'
+  /admin/publishers/{id}/blacklists:
+    get:
+      tags: [Publishers]
+      summary: List campaign blacklist entries
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/PublisherIdPath'
+      responses:
+        '200':
+          description: Blacklist entries
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PublisherBlacklistEntry'
+  /campaigns:
+    get:
+      tags: [Campaigns]
+      summary: List campaigns
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/PageParam'
+        - $ref: '#/components/parameters/LimitParam'
+        - name: search
+          in: query
+          schema:
+            type: string
+        - name: status
+          in: query
+          schema:
+            $ref: '#/components/schemas/CampaignStatus'
+        - name: sortBy
+          in: query
+          schema:
+            $ref: '#/components/schemas/CampaignSortBy'
+        - name: sortOrder
+          in: query
+          schema:
+            type: string
+            enum: [asc, desc]
+      responses:
+        '200':
+          description: Campaign list
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CampaignListResponse'
+    post:
+      tags: [Campaigns]
+      summary: Create campaign
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCampaign'
+      responses:
+        '201':
+          description: Campaign created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CampaignDetail'
+  /campaigns/{id}:
+    get:
+      tags: [Campaigns]
+      summary: Get campaign detail
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/CampaignIdPath'
+      responses:
+        '200':
+          description: Campaign details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CampaignDetail'
+    put:
+      tags: [Campaigns]
+      summary: Update campaign
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/CampaignIdPath'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateCampaign'
+      responses:
+        '200':
+          description: Campaign updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CampaignDetail'
+    delete:
+      tags: [Campaigns]
+      summary: Delete campaign
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/CampaignIdPath'
+      responses:
+        '200':
+          description: Deletion flag
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericSuccess'
+  /campaigns/{id}/participants:
+    get:
+      tags: [Campaigns]
+      summary: List campaign participants
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/CampaignIdPath'
+        - $ref: '#/components/parameters/PageParam'
+        - $ref: '#/components/parameters/LimitParam'
+      responses:
+        '200':
+          description: Participant list
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CampaignParticipantResponse'
+  /campaigns/{id}/activate:
+    post:
+      tags: [Campaigns]
+      summary: Activate a campaign
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/CampaignIdPath'
+      responses:
+        '200':
+          description: Updated campaign state
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CampaignDetail'
+  /campaigns/{id}/pause:
+    post:
+      tags: [Campaigns]
+      summary: Pause a campaign
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/CampaignIdPath'
+      responses:
+        '200':
+          description: Updated campaign state
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CampaignDetail'
+  /campaigns/{id}/end:
+    post:
+      tags: [Campaigns]
+      summary: End a campaign
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/CampaignIdPath'
+      responses:
+        '200':
+          description: Updated campaign state
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CampaignDetail'
+  /campaigns/{id}/analytics:
+    get:
+      tags: [Campaigns]
+      summary: Campaign analytics
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/CampaignIdPath'
+      responses:
+        '200':
+          description: Analytics payload
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AnalyticsSeriesResponse'
+  /campaigns/{id}/statistics:
+    get:
+      tags: [Campaigns]
+      summary: Campaign statistics
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/CampaignIdPath'
+      responses:
+        '200':
+          description: Statistic payload
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CampaignStatsResponse'
+  /analytics/dashboard:
+    get:
+      tags: [Analytics]
+      summary: Dashboard metrics
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Dashboard metrics
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DashboardMetrics'
+  /analytics/users:
+    get:
+      tags: [Analytics]
+      summary: User analytics
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/AnalyticsStartDate'
+        - $ref: '#/components/parameters/AnalyticsEndDate'
+        - $ref: '#/components/parameters/AnalyticsGranularity'
+      responses:
+        '200':
+          description: Analytics series
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AnalyticsSeriesResponse'
+  /analytics/campaigns:
+    get:
+      tags: [Analytics]
+      summary: Campaign analytics
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/AnalyticsStartDate'
+        - $ref: '#/components/parameters/AnalyticsEndDate'
+        - $ref: '#/components/parameters/AnalyticsGranularity'
+      responses:
+        '200':
+          description: Analytics series
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AnalyticsSeriesResponse'
+  /analytics/revenue:
+    get:
+      tags: [Analytics]
+      summary: Revenue analytics
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/AnalyticsStartDate'
+        - $ref: '#/components/parameters/AnalyticsEndDate'
+        - $ref: '#/components/parameters/AnalyticsGranularity'
+      responses:
+        '200':
+          description: Analytics series
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AnalyticsSeriesResponse'
+  /analytics/referrals:
+    get:
+      tags: [Analytics]
+      summary: Referral analytics
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/AnalyticsStartDate'
+        - $ref: '#/components/parameters/AnalyticsEndDate'
+        - $ref: '#/components/parameters/AnalyticsGranularity'
+      responses:
+        '200':
+          description: Analytics series
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AnalyticsSeriesResponse'
+  /notifications:
+    get:
+      tags: [Notifications]
+      summary: List notifications/activity feed
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+      responses:
+        '200':
+          description: Notification feed items
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/NotificationItem'
+  /notifications/unread-count:
+    get:
+      tags: [Notifications]
+      summary: Get unread notification count
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Unread count
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnreadCount'
+  /notifications/{id}/read:
+    post:
+      tags: [Notifications]
+      summary: Mark notification as read
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Mark result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericSuccess'
+  /notifications/alerts:
+    get:
+      tags: [Notifications]
+      summary: List system alerts
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Alerts
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SystemAlert'
+  /notifications/push:
+    post:
+      tags: [Notifications]
+      summary: Enqueue push notification job
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SendPushNotification'
+      responses:
+        '202':
+          description: Job accepted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PushJob'
+    get:
+      tags: [Notifications]
+      summary: List push notification jobs
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: status
+          in: query
+          schema:
+            type: string
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+      responses:
+        '200':
+          description: Jobs list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PushJob'
+  /notifications/push/{jobId}:
+    get:
+      tags: [Notifications]
+      summary: Get push job status
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: jobId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Job detail
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PushJob'
+  /notifications/push/process:
+    post:
+      tags: [Notifications]
+      summary: Process SQS message payload (internal)
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [messageBody]
+              properties:
+                messageBody:
+                  type: string
+      responses:
+        '200':
+          description: Processing result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericSuccess'
+  /reports/export:
+    get:
+      tags: [Reports]
+      summary: Export reports
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: type
+          in: query
+          required: true
+          schema:
+            $ref: '#/components/schemas/ReportType'
+        - name: format
+          in: query
+          schema:
+            $ref: '#/components/schemas/ReportFormat'
+        - name: search
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Report export
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReportExportResponse'
+            text/csv:
+              schema:
+                type: string
+                format: binary
+  /settings:
+    get:
+      tags: [Settings]
+      summary: Get settings snapshot
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Settings data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SettingsSnapshot'
+  /settings/referral:
+    get:
+      tags: [Settings]
+      summary: Get referral settings
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Referral settings
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReferralSettings'
+    put:
+      tags: [Settings]
+      summary: Update referral settings
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateReferralSettings'
+      responses:
+        '200':
+          description: Updated settings
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SettingsUpdateResponse'
+  /settings/referral/levels:
+    get:
+      tags: [Settings]
+      summary: List referral levels
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 50
+      responses:
+        '200':
+          description: Referral levels
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ReferralLevel'
+    post:
+      tags: [Settings]
+      summary: Create referral level
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateReferralLevel'
+      responses:
+        '201':
+          description: Level created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReferralLevel'
+  /settings/referral/levels/{id}:
+    put:
+      tags: [Settings]
+      summary: Update referral level
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateReferralLevel'
+      responses:
+        '200':
+          description: Updated level
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReferralLevel'
+    delete:
+      tags: [Settings]
+      summary: Delete referral level
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Deletion acknowledgement
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericSuccess'
+  /bulk/users/update:
+    post:
+      tags: [Bulk Operations]
+      summary: Bulk update users
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BulkUpdateUsers'
+      responses:
+        '200':
+          description: Bulk update result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BulkOperationResult'
+  /bulk/users/export:
+    post:
+      tags: [Bulk Operations]
+      summary: Bulk export users
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BulkExportFilters'
+      responses:
+        '200':
+          description: Export result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BulkExportResponse'
+  /bulk/campaigns/update:
+    post:
+      tags: [Bulk Operations]
+      summary: Bulk update campaigns
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BulkUpdateCampaigns'
+      responses:
+        '200':
+          description: Bulk update result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BulkOperationResult'
+  /search/users:
+    get:
+      tags: [Search]
+      summary: Search users
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/SearchQuery'
+        - $ref: '#/components/parameters/PageParam'
+        - $ref: '#/components/parameters/LimitParam'
+      responses:
+        '200':
+          description: Search results
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchResponse'
+  /search/campaigns:
+    get:
+      tags: [Search]
+      summary: Search campaigns
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/SearchQuery'
+        - $ref: '#/components/parameters/PageParam'
+        - $ref: '#/components/parameters/LimitParam'
+      responses:
+        '200':
+          description: Search results
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchResponse'
+  /search/transactions:
+    get:
+      tags: [Search]
+      summary: Search transactions
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/SearchQuery'
+        - $ref: '#/components/parameters/PageParam'
+        - $ref: '#/components/parameters/LimitParam'
+      responses:
+        '200':
+          description: Search results
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchResponse'
+  /transactions:
+    get:
+      tags: [Transactions]
+      summary: List transactions
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/PageParam'
+        - $ref: '#/components/parameters/LimitParam'
+        - name: userId
+          in: query
+          schema:
+            type: string
+        - name: campaignId
+          in: query
+          schema:
+            type: string
+        - name: startDate
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: endDate
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: sortBy
+          in: query
+          schema:
+            $ref: '#/components/schemas/TransactionSortBy'
+        - name: sortOrder
+          in: query
+          schema:
+            type: string
+            enum: [asc, desc]
+      responses:
+        '200':
+          description: Transaction list
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionListResponse'
+  /wallets:
+    get:
+      tags: [Wallets]
+      summary: List wallet summaries
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/PageParam'
+        - $ref: '#/components/parameters/LimitParam'
+        - name: userId
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Wallet list
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WalletListResponse'
+  /kyc/{id}/review:
+    post:
+      tags: [KYC]
+      summary: Review KYC submission
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/KycIdPath'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReviewKyc'
+      responses:
+        '200':
+          description: Updated submission
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/KycReviewResponse'
+  /audit-logs:
+    get:
+      tags: [Audit Logs]
+      summary: List audit logs
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/PageParam'
+        - $ref: '#/components/parameters/LimitParam'
+        - name: entityType
+          in: query
+          schema:
+            type: string
+        - name: entityId
+          in: query
+          schema:
+            type: string
+        - name: actorUserId
+          in: query
+          schema:
+            type: string
+        - name: startDate
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: endDate
+          in: query
+          schema:
+            type: string
+            format: date-time
+      responses:
+        '200':
+          description: Audit logs
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuditLogListResponse'
+  /audit-logs/export:
+    get:
+      tags: [Audit Logs]
+      summary: Export audit logs
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: entityType
+          in: query
+          schema:
+            type: string
+        - name: entityId
+          in: query
+          schema:
+            type: string
+        - name: actorUserId
+          in: query
+          schema:
+            type: string
+        - name: startDate
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: endDate
+          in: query
+          schema:
+            type: string
+            format: date-time
+      responses:
+        '200':
+          description: CSV payload packaged as JSON metadata
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuditLogExportResponse'
+  /system/stats:
+    get:
+      tags: [System]
+      summary: Platform statistics
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: System statistics
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SystemStats'
+  /system/health:
+    get:
+      tags: [System]
+      summary: System-level health
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: System health
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SystemHealth'
+  /system/logs:
+    get:
+      tags: [System]
+      summary: Retrieve system logs
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 500
+            default: 100
+      responses:
+        '200':
+          description: Log entries
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SystemLogEntry'
+  /system/maintenance:
+    get:
+      tags: [System]
+      summary: Get maintenance mode state
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Maintenance state
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MaintenanceState'
+    post:
+      tags: [System]
+      summary: Toggle maintenance mode
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MaintenanceToggle'
+      responses:
+        '200':
+          description: Updated maintenance state
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MaintenanceState'
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  parameters:
+    PageParam:
+      name: page
+      in: query
+      schema:
+        type: integer
+        minimum: 1
+        default: 1
+      description: Page number (1-indexed)
+    LimitParam:
+      name: limit
+      in: query
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 20
+      description: Page size
+    PublisherIdPath:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: string
+      description: Publisher identifier
+    KycSubmissionIdPath:
+      name: submissionId
+      in: path
+      required: true
+      schema:
+        type: string
+      description: KYC submission identifier
+    CampaignIdPath:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: string
+      description: Campaign identifier
+    AnalyticsStartDate:
+      name: startDate
+      in: query
+      schema:
+        type: string
+        format: date-time
+      description: Inclusive analytics start date
+    AnalyticsEndDate:
+      name: endDate
+      in: query
+      schema:
+        type: string
+        format: date-time
+      description: Inclusive analytics end date
+    AnalyticsGranularity:
+      name: granularity
+      in: query
+      schema:
+        $ref: '#/components/schemas/AnalyticsGranularity'
+      description: Aggregation granularity
+    SearchQuery:
+      name: query
+      in: query
+      required: true
+      schema:
+        type: string
+      description: Search query string
+    KycIdPath:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: string
+      description: KYC submission identifier
+  schemas:
+    HealthStatus:
+      type: object
+      properties:
+        status:
+          type: string
+          example: ok
+        services:
+          type: object
+          additionalProperties:
+            type: string
+    RequestOtp:
+      type: object
+      required: [email]
+      properties:
+        email:
+          type: string
+          format: email
+    VerifyOtp:
+      type: object
+      required: [email, otp]
+      properties:
+        email:
+          type: string
+          format: email
+        otp:
+          type: string
+          pattern: '^\d{6}$'
+    OtpRequestResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+    OtpVerifyResponse:
+      type: object
+      properties:
+        accessToken:
+          type: string
+          description: JWT access token
+    PaginationMeta:
+      type: object
+      properties:
+        page:
+          type: integer
+        limit:
+          type: integer
+        total:
+          type: integer
+        totalPages:
+          type: integer
+    PublisherAccountStatus:
+      type: string
+      enum: [active, suspended, deleted]
+    PublisherSortBy:
+      type: string
+      enum: [createdAt, updatedAt, email]
+    MemberTier:
+      type: string
+      enum: [all, tier1, tier2, tier3]
+    ActivityActorFilter:
+      type: string
+      enum: [system, publisher, admin]
+    PublisherSummary:
+      type: object
+      properties:
+        id:
+          type: string
+        fullName:
+          type: string
+        email:
+          type: string
+          format: email
+        isBlacklisted:
+          type: boolean
+        referralCode:
+          type: string
+          nullable: true
+        referredByCode:
+          type: string
+          nullable: true
+        country:
+          type: object
+          nullable: true
+          properties:
+            code:
+              type: string
+            name:
+              type: string
+            flagUrl:
+              type: string
+              nullable: true
+        memberCount:
+          type: object
+          properties:
+            total:
+              type: integer
+            byTier:
+              type: object
+              properties:
+                tier1:
+                  type: integer
+                tier2:
+                  type: integer
+                tier3:
+                  type: integer
+        createdAt:
+          type: string
+          format: date-time
+        createdAtTimeAgo:
+          type: string
+        kycStatus:
+          type: string
+        accountStatus:
+          type: string
+        accountStatusLabelColor:
+          type: string
+    PublisherPersonalInfo:
+      type: object
+      properties:
+        profilePictureUrl:
+          type: string
+          nullable: true
+        fullName:
+          type: string
+        accountStatus:
+          type: string
+        phoneNumber:
+          type: string
+          nullable: true
+        email:
+          type: string
+          format: email
+        dateOfBirth:
+          type: string
+          format: date
+          nullable: true
+        gender:
+          type: string
+          nullable: true
+        referralCode:
+          type: string
+          nullable: true
+        nationality:
+          type: string
+          nullable: true
+        idNumber:
+          type: string
+          nullable: true
+        address:
+          type: string
+          nullable: true
+        ssoProviders:
+          type: array
+          items:
+            type: string
+        referrerCode:
+          type: string
+          nullable: true
+        joinedAt:
+          type: string
+          format: date-time
+        joinedTimeAgo:
+          type: string
+        lastActiveAt:
+          type: string
+          format: date-time
+          nullable: true
+        lastActiveTimeAgo:
+          type: string
+          nullable: true
+    PublisherDetail:
+      allOf:
+        - $ref: '#/components/schemas/PublisherSummary'
+        - type: object
+          properties:
+            personalInfo:
+              $ref: '#/components/schemas/PublisherPersonalInfo'
+    InternalNote:
+      type: object
+      properties:
+        id:
+          type: string
+        content:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        createdBy:
+          type: string
+          nullable: true
+    PublisherOverview:
+      type: object
+      properties:
+        accountStatus:
+          type: string
+        kycStatus:
+          type: string
+        memberSummary:
+          type: object
+        wallet:
+          type: object
+        accountStatusHistory:
+          type: array
+          items:
+            type: object
+        internalNotes:
+          type: array
+          items:
+            $ref: '#/components/schemas/InternalNote'
+        latestTransaction:
+          type: object
+        blacklistCampaigns:
+          type: array
+          items:
+            $ref: '#/components/schemas/PublisherBlacklistEntry'
+        isBlacklisted:
+          type: boolean
+    PublisherBlacklistEntry:
+      type: object
+      properties:
+        id:
+          type: string
+        campaignId:
+          type: string
+          nullable: true
+        campaignName:
+          type: string
+        status:
+          type: string
+          nullable: true
+        addedAt:
+          type: string
+          format: date-time
+        timeAgo:
+          type: string
+        reason:
+          type: string
+          nullable: true
+        redirectUrl:
+          type: string
+          nullable: true
+    CreateNote:
+      type: object
+      required: [content]
+      properties:
+        content:
+          type: string
+          maxLength: 500
+    UpdatePublisherStatus:
+      type: object
+      required: [targetStatus, reason]
+      properties:
+        targetStatus:
+          $ref: '#/components/schemas/PublisherAccountStatus'
+        reason:
+          type: string
+          maxLength: 500
+    RejectKyc:
+      type: object
+      required: [reason]
+      properties:
+        reason:
+          type: string
+          maxLength: 500
+    PublisherKycItem:
+      type: object
+      properties:
+        id:
+          type: string
+        uploadedAt:
+          type: string
+          format: date-time
+        uploadedAtFormatted:
+          type: string
+        timeAgo:
+          type: string
+        status:
+          type: string
+        isLatest:
+          type: boolean
+        frontDocumentUrl:
+          type: string
+          nullable: true
+        backDocumentUrl:
+          type: string
+          nullable: true
+        rejectReason:
+          type: string
+          nullable: true
+    PublisherKycList:
+      type: array
+      items:
+        $ref: '#/components/schemas/PublisherKycItem'
+    PublisherMembersResponse:
+      type: object
+      properties:
+        counters:
+          type: object
+          properties:
+            total:
+              type: integer
+            tier1:
+              type: integer
+            tier2:
+              type: integer
+            tier3:
+              type: integer
+        data:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+              fullName:
+                type: string
+              email:
+                type: string
+              country:
+                type: object
+                nullable: true
+              tier:
+                $ref: '#/components/schemas/MemberTier'
+              createdAt:
+                type: string
+                format: date-time
+              createdAtTimeAgo:
+                type: string
+              accountStatus:
+                type: string
+        pagination:
+          $ref: '#/components/schemas/PaginationMeta'
+    PublisherActivityResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            type: object
+        pagination:
+          $ref: '#/components/schemas/PaginationMeta'
+    PublisherListResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/PublisherSummary'
+        pagination:
+          $ref: '#/components/schemas/PaginationMeta'
+    CampaignStatus:
+      type: string
+      enum: [draft, active, paused, ended]
+    CampaignSortBy:
+      type: string
+      enum: [createdAt, updatedAt, startDate, endDate]
+    CreateCampaign:
+      type: object
+      required: [name]
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+          nullable: true
+        startDate:
+          type: string
+          format: date-time
+          nullable: true
+        endDate:
+          type: string
+          format: date-time
+          nullable: true
+        status:
+          $ref: '#/components/schemas/CampaignStatus'
+    UpdateCampaign:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+          nullable: true
+        startDate:
+          type: string
+          format: date-time
+          nullable: true
+        endDate:
+          type: string
+          format: date-time
+          nullable: true
+        status:
+          $ref: '#/components/schemas/CampaignStatus'
+    CampaignDetail:
+      type: object
+      description: Campaign payload returned by campaign service
+      additionalProperties: true
+    CampaignListResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/CampaignDetail'
+        pagination:
+          $ref: '#/components/schemas/PaginationMeta'
+    CampaignParticipantResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            type: object
+        pagination:
+          $ref: '#/components/schemas/PaginationMeta'
+    AnalyticsGranularity:
+      type: string
+      enum: [hour, day, week, month]
+    AnalyticsSeriesResponse:
+      type: object
+      properties:
+        series:
+          type: array
+          items:
+            type: object
+        totals:
+          type: object
+    DashboardMetrics:
+      type: object
+      description: Dashboard metrics snapshot
+      additionalProperties: true
+    NotificationItem:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        body:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        read:
+          type: boolean
+    UnreadCount:
+      type: object
+      properties:
+        count:
+          type: integer
+    SystemAlert:
+      type: object
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+        message:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+    SendPushNotification:
+      type: object
+      required: [title, body]
+      properties:
+        title:
+          type: string
+        body:
+          type: string
+        data:
+          type: object
+          additionalProperties: true
+        imageUrl:
+          type: string
+          nullable: true
+        clickAction:
+          type: string
+          nullable: true
+        userIds:
+          type: array
+          items:
+            type: string
+        filters:
+          type: object
+          properties:
+            status:
+              type: array
+              items:
+                type: string
+            hasFCMToken:
+              type: boolean
+        useSQS:
+          type: boolean
+          default: true
+        batchSize:
+          type: integer
+          minimum: 1
+          maximum: 10000
+          default: 1000
+    PushJob:
+      type: object
+      properties:
+        jobId:
+          type: string
+        status:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        completedAt:
+          type: string
+          format: date-time
+          nullable: true
+        metrics:
+          type: object
+          additionalProperties: true
+    ReportType:
+      type: string
+      enum: [users, campaigns, transactions]
+    ReportFormat:
+      type: string
+      enum: [csv, json]
+    ReportExportResponse:
+      type: object
+      properties:
+        filename:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+        data:
+          type: array
+          items:
+            type: object
+    SettingsSnapshot:
+      type: object
+      properties:
+        referral:
+          $ref: '#/components/schemas/ReferralSettings'
+    ReferralSettings:
+      type: object
+      properties:
+        referralBonusPercentage:
+          type: number
+        maxReferralDepth:
+          type: number
+    UpdateReferralSettings:
+      type: object
+      properties:
+        referralBonusPercentage:
+          type: number
+          minimum: 0
+          maximum: 100
+        maxReferralDepth:
+          type: number
+          minimum: 0
+    SettingsUpdateResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        settings:
+          $ref: '#/components/schemas/SettingsSnapshot'
+    ReferralLevel:
+      type: object
+      properties:
+        id:
+          type: string
+        level:
+          type: integer
+        commissionPercentage:
+          type: number
+        description:
+          type: string
+          nullable: true
+    CreateReferralLevel:
+      type: object
+      required: [level, commissionPercentage]
+      properties:
+        level:
+          type: integer
+          minimum: 1
+        commissionPercentage:
+          type: number
+          minimum: 0
+          maximum: 100
+        description:
+          type: string
+          nullable: true
+    UpdateReferralLevel:
+      type: object
+      properties:
+        commissionPercentage:
+          type: number
+          minimum: 0
+          maximum: 100
+        description:
+          type: string
+          nullable: true
+    BulkUpdateUsers:
+      type: object
+      required: [userIds, updates]
+      properties:
+        userIds:
+          type: array
+          items:
+            type: string
+        updates:
+          type: object
+          additionalProperties: true
+    BulkUpdateCampaigns:
+      type: object
+      required: [campaignIds, updates]
+      properties:
+        campaignIds:
+          type: array
+          items:
+            type: string
+        updates:
+          type: object
+          additionalProperties: true
+    BulkOperationResult:
+      type: object
+      properties:
+        success:
+          type: boolean
+        updated:
+          type: integer
+    BulkExportFilters:
+      type: object
+      additionalProperties: true
+    BulkExportResponse:
+      type: object
+      properties:
+        filename:
+          type: string
+        data:
+          type: array
+          items:
+            type: object
+        count:
+          type: integer
+    SearchResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            type: object
+        pagination:
+          $ref: '#/components/schemas/PaginationMeta'
+    TransactionSortBy:
+      type: string
+      enum: [createdAt, amount]
+    TransactionListResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            type: object
+        pagination:
+          $ref: '#/components/schemas/PaginationMeta'
+    WalletListResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            type: object
+        pagination:
+          $ref: '#/components/schemas/PaginationMeta'
+    ReviewKyc:
+      type: object
+      required: [status]
+      properties:
+        status:
+          type: string
+          enum: [approved, rejected, pending]
+        reason:
+          type: string
+          nullable: true
+    KycReviewResponse:
+      type: object
+      description: Updated KYC submission payload
+      additionalProperties: true
+    AuditLogListResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            type: object
+        pagination:
+          $ref: '#/components/schemas/PaginationMeta'
+    AuditLogExportResponse:
+      type: object
+      properties:
+        data:
+          type: string
+        format:
+          type: string
+          enum: [csv]
+        timestamp:
+          type: string
+          format: date-time
+    SystemStats:
+      type: object
+      additionalProperties: true
+    SystemHealth:
+      type: object
+      additionalProperties: true
+    SystemLogEntry:
+      type: object
+      properties:
+        timestamp:
+          type: string
+          format: date-time
+        level:
+          type: string
+        message:
+          type: string
+        metadata:
+          type: object
+          additionalProperties: true
+    MaintenanceState:
+      type: object
+      properties:
+        enabled:
+          type: boolean
+    MaintenanceToggle:
+      type: object
+      required: [enabled]
+      properties:
+        enabled:
+          type: boolean
+    GenericSuccess:
+      type: object
+      properties:
+        success:
+          type: boolean
+

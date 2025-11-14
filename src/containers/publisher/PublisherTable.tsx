@@ -11,29 +11,15 @@ import {
 } from "@/components/Table";
 import { Tooltip } from "@/components/Tooltip";
 import { ClickToCopy } from "@/components/ClickToCopy";
-
-interface Publisher {
-  id: number;
-  name: string;
-  email: string;
-  country: {
-    code: string;
-    name: string;
-    flag: string;
-  };
-  members: number;
-  createdAt: string;
-  kyc: "not_started" | "approved" | "rejected" | "pending";
-  status: "active" | "deleted" | "suspended";
-}
+import type { PublisherType } from "@/types";
 
 interface PublisherTableProps {
-  publishers: Publisher[];
-  onRowClick?: (publisher: Publisher) => void;
+  publishers: PublisherType[];
+  onRowClick?: (publisherId: string) => void;
 }
 
 const kycStatusMap: Record<
-  Publisher["kyc"],
+  PublisherType["kycStatus"],
   { label: string; variant: BadgeVariant }
 > = {
   not_started: { label: "Chưa làm", variant: "default" },
@@ -43,7 +29,7 @@ const kycStatusMap: Record<
 };
 
 const accountStatusMap: Record<
-  Publisher["status"],
+  PublisherType["accountStatus"],
   { label: string; variant: BadgeVariant }
 > = {
   active: { label: "Kích hoạt", variant: "success" },
@@ -51,16 +37,18 @@ const accountStatusMap: Record<
   suspended: { label: "Tạm dừng", variant: "pending" },
 };
 
+const text = (text: string, placeholder: string = "--") => text || placeholder;
+
 export function PublisherTable({
   publishers,
   onRowClick,
 }: PublisherTableProps) {
-  const handleRowClick = (publisher: Publisher) => {
+  const handleRowClick = (publisherId: string) => {
     if (onRowClick) {
-      onRowClick(publisher);
+      onRowClick(publisherId);
     }
   };
-
+  console.log("====>", publishers);
   return (
     <Table>
       <TableHead>
@@ -99,25 +87,25 @@ export function PublisherTable({
 
       <TableBody>
         {publishers.map((publisher) => {
-          const kycStatus = kycStatusMap[publisher.kyc];
-          const accountStatus = accountStatusMap[publisher.status];
+          const kycStatus = kycStatusMap[publisher.kycStatus];
+          const accountStatus = accountStatusMap[publisher.accountStatus];
 
           return (
             <TableRow key={publisher.id}>
               <TableCell
                 align="center"
                 data-sticky="left-1"
-                onClick={() => handleRowClick(publisher)}
+                onClick={() => handleRowClick(publisher.id.toString())}
               >
                 {publisher.id}
               </TableCell>
               <TableCell
                 data-sticky="left-2"
-                onClick={() => handleRowClick(publisher)}
+                onClick={() => handleRowClick(publisher.id.toString())}
               >
                 <div className="flex items-center gap-2 text-red">
                   <span className="font-medium text-sm leading-5 text-[#021337]">
-                    {publisher.name}
+                    {publisher.fullName}
                   </span>
                   <Tooltip position="right" tooltipsText="Ghi chú này hơi dài.">
                     <DangerRedIcon className="w-4 h-4" />
@@ -128,24 +116,28 @@ export function PublisherTable({
                 </p>
               </TableCell>
               <TableCell>
-                <ClickToCopy className="text-[13px] leading-4" showIcon>
-                  dillan.hoang
+                <ClickToCopy className="text-[13px] leading-4">
+                  {publisher.referralCode}
                 </ClickToCopy>
               </TableCell>
               <TableCell>
                 <ClickToCopy className="text-[13px] leading-4">
-                  abcde.hoang
+                  {text(publisher.referredByCode)}
                 </ClickToCopy>
               </TableCell>
               <TableCell>
                 <div className="flex items-center gap-2">
-                  <span className="text-lg">{publisher.country.flag}</span>
+                  <img
+                    src={publisher.country.flagUrl}
+                    alt={publisher.country.name}
+                    className="w-4 h-auto"
+                  />
                   <span className="text-[13px] leading-4">
                     {publisher.country.name}
                   </span>
                 </div>
               </TableCell>
-              <TableCell align="right">{publisher.members}</TableCell>
+              <TableCell align="right">{publisher.memberCount.total}</TableCell>
               <TableCell>{publisher.createdAt}</TableCell>
               <TableCell>
                 <Badge variant={kycStatus.variant}>{kycStatus.label}</Badge>

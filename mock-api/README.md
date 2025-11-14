@@ -1,106 +1,339 @@
-# Mock API
+# OpenKingdom Admin - Mock API Server
 
-This directory contains the mock API setup using json-server for development and testing.
+A comprehensive mock API server that implements all endpoints from the OpenAPI contract specification.
 
-## Files
+## 🚀 Getting Started
 
-- `db.json` - The mock database containing users, campaigns, and publishers
-- `server.js` - Custom json-server configuration (currently not in use)
-- `generate-publishers.js` - Script to generate mock publisher data
-
-## Usage
-
-### Start the Mock API Server
+### Installation
 
 ```bash
-npm run mock-api
+cd mock-api
+npm install
 ```
 
-This will start json-server on port 3001 with the following endpoints:
-- http://localhost:3001/users
-- http://localhost:3001/campaigns
-- http://localhost:3001/publishers
-
-### Start Both Dev Server and Mock API
+### Running the Server
 
 ```bash
-npm run dev:all
+npm start
+# or
+node server.js
 ```
 
-This will start both the Vite dev server and the mock API server concurrently.
+The server will start on `http://localhost:3001`
 
-### Generate Mock Publishers
+## 📋 Available Endpoints
 
-To regenerate the publishers data (creates 2100 mock publishers):
+### Health Check
 
-```bash
-npm run generate-publishers
-```
+- `GET /health` - Check API health status
 
-After regenerating, restart the mock API server to load the new data.
+### Authentication
 
-## API Endpoints
+- `POST /auth/otp/request` - Request OTP code
+  - Body: `{ "email": "user@example.com" }`
+- `POST /auth/otp/verify` - Verify OTP and get JWT token
+  - Body: `{ "email": "user@example.com", "otp": "123456" }`
+  - **Test OTP**: Use `123456` as the valid OTP code
 
 ### Publishers
 
-- `GET /publishers` - Get all publishers
-- `GET /publishers?_page=1&_limit=10` - Paginated publishers
-- `GET /publishers?q=search` - Search publishers by name/email
-- `GET /publishers?country.code=VN` - Filter by country code
-- `GET /publishers?status=active` - Filter by status (active, suspended, deleted)
-- `GET /publishers?members_gte=100` - Filter by minimum members count
-- `GET /publishers/:id` - Get a specific publisher
-
-### Users
-
-- `GET /users` - Get all users
-- `GET /users?_page=1&_limit=20` - Paginated users
-- `GET /users/:id` - Get a specific user
-- `PATCH /users/:id` - Update a user
+- `GET /admin/publishers` - List all publishers with filters and pagination
+  - Query params: `page`, `limit`, `search`, `createdFrom`, `createdTo`, `countries`, `accountStatuses`, `minMembers`, `sortBy`, `sortOrder`
+- `GET /admin/publishers/:id` - Get publisher detail
+- `GET /admin/publishers/:id/overview` - Get publisher overview snapshot
+- `GET /admin/publishers/:id/members` - List publisher's referral members
+  - Query params: `page`, `limit`, `search`, `countries`, `accountStatuses`, `tier`
+- `GET /admin/publishers/:id/notes` - Get internal notes for publisher
+- `POST /admin/publishers/:id/notes` - Create internal note
+  - Body: `{ "content": "Note content" }`
+- `DELETE /admin/publishers/:id/notes/:noteId` - Delete internal note
+- `POST /admin/publishers/:id/status` - Update publisher status
+  - Body: `{ "targetStatus": "active|suspended|deleted", "reason": "Reason text" }`
+- `GET /admin/publishers/:id/kyc` - List KYC submissions
+- `POST /admin/publishers/:id/kyc/:submissionId/approve` - Approve KYC submission
+- `POST /admin/publishers/:id/kyc/:submissionId/reject` - Reject KYC submission
+  - Body: `{ "reason": "Rejection reason" }`
+- `POST /admin/publishers/:id/disable-2fa` - Disable 2FA for publisher
+- `GET /admin/publishers/:id/activity-logs` - List activity logs
+  - Query params: `page`, `limit`, `actor`
+- `GET /admin/publishers/:id/blacklists` - List blacklist entries
 
 ### Campaigns
 
-- `GET /campaigns` - Get all campaigns
-- `GET /campaigns?_page=1&_limit=20` - Paginated campaigns
-- `GET /campaigns/:id` - Get a specific campaign
-- `POST /campaigns` - Create a new campaign
+- `GET /campaigns` - List all campaigns
+  - Query params: `page`, `limit`, `search`, `status`, `sortBy`, `sortOrder`
+- `POST /campaigns` - Create new campaign
+  - Body: `{ "name": "Campaign Name", "description": "...", "status": "draft", ... }`
+- `GET /campaigns/:id` - Get campaign detail
+- `PUT /campaigns/:id` - Update campaign
+- `DELETE /campaigns/:id` - Delete campaign
+- `GET /campaigns/:id/participants` - List campaign participants
+  - Query params: `page`, `limit`
+- `POST /campaigns/:id/activate` - Activate campaign
+- `POST /campaigns/:id/pause` - Pause campaign
+- `POST /campaigns/:id/end` - End campaign
+- `GET /campaigns/:id/analytics` - Get campaign analytics
+- `GET /campaigns/:id/statistics` - Get campaign statistics
 
-## Mock Data Statistics
+### Analytics
 
-### Publishers (2100 total)
-- **Countries**: Vietnam, Thailand, Indonesia, Malaysia, Singapore, Philippines, Cambodia, Laos, Myanmar, Brunei
-- **KYC Statuses**: not_started, pending, approved, rejected
-- **Account Statuses**: active, suspended, deleted
-- **Members Range**: 0 - 1000
-- **Date Range**: 2023 - 2025
+- `GET /analytics/dashboard` - Dashboard metrics
+- `GET /analytics/users` - User analytics
+  - Query params: `startDate`, `endDate`, `granularity`
+- `GET /analytics/campaigns` - Campaign analytics
+  - Query params: `startDate`, `endDate`, `granularity`
+- `GET /analytics/revenue` - Revenue analytics
+  - Query params: `startDate`, `endDate`, `granularity`
+- `GET /analytics/referrals` - Referral analytics
+  - Query params: `startDate`, `endDate`, `granularity`
 
-### Users (100 total)
-- Various statuses: active, suspended, banned
-- Balance, monthly profit, and income fields
+### Notifications
 
-### Campaigns (50 total)
-- Statuses: scheduled, active, completed
-- Date ranges throughout 2024
+- `GET /notifications` - List notifications
+  - Query params: `limit`
+- `GET /notifications/unread-count` - Get unread notification count
+- `POST /notifications/:id/read` - Mark notification as read
+- `GET /notifications/alerts` - List system alerts
+- `POST /notifications/push` - Create push notification job
+  - Body: `{ "title": "Title", "body": "Body", "userIds": [...], ... }`
+- `GET /notifications/push` - List push notification jobs
+  - Query params: `status`, `limit`
+- `GET /notifications/push/:jobId` - Get push job status
+- `POST /notifications/push/process` - Process SQS message (internal)
 
-## Customizing Mock Data
+### Reports
 
-To customize the mock data generation:
+- `GET /reports/export` - Export reports
+  - Query params: `type` (users|campaigns|transactions), `format` (json|csv), `search`
+- `GET /api/reports/kyc-stats` - Get KYC statistics
+- `GET /api/reports/members-demographics` - Get member demographics
+- `GET /api/reports/members` - List members for reports
+- `GET /api/reports/activity` - Get activity data for charts
 
-1. Edit `generate-publishers.js` to modify:
-   - Number of publishers (currently 2100)
-   - Names, countries, or other fields
-   - Value ranges (members, dates, etc.)
+### Settings
 
-2. Run the generation script:
-   ```bash
-   npm run generate-publishers
-   ```
+- `GET /settings` - Get all settings
+- `GET /settings/referral` - Get referral settings
+- `PUT /settings/referral` - Update referral settings
+  - Body: `{ "referralBonusPercentage": 10, "maxReferralDepth": 3 }`
+- `GET /settings/referral/levels` - List referral levels
+  - Query params: `limit`
+- `POST /settings/referral/levels` - Create referral level
+  - Body: `{ "level": 1, "commissionPercentage": 10, "description": "..." }`
+- `PUT /settings/referral/levels/:id` - Update referral level
+- `DELETE /settings/referral/levels/:id` - Delete referral level
 
-3. Restart the mock API server to load changes
+### Bulk Operations
 
-## Notes
+- `POST /bulk/users/update` - Bulk update users
+  - Body: `{ "userIds": [...], "updates": { ... } }`
+- `POST /bulk/users/export` - Bulk export users
+  - Body: `{ "accountStatus": "active", ... }`
+- `POST /bulk/campaigns/update` - Bulk update campaigns
+  - Body: `{ "campaignIds": [...], "updates": { ... } }`
 
-- The mock API uses json-server which provides full REST API capabilities
-- Data is persisted in `db.json` and will survive server restarts
-- For development, the API supports CORS and is accessible from the frontend
+### Search
 
+- `GET /search/users` - Search users
+  - Query params: `query`, `page`, `limit`
+- `GET /search/campaigns` - Search campaigns
+  - Query params: `query`, `page`, `limit`
+- `GET /search/transactions` - Search transactions
+  - Query params: `query`, `page`, `limit`
+
+### Transactions
+
+- `GET /transactions` - List transactions
+  - Query params: `page`, `limit`, `userId`, `campaignId`, `startDate`, `endDate`, `sortBy`, `sortOrder`
+
+### Wallets
+
+- `GET /wallets` - List wallets
+  - Query params: `page`, `limit`, `userId`
+
+### KYC
+
+- `POST /kyc/:id/review` - Review KYC submission
+  - Body: `{ "status": "approved|rejected|pending", "reason": "..." }`
+
+### Audit Logs
+
+- `GET /audit-logs` - List audit logs
+  - Query params: `page`, `limit`, `entityType`, `entityId`, `actorUserId`, `startDate`, `endDate`
+- `GET /audit-logs/export` - Export audit logs
+  - Query params: Same as above
+
+### System
+
+- `GET /system/stats` - Platform statistics
+- `GET /system/health` - System health status
+- `GET /system/logs` - Retrieve system logs
+  - Query params: `limit`
+- `GET /system/maintenance` - Get maintenance mode state
+- `POST /system/maintenance` - Toggle maintenance mode
+  - Body: `{ "enabled": true|false }`
+
+## 🔑 Authentication
+
+Most endpoints require authentication. Include the `Authorization` header with a Bearer token:
+
+```bash
+curl -H "Authorization: Bearer your-token-here" http://localhost:3001/admin/publishers
+```
+
+To get a token, use the OTP verification endpoint with code `123456`:
+
+```bash
+# Request OTP
+curl -X POST http://localhost:3001/auth/otp/request \
+  -H "Content-Type: application/json" \
+  -d '{"email":"test@example.com"}'
+
+# Verify OTP (use 123456 as the code)
+curl -X POST http://localhost:3001/auth/otp/verify \
+  -H "Content-Type: application/json" \
+  -d '{"email":"test@example.com","otp":"123456"}'
+```
+
+## 📊 Mock Data
+
+The server includes comprehensive mock data for:
+
+- **3 Publishers** with complete profiles, KYC submissions, and member data
+- **3 Campaigns** (active, draft, and ended)
+- **3 Transactions** with different types and statuses
+- **3 Wallets** with balance and transaction history
+- **Activity Logs**, **Notifications**, **Audit Logs**
+- **System Stats**, **Analytics Data**, and **Demographics**
+
+### Sample Publisher IDs
+
+- `pub-1` - John Smith (Active, KYC Approved)
+- `pub-2` - Sarah Johnson (Active, KYC Pending)
+- `pub-3` - Michael Chen (Suspended, KYC Rejected, Blacklisted)
+
+### Sample Campaign IDs
+
+- `camp-1` - Summer Promo 2024 (Active)
+- `camp-2` - Black Friday 2024 (Draft)
+- `camp-3` - New Year Campaign 2025 (Ended)
+
+## 🔍 Testing Examples
+
+### Get Publishers List
+
+```bash
+curl "http://localhost:3001/admin/publishers?page=1&limit=10" \
+  -H "Authorization: Bearer mock-token"
+```
+
+### Search Users
+
+```bash
+curl "http://localhost:3001/search/users?query=john&page=1&limit=10" \
+  -H "Authorization: Bearer mock-token"
+```
+
+### Get Publisher Overview
+
+```bash
+curl "http://localhost:3001/admin/publishers/pub-1/overview" \
+  -H "Authorization: Bearer mock-token"
+```
+
+### Create Campaign
+
+```bash
+curl -X POST "http://localhost:3001/campaigns" \
+  -H "Authorization: Bearer mock-token" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Test Campaign",
+    "description": "Test description",
+    "status": "draft",
+    "budget": 10000
+  }'
+```
+
+### Get Analytics Dashboard
+
+```bash
+curl "http://localhost:3001/analytics/dashboard" \
+  -H "Authorization: Bearer mock-token"
+```
+
+## 🛠️ Features
+
+- ✅ **Full API Contract Implementation** - All endpoints from OpenAPI spec
+- ✅ **Pagination Support** - All list endpoints support pagination
+- ✅ **Filtering & Search** - Multiple filter options on list endpoints
+- ✅ **Sorting** - Configurable sorting on list endpoints
+- ✅ **Authentication** - Mock JWT authentication
+- ✅ **CRUD Operations** - Create, Read, Update, Delete for all entities
+- ✅ **Consistent Data** - Cross-referenced IDs and relationships
+- ✅ **Real-time Updates** - Data persists to db.json file
+- ✅ **Request Logging** - All requests logged to console
+
+## 📝 API Contract
+
+The mock API implements the full OpenAPI 3.1.0 specification defined in `api-contract.yaml`.
+
+## 🐛 Troubleshooting
+
+### Port Already in Use
+
+If port 3001 is already in use:
+
+```bash
+# Kill the process using port 3001
+lsof -ti:3001 | xargs kill -9
+
+# Or change the port in server.js
+const PORT = 3002; // Change this line
+```
+
+### Database Not Loading
+
+Make sure `db.json` exists in the mock-api directory. The server will exit with an error if the database file is missing or invalid.
+
+## 📚 Related Files
+
+- `server.js` - Main server implementation
+- `db.json` - Mock database with all entities
+- `api-contract.yaml` - OpenAPI specification
+- `generate-campaigns.js` - Helper to generate campaign data
+- `generate-publishers.js` - Helper to generate publisher data
+
+## 🎯 Development Tips
+
+1. **Testing**: Use tools like Postman, Insomnia, or curl for testing
+2. **Data Modification**: Edit `db.json` directly for custom test data
+3. **Debugging**: Check console logs for request/response information
+4. **Reset Data**: Restore `db.json` from backup to reset to initial state
+
+## ⚡ Quick Start Examples
+
+```bash
+# Start the server
+npm start
+
+# In another terminal, test the health endpoint
+curl http://localhost:3001/health
+
+# Get a token
+TOKEN=$(curl -s -X POST http://localhost:3001/auth/otp/verify \
+  -H "Content-Type: application/json" \
+  -d '{"email":"test@example.com","otp":"123456"}' | jq -r '.accessToken')
+
+# Use the token to get publishers
+curl -H "Authorization: Bearer $TOKEN" \
+  http://localhost:3001/admin/publishers | jq
+
+# Get analytics
+curl -H "Authorization: Bearer $TOKEN" \
+  http://localhost:3001/analytics/dashboard | jq
+```
+
+---
+
+**Note**: This is a mock server for development and testing purposes only. Do not use in production.

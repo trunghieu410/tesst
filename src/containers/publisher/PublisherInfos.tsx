@@ -2,24 +2,26 @@ import { GoogleIcon } from "@/icon/GoogleIcon";
 import { FacebookIcon } from "@/icon/FacebookIcon";
 import { AppleIcon } from "@/icon/AppleIcon";
 import { ClickToCopy } from "@/components/ClickToCopy";
-
-interface Publisher {
-  id: number;
-  name: string;
-  email: string;
-  country: {
-    code: string;
-    name: string;
-    flag: string;
-  };
-  members: number;
-  createdAt: string;
-  kyc: "not_started" | "approved" | "rejected" | "pending";
-  status: "active" | "deleted" | "suspended";
-}
+import type { PublisherType } from "@/types";
 
 interface PublisherInfosProps {
-  publisher: Publisher;
+  publisher: PublisherType & {
+    personalInfo?: {
+      phoneNumber?: string;
+      dateOfBirth?: string;
+      gender?: string;
+      referralCode?: string;
+      nationality?: string;
+      idNumber?: string;
+      address?: string;
+      ssoProviders?: string[];
+      referrerCode?: string;
+      joinedAt?: string;
+      joinedTimeAgo?: string;
+      lastActiveAt?: string;
+      lastActiveTimeAgo?: string;
+    };
+  };
 }
 
 export function PublisherInfos({ publisher }: PublisherInfosProps) {
@@ -31,7 +33,9 @@ export function PublisherInfos({ publisher }: PublisherInfosProps) {
           <p className="text-xs leading-4 text-[#677187] w-[110px]">
             Điện thoại
           </p>
-          <p className="text-[14px] leading-4 text-[#021337]">+84 0373467950</p>
+          <p className="text-[14px] leading-4 text-[#021337]">
+            {publisher.personalInfo?.phoneNumber || "--"}
+          </p>
         </div>
         <div className="flex gap-2.5">
           <p className="text-xs leading-4 text-[#677187] w-[110px]">Email</p>
@@ -41,14 +45,17 @@ export function PublisherInfos({ publisher }: PublisherInfosProps) {
         </div>
         <div className="flex gap-2.5">
           <p className="text-xs leading-4 text-[#677187] w-[110px]">DOB</p>
-          <p className="text-[14px] leading-4 text-[#021337]">1.11.1991</p>
-          <p className="text-xs leading-4 text-[#677187]">34 tuổi</p>
+          <p className="text-[14px] leading-4 text-[#021337]">
+            {publisher.personalInfo?.dateOfBirth || "--"}
+          </p>
         </div>
         <div className="flex gap-2.5">
           <p className="text-xs leading-4 text-[#677187] w-[110px]">
             Giới tính
           </p>
-          <p className="text-[14px] leading-4 text-[#021337]">Nam</p>
+          <p className="text-[14px] leading-4 text-[#021337]">
+            {publisher.personalInfo?.gender || "--"}
+          </p>
         </div>
         <div className="flex gap-2.5">
           <p className="text-xs leading-4 text-[#677187] w-[110px]">
@@ -58,7 +65,9 @@ export function PublisherInfos({ publisher }: PublisherInfosProps) {
             className="text-[14px] leading-4 text-[#021337]"
             showIcon
           >
-            giangdo2131
+            {publisher.referralCode ||
+              publisher.personalInfo?.referralCode ||
+              "--"}
           </ClickToCopy>
         </div>
         <div className="flex gap-2.5">
@@ -67,16 +76,21 @@ export function PublisherInfos({ publisher }: PublisherInfosProps) {
           </p>
           <div className="text-xs leading-4 text-[#021337]">
             <div className="flex gap-2">
-              <div className="w-8 h-8 bg-[#f2f4f5] rounded-full flex items-center justify-center">
-                <AppleIcon classes="" />
-              </div>
-              <div className="w-8 h-8 bg-[#f2f4f5] rounded-full flex items-center justify-center">
-                <FacebookIcon classes="" />
-              </div>
-
-              <div className="w-8 h-8 bg-[#f2f4f5] rounded-full flex items-center justify-center">
-                <GoogleIcon classes="" />
-              </div>
+              {publisher.personalInfo?.ssoProviders?.includes("apple") && (
+                <div className="w-8 h-8 bg-[#f2f4f5] rounded-full flex items-center justify-center">
+                  <AppleIcon classes="" />
+                </div>
+              )}
+              {publisher.personalInfo?.ssoProviders?.includes("facebook") && (
+                <div className="w-8 h-8 bg-[#f2f4f5] rounded-full flex items-center justify-center">
+                  <FacebookIcon classes="" />
+                </div>
+              )}
+              {publisher.personalInfo?.ssoProviders?.includes("google") && (
+                <div className="w-8 h-8 bg-[#f2f4f5] rounded-full flex items-center justify-center">
+                  <GoogleIcon classes="" />
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -84,7 +98,11 @@ export function PublisherInfos({ publisher }: PublisherInfosProps) {
           <p className="text-xs leading-4 text-[#677187] w-[110px]">
             Quốc tịch
           </p>
-          <p className="text-[14px] leading-4 text-[#021337]">Việt Nam</p>
+          <p className="text-[14px] leading-4 text-[#021337]">
+            {publisher.personalInfo?.nationality ||
+              publisher.country.name ||
+              "--"}
+          </p>
         </div>
         <div className="flex gap-2.5">
           <p className="text-xs leading-4 text-[#677187] w-[110px]">
@@ -94,7 +112,7 @@ export function PublisherInfos({ publisher }: PublisherInfosProps) {
             className="text-[14px] leading-4 text-[#021337]"
             showIcon
           >
-            017261782
+            {publisher.personalInfo?.idNumber || "--"}
           </ClickToCopy>
         </div>
         <div className="flex gap-2.5">
@@ -108,21 +126,37 @@ export function PublisherInfos({ publisher }: PublisherInfosProps) {
             Người giới thiệu
           </p>
           <ClickToCopy className="text-[14px] leading-4" showIcon>
-            EKWR212DA
+            {publisher.referredByCode ||
+              publisher.personalInfo?.referrerCode ||
+              "--"}
           </ClickToCopy>
         </div>
         <div className="flex gap-2.5">
           <p className="text-xs leading-4 text-[#677187] w-[110px]">
             Ngày tham gia
           </p>
-          <p className="text-[14px] leading-4 text-[#021337]">3.08.2023</p>
-          <p className="text-xs leading-4 text-[#677187]">2 năm 7 ngày</p>
+          <p className="text-[14px] leading-4 text-[#021337]">
+            {publisher.personalInfo?.joinedAt
+              ? new Date(publisher.personalInfo.joinedAt).toLocaleDateString(
+                  "vi-VN"
+                )
+              : publisher.createdAt
+              ? new Date(publisher.createdAt).toLocaleDateString("vi-VN")
+              : "--"}
+          </p>
+          {publisher.personalInfo?.joinedTimeAgo && (
+            <p className="text-xs leading-4 text-[#677187]">
+              {publisher.personalInfo.joinedTimeAgo}
+            </p>
+          )}
         </div>
         <div className="flex gap-2.5">
           <p className="text-xs leading-4 text-[#677187] w-[110px]">
             Truy cập lần cuối
           </p>
-          <p className="text-xs leading-4 text-[#021337]"> 2 ngày trước</p>
+          <p className="text-xs leading-4 text-[#021337]">
+            {publisher.personalInfo?.lastActiveTimeAgo || "--"}
+          </p>
         </div>
       </div>
     </div>

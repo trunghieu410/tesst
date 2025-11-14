@@ -21,12 +21,12 @@ api.interceptors.request.use((config) => {
 // Auth API
 export const authApi = {
   requestOtp: async (email: string) => {
-    const response = await api.post("/auth/request-otp", { email });
+    const response = await api.post("/auth/otp/request", { email });
     return response.data;
   },
 
   verifyOtp: async (email: string, otp: string) => {
-    const response = await api.post("/auth/verify-otp", { email, otp });
+    const response = await api.post("/auth/otp/verify", { email, otp });
     return response.data;
   },
 };
