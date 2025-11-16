@@ -25,7 +25,7 @@ export function Tabs({ tabs, defaultTab, className, children }: TabsProps) {
 
   return (
     <div className={cn(className, "flex flex-col items-start w-full")}>
-      <div className="flex px-4 border-b border-[#CFD6DE] w-full">
+      <div className="flex px-4 w-full">
         {tabs.map((tab) => {
           const isActive = activeTab === tab.id;
           // const IconBadge = tab.iconBadge;

@@ -44,7 +44,7 @@ export function CampaignCreate() {
     <div className="flex w-full h-full relative flex-col">
       <Tabs tabs={tabs} defaultTab="overview">
         {(activeTab) => (
-          <div className="relative w-full h-full">
+          <div className="relative w-full h-full border-t border-[#CFD6DE]">
             {activeTab === "overview" && <CampaignOverviewTab />}
             {activeTab === "blacklist" && <CampaignBlacklistTab />}
             {activeTab === "whitelist" && <CampaignWhitelistTab />}

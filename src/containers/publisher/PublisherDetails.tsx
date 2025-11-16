@@ -150,7 +150,7 @@ export function PublisherDetails({
 
             return (
               <div
-                className={`relative w-full pn:w-[890px] pb-4 flex-1 overflow-y-auto ${bgColor}`}
+                className={`relative w-full pn:w-[890px] pb-4 flex-1 overflow-y-auto ${bgColor} border-t border-[#CFD6DE]`}
               >
                 {/* Scrollable Content */}
 

@@ -75,9 +75,8 @@ export function Campaign() {
     dateRange: dateRange || undefined,
   });
 
-  const campaigns = campaignsData?.data || [];
-  const totalCount = campaignsData?.total || 0;
-  const totalPages = Math.ceil(totalCount / rowsPerPage);
+  const campaigns = campaignsData?.data.data || [];
+  const pagination = campaignsData?.data.pagination || 0;
 
   const handleCampaignClick = (campaign: (typeof campaigns)[0]) => {
     console.log("Campaign clicked:", campaign);
@@ -173,11 +172,11 @@ export function Campaign() {
             {/* Pagination Footer */}
             <div className="flex items-center gap-2 p-2 border-t border-[#b5bcc4] bg-white">
               <p className="font-normal text-sm leading-5 text-[#021337]">
-                {totalCount.toLocaleString()} kết quả
+                {pagination.total.toLocaleString()} kết quả
               </p>
               <Pagination
                 currentPage={currentPage}
-                totalPages={totalPages}
+                totalPages={pagination.totalPages}
                 onPageChange={setCurrentPage}
                 rowsPerPage={rowsPerPage}
                 onRowsPerPageChange={setRowsPerPage}

@@ -8,42 +8,27 @@ import {
   TableHeaderCell,
   TableCell,
 } from "@/components/Table";
-
-interface Campaign {
-  id: number;
-  name: string;
-  imageType: string;
-  country: {
-    code: string;
-    name: string;
-    flag: string;
-  };
-  commission: string;
-  notes: string;
-  blacklist: number;
-  whitelist: number;
-  applicationPeriod: string;
-  createdAt: string;
-  status: "active" | "pending" | "completed" | "inactive";
-}
+import type { CampaignType } from "@/types";
 
 interface CampaignTableProps {
-  campaigns: Campaign[];
-  onRowClick?: (campaign: Campaign) => void;
+  campaigns: CampaignType[];
+  onRowClick?: (campaign: CampaignType) => void;
 }
 
 const statusMap: Record<
-  Campaign["status"],
+  CampaignType["status"],
   { label: string; variant: BadgeVariant }
 > = {
   active: { label: "Đang diễn ra", variant: "success" },
+  ended: { label: "Đã kết thúc", variant: "default" },
   pending: { label: "Sắp ra mắt", variant: "warning" },
   completed: { label: "Đã kết thúc", variant: "default" },
   inactive: { label: "Nhập", variant: "pending" },
+  draft: { label: "Bản nháp", variant: "warning" },
 };
 
 export function CampaignTable({ campaigns, onRowClick }: CampaignTableProps) {
-  const handleRowClick = (campaign: Campaign) => {
+  const handleRowClick = (campaign: CampaignType) => {
     if (onRowClick) {
       onRowClick(campaign);
     }
@@ -91,7 +76,7 @@ export function CampaignTable({ campaigns, onRowClick }: CampaignTableProps) {
 
       <TableBody>
         {campaigns.map((campaign) => {
-          const status = statusMap[campaign.status];
+          const status = statusMap[campaign.status || "active"];
 
           return (
             <TableRow
@@ -103,35 +88,39 @@ export function CampaignTable({ campaigns, onRowClick }: CampaignTableProps) {
               </TableCell>
               <TableCell data-sticky="left-2">{campaign.name}</TableCell>
               <TableCell>
-                <Badge variant="default">{campaign.imageType}</Badge>
+                <Badge variant="default">
+                  {campaign.campaignType || "daily_checkin"}
+                </Badge>
               </TableCell>
               <TableCell>
                 <div className="flex items-center gap-2">
-                  <span className="text-lg">{campaign.country.flag}</span>
+                  <span className="text-lg">
+                    {campaign?.country?.flagUrl || "🇻🇳"}
+                  </span>
                   <span className="text-[13px] leading-4">
-                    {campaign.country.name}
+                    {campaign?.country?.name}
                   </span>
                 </div>
               </TableCell>
-              <TableCell>{campaign.commission}</TableCell>
+              <TableCell>5 OKT</TableCell>
               <TableCell>
                 <div className="text-[13px] leading-4 text-[#021337]">
-                  {campaign.notes}
+                  {campaign.description}
                 </div>
               </TableCell>
               <TableCell align="center">
                 <div className="inline-flex items-center justify-center bg-[#fdd5d2] text-[#021337] px-2 py-0 rounded h-5 font-normal text-xs leading-4">
-                  {campaign.blacklist}
+                  {campaign.blacklist.length}
                 </div>
               </TableCell>
               <TableCell align="center">
                 <div className="inline-flex items-center justify-center bg-[#dbf5ea] text-[#021337] px-2 py-0 rounded h-5 font-normal text-xs leading-4">
-                  {campaign.whitelist}
+                  {campaign.whitelist.length}
                 </div>
               </TableCell>
               <TableCell>
                 <div className="text-[13px] leading-4">
-                  {campaign.applicationPeriod}
+                  {campaign.startDate} - {campaign.endDate}
                 </div>
               </TableCell>
               <TableCell>{campaign.createdAt}</TableCell>

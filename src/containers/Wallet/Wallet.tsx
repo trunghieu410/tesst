@@ -33,7 +33,7 @@ export function Wallet() {
   const [rowsPerPage, setRowsPerPage] = useState(1000);
 
   useEffect(() => {
-    publish("title-change", { title: "Wallet" });
+    publish("title-change", { title: "Ví" });
   }, [publish]);
 
   // Sample wallet data
@@ -122,7 +122,7 @@ export function Wallet() {
   };
 
   return (
-    <div className="p-3 flex flex-col gap-4">
+    <div className="flex flex-col gap-4">
       {/*Wallet-section*/}
       <Tabs
         tabs={[
@@ -132,7 +132,7 @@ export function Wallet() {
         defaultTab="users"
       >
         {() => (
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-4 border-t border-[#CFD6DE] p-3 w-full">
             {/* Search and Filter Section */}
             <div className="flex flex-col gap-2.5">
               <div className="flex gap-2.5 items-center">
