@@ -16,8 +16,9 @@ import { Pagination } from "@/components/Pagination";
 import { ClickToCopy } from "@/components/ClickToCopy";
 import { InfoIcon } from "@/icon/InfoIcon";
 import { Tabs } from "@/components/Tabs";
-import { cn } from "@/lib/utils/common";
 import { Button } from "@/components/Button";
+import { RightSidePanel } from "@/components/RightSidePanel";
+import { TransactionDetails } from "./TransactionDetails";
 
 type StatusType = "all" | "pending" | "approving" | "approved" | "rejected";
 
@@ -186,283 +187,299 @@ export function Transactions() {
 
   const totalPages = Math.ceil(filteredTransactions.length / rowsPerPage);
 
+  const handleTransactionClick = (transactionId: number) => {
+    publish("show-right-panel", transactionId.toString()); // Mở panel
+  };
+
   const tabConfig = [
     { id: "transaction", label: "Giao dịch" },
     { id: "adjustment", label: "Điều chỉnh" },
   ];
 
   return (
-    <Tabs
-      tabs={tabConfig}
-      defaultTab="transaction"
-      className="border-b border-[#CFD6DE]"
-    >
-      {(activeTab) => {
-        return (
-          <div className="p-3 flex flex-col gap-4 w-full h-full border-t border-[#CFD6DE]">
-            {activeTab === "transaction" ? (
-              <>
-                {/* Filters */}
-                <div className="flex items-start gap-2.5 flex-wrap">
-                  <SearchInput
-                    value={searchQuery}
-                    onChange={setSearchQuery}
-                    placeholder="Mã Tx, địa chỉ ví"
-                    className="w-[250px]"
-                  />
-                  <DateRangeInput
-                    value={dateRange}
-                    onChange={setDateRange}
-                    className="w-40"
-                  />
-                  <Dropdown
-                    value={sender}
-                    onChange={setSender}
-                    placeholder="Người gửi"
-                    options={[
-                      { value: "", label: "Tất cả" },
-                      { value: "system", label: "Hệ thống" },
-                    ]}
-                    className="w-[108px]"
-                  />
-                  <Dropdown
-                    value={receiver}
-                    onChange={setReceiver}
-                    placeholder="Người nhận"
-                    options={[
-                      { value: "", label: "Tất cả" },
-                      { value: "user1", label: "Phan Công Kiều" },
-                    ]}
-                    className="w-[119px]"
-                  />
-                  <Dropdown
-                    value={currency}
-                    onChange={setCurrency}
-                    placeholder="Đơn vị tiền"
-                    options={[
-                      { value: "", label: "Tất cả" },
-                      { value: "usdt", label: "USDT" },
-                      { value: "okd", label: "OKD" },
-                    ]}
-                    className="w-[114px]"
-                  />
-                </div>
+    <>
+      <Tabs
+        tabs={tabConfig}
+        defaultTab="transaction"
+        className="border-b border-[#CFD6DE]"
+      >
+        {(activeTab) => {
+          return (
+            <div className="p-3 flex flex-col gap-4 w-full h-full border-t border-[#CFD6DE]">
+              {activeTab === "transaction" ? (
+                <>
+                  {/* Filters */}
+                  <div className="flex items-start gap-2.5 flex-wrap">
+                    <SearchInput
+                      value={searchQuery}
+                      onChange={setSearchQuery}
+                      placeholder="Mã Tx, địa chỉ ví"
+                      className="w-[250px]"
+                    />
+                    <DateRangeInput
+                      value={dateRange}
+                      onChange={setDateRange}
+                      className="w-40"
+                    />
+                    <Dropdown
+                      value={sender}
+                      onChange={setSender}
+                      placeholder="Người gửi"
+                      options={[
+                        { value: "", label: "Tất cả" },
+                        { value: "system", label: "Hệ thống" },
+                      ]}
+                      className="w-[108px]"
+                    />
+                    <Dropdown
+                      value={receiver}
+                      onChange={setReceiver}
+                      placeholder="Người nhận"
+                      options={[
+                        { value: "", label: "Tất cả" },
+                        { value: "user1", label: "Phan Công Kiều" },
+                      ]}
+                      className="w-[119px]"
+                    />
+                    <Dropdown
+                      value={currency}
+                      onChange={setCurrency}
+                      placeholder="Đơn vị tiền"
+                      options={[
+                        { value: "", label: "Tất cả" },
+                        { value: "usdt", label: "USDT" },
+                        { value: "okd", label: "OKD" },
+                      ]}
+                      className="w-[114px]"
+                    />
+                  </div>
 
-                {/* Status Tabs */}
-                <div className="flex flex-col gap-0">
-                  <div className="border-t border-x rounded-t-lg border-[#e6e9ed] bg-white">
-                    <div className="px-4 flex gap-0">
-                      <Button
-                        variant="tab"
-                        isActive={activeStatus === "all"}
-                        onClick={() => setActiveStatus("all")}
-                      >
-                        Tất cả
-                        <Badge
-                          isCircle
+                  {/* Status Tabs */}
+                  <div className="flex flex-col gap-0">
+                    <div className="border-t border-x rounded-t-lg border-[#e6e9ed] bg-white">
+                      <div className="px-4 flex gap-0">
+                        <Button
+                          variant="tab"
                           isActive={activeStatus === "all"}
-                          variant="default"
+                          onClick={() => setActiveStatus("all")}
                         >
-                          {statusCounts.all}
-                        </Badge>
-                      </Button>
-                      <Button
-                        variant="tab"
-                        isActive={activeStatus === "pending"}
-                        onClick={() => setActiveStatus("pending")}
-                      >
-                        Tầng 1
-                        <Badge
-                          isCircle
+                          Tất cả
+                          <Badge
+                            isCircle
+                            isActive={activeStatus === "all"}
+                            variant="default"
+                          >
+                            {statusCounts.all}
+                          </Badge>
+                        </Button>
+                        <Button
+                          variant="tab"
                           isActive={activeStatus === "pending"}
-                          variant="default"
+                          onClick={() => setActiveStatus("pending")}
                         >
-                          {statusCounts.pending}
-                        </Badge>
-                      </Button>
-                      <Button
-                        variant="tab"
-                        isActive={activeStatus === "approving"}
-                        onClick={() => setActiveStatus("approving")}
-                      >
-                        Tầng 2
-                        <InfoIcon className="w-4 h-4" />
-                        <Badge
-                          isCircle
+                          Chờ duyệt
+                          <Badge
+                            isCircle
+                            isActive={activeStatus === "pending"}
+                            variant="default"
+                          >
+                            {statusCounts.pending}
+                          </Badge>
+                        </Button>
+                        <Button
+                          variant="tab"
                           isActive={activeStatus === "approving"}
-                          variant="default"
+                          onClick={() => setActiveStatus("approving")}
                         >
-                          {statusCounts.approving}
-                        </Badge>
-                      </Button>
-                      <Button
-                        variant="tab"
-                        isActive={activeStatus === "approved"}
-                        onClick={() => setActiveStatus("approved")}
-                      >
-                        Tầng 3
-                        <Badge
-                          isCircle
+                          Đang duyệt
+                          <InfoIcon className="w-4 h-4" />
+                          <Badge
+                            isCircle
+                            isActive={activeStatus === "approving"}
+                            variant="default"
+                          >
+                            {statusCounts.approving}
+                          </Badge>
+                        </Button>
+                        <Button
+                          variant="tab"
                           isActive={activeStatus === "approved"}
-                          variant="default"
+                          onClick={() => setActiveStatus("approved")}
                         >
-                          {statusCounts.approved}
-                        </Badge>
-                      </Button>
-                      <Button
-                        variant="tab"
-                        isActive={activeStatus === "rejected"}
-                        onClick={() => setActiveStatus("rejected")}
-                      >
-                        Tầng 3
-                        <Badge
-                          isCircle
+                          Đã duyệt
+                          <Badge
+                            isCircle
+                            isActive={activeStatus === "approved"}
+                            variant="default"
+                          >
+                            {statusCounts.approved}
+                          </Badge>
+                        </Button>
+                        <Button
+                          variant="tab"
                           isActive={activeStatus === "rejected"}
-                          variant="default"
+                          onClick={() => setActiveStatus("rejected")}
                         >
-                          {statusCounts.rejected}
-                        </Badge>
-                      </Button>
+                          Từ chối
+                          <Badge
+                            isCircle
+                            isActive={activeStatus === "rejected"}
+                            variant="default"
+                          >
+                            {statusCounts.rejected}
+                          </Badge>
+                        </Button>
+                      </div>
                     </div>
-                  </div>
 
-                  {/*Transaction-section*/}
-                  {/* Table */}
-                  <Table
-                    horizontalScrollWithStickyColumns
-                    className="border border-[#cfd6de]"
-                  >
-                    <TableHead>
-                      <TableRow>
-                        <TableHeaderCell className="w-[50px]">
-                          #
-                        </TableHeaderCell>
-                        <TableHeaderCell className="w-[250px]">
-                          Bên gửi/Bên nhận
-                        </TableHeaderCell>
-                        <TableHeaderCell className="w-52">
-                          Nội dung giao dịch
-                        </TableHeaderCell>
-                        <TableHeaderCell className="w-52">
-                          Ví thao tác
-                        </TableHeaderCell>
-                        <TableHeaderCell className="w-[120px]" align="right">
-                          Số lượng
-                        </TableHeaderCell>
-                        <TableHeaderCell className="w-[100px]">
-                          Đơn vị tiền
-                        </TableHeaderCell>
-                        <TableHeaderCell className="w-[120px]">
-                          <div className="flex items-center gap-1">
-                            Số dư sau GD
-                            <InfoIcon className="w-4 h-4" />
-                          </div>
-                        </TableHeaderCell>
-                        <TableHeaderCell className="w-[200px]">
-                          Ghi chú
-                        </TableHeaderCell>
-                        <TableHeaderCell className="w-[150px]">
-                          Cập nhật trạng thái
-                        </TableHeaderCell>
-                        <TableHeaderCell className="w-[150px]">
-                          Người cập nhật
-                        </TableHeaderCell>
-                        <TableHeaderCell className="w-40">
-                          Tx ID
-                        </TableHeaderCell>
-                        <TableHeaderCell className="w-[150px]">
-                          Thời gian tạo
-                        </TableHeaderCell>
-                        <TableHeaderCell className="w-[120px]">
-                          Trạng thái
-                        </TableHeaderCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {filteredTransactions.map((tx) => (
-                        <TableRow key={tx.id}>
-                          <TableCell>{tx.id}</TableCell>
-                          <TableCell className="py-2.5">
-                            <div className="flex flex-col gap-1">
-                              <div className="text-sm leading-4 text-[#021337]">
-                                {tx.sender}
-                              </div>
-                              <div className="text-sm leading-4 text-[#021337]">
-                                {tx.receiver.includes("0x") ? (
-                                  <ClickToCopy showIcon>
-                                    {tx.receiver}
-                                  </ClickToCopy>
-                                ) : (
-                                  tx.receiver
-                                )}
-                              </div>
+                    {/*Transaction-section*/}
+                    {/* Table */}
+                    <Table
+                      horizontalScrollWithStickyColumns
+                      className="border border-[#cfd6de]"
+                    >
+                      <TableHead>
+                        <TableRow>
+                          <TableHeaderCell className="w-[50px]">
+                            #
+                          </TableHeaderCell>
+                          <TableHeaderCell className="w-[250px]">
+                            Bên gửi/Bên nhận
+                          </TableHeaderCell>
+                          <TableHeaderCell className="w-52">
+                            Nội dung giao dịch
+                          </TableHeaderCell>
+                          <TableHeaderCell className="w-52">
+                            Ví thao tác
+                          </TableHeaderCell>
+                          <TableHeaderCell className="w-[120px]" align="right">
+                            Số lượng
+                          </TableHeaderCell>
+                          <TableHeaderCell className="w-[100px]">
+                            Đơn vị tiền
+                          </TableHeaderCell>
+                          <TableHeaderCell className="w-[120px]">
+                            <div className="flex items-center gap-1">
+                              Số dư sau GD
+                              <InfoIcon className="w-4 h-4" />
                             </div>
-                          </TableCell>
-                          <TableCell className="py-2.5">{tx.content}</TableCell>
-                          <TableCell className="py-2.5">
-                            <div className="flex flex-col gap-1">
-                              <div className="text-sm leading-4 text-[#021337]">
-                                {tx.wallet}
-                              </div>
-                              <div className="text-xs leading-4 text-[#677187]">
-                                {tx.walletAddress}
-                              </div>
-                            </div>
-                          </TableCell>
-                          <TableCell align="right">
-                            <span
-                              className={
-                                tx.amount.startsWith("+")
-                                  ? "text-[#00a349]"
-                                  : "text-[#ff3b34]"
-                              }
-                            >
-                              {tx.amount}
-                            </span>
-                          </TableCell>
-                          <TableCell>{tx.currency}</TableCell>
-                          <TableCell>{tx.balance}</TableCell>
-                          <TableCell>{tx.note || "-"}</TableCell>
-                          <TableCell>{tx.statusUpdateTime}</TableCell>
-                          <TableCell>{tx.updater}</TableCell>
-                          <TableCell>
-                            <ClickToCopy showIcon>{tx.txId}</ClickToCopy>
-                          </TableCell>
-                          <TableCell>{tx.createdAt}</TableCell>
-                          <TableCell>{getStatusBadge(tx.status)}</TableCell>
+                          </TableHeaderCell>
+                          <TableHeaderCell className="w-[200px]">
+                            Ghi chú
+                          </TableHeaderCell>
+                          <TableHeaderCell className="w-[150px]">
+                            Cập nhật trạng thái
+                          </TableHeaderCell>
+                          <TableHeaderCell className="w-[150px]">
+                            Người cập nhật
+                          </TableHeaderCell>
+                          <TableHeaderCell className="w-40">
+                            Tx ID
+                          </TableHeaderCell>
+                          <TableHeaderCell className="w-[150px]">
+                            Thời gian tạo
+                          </TableHeaderCell>
+                          <TableHeaderCell className="w-[120px]">
+                            Trạng thái
+                          </TableHeaderCell>
                         </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </div>
-
-                {/* Pagination Footer */}
-                <div className="flex items-center justify-between p-2 border-t border-[#b5bcc4] bg-white">
-                  <div className="flex items-center gap-4">
-                    <p className="font-normal text-sm leading-5 text-[#021337]">
-                      3,323 kết quả
-                    </p>
-                    <p className="font-normal text-sm leading-5 text-[#021337]">
-                      212.289001 số lượng
-                    </p>
+                      </TableHead>
+                      <TableBody>
+                        {filteredTransactions.map((tx) => (
+                          <TableRow
+                            key={tx.id}
+                            onClick={() => handleTransactionClick(tx.id)}
+                          >
+                            <TableCell>{tx.id}</TableCell>
+                            <TableCell className="py-2.5">
+                              <div className="flex flex-col gap-1">
+                                <div className="text-sm leading-4 text-[#021337]">
+                                  {tx.sender}
+                                </div>
+                                <div className="text-sm leading-4 text-[#021337]">
+                                  {tx.receiver.includes("0x") ? (
+                                    <ClickToCopy showIcon>
+                                      {tx.receiver}
+                                    </ClickToCopy>
+                                  ) : (
+                                    tx.receiver
+                                  )}
+                                </div>
+                              </div>
+                            </TableCell>
+                            <TableCell className="py-2.5">
+                              {tx.content}
+                            </TableCell>
+                            <TableCell className="py-2.5">
+                              <div className="flex flex-col gap-1">
+                                <div className="text-sm leading-4 text-[#021337]">
+                                  {tx.wallet}
+                                </div>
+                                <div className="text-xs leading-4 text-[#677187]">
+                                  {tx.walletAddress}
+                                </div>
+                              </div>
+                            </TableCell>
+                            <TableCell align="right">
+                              <span
+                                className={
+                                  tx.amount.startsWith("+")
+                                    ? "text-[#00a349]"
+                                    : "text-[#ff3b34]"
+                                }
+                              >
+                                {tx.amount}
+                              </span>
+                            </TableCell>
+                            <TableCell>{tx.currency}</TableCell>
+                            <TableCell>{tx.balance}</TableCell>
+                            <TableCell>{tx.note || "-"}</TableCell>
+                            <TableCell>{tx.statusUpdateTime}</TableCell>
+                            <TableCell>{tx.updater}</TableCell>
+                            <TableCell>
+                              <ClickToCopy showIcon>{tx.txId}</ClickToCopy>
+                            </TableCell>
+                            <TableCell>{tx.createdAt}</TableCell>
+                            <TableCell>{getStatusBadge(tx.status)}</TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
                   </div>
-                  <Pagination
-                    currentPage={currentPage}
-                    totalPages={totalPages}
-                    onPageChange={setCurrentPage}
-                    rowsPerPage={rowsPerPage}
-                    onRowsPerPageChange={setRowsPerPage}
-                  />
+
+                  {/* Pagination Footer */}
+                  <div className="flex items-center justify-between p-2 border-t border-[#b5bcc4] bg-white">
+                    <div className="flex items-center gap-4">
+                      <p className="font-normal text-sm leading-5 text-[#021337]">
+                        3,323 kết quả
+                      </p>
+                      <p className="font-normal text-sm leading-5 text-[#021337]">
+                        212.289001 số lượng
+                      </p>
+                    </div>
+                    <Pagination
+                      currentPage={currentPage}
+                      totalPages={totalPages}
+                      onPageChange={setCurrentPage}
+                      rowsPerPage={rowsPerPage}
+                      onRowsPerPageChange={setRowsPerPage}
+                    />
+                  </div>
+                </>
+              ) : (
+                <div className="text-center py-8 text-gray-500">
+                  Điều chỉnh - Placeholder content
                 </div>
-              </>
-            ) : (
-              <div className="text-center py-8 text-gray-500">
-                Điều chỉnh - Placeholder content
-              </div>
-            )}
-          </div>
-        );
-      }}
-    </Tabs>
+              )}
+            </div>
+          );
+        }}
+      </Tabs>
+
+      {/* Right-side-panel */}
+      <RightSidePanel>
+        <TransactionDetails />
+      </RightSidePanel>
+    </>
   );
 }

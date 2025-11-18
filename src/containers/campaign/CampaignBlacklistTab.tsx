@@ -140,14 +140,25 @@ export function CampaignBlacklistTab() {
           </TableHead>
           <TableBody>
             {mockBlacklistData.map((user, index) => (
-              <TableRow key={user.id}>
+              <TableRow key={user.id} className="group">
                 <TableCell align="center" data-sticky="left-1">
-                  {index === 0 ? (
-                    <div className="flex items-center justify-center">
+                  <div className="flex items-center justify-center relative">
+                    <div
+                      className={`${
+                        selectedBlacklistUsers.includes(user.id)
+                          ? "opacity-0"
+                          : "group-hover:opacity-0"
+                      } transition-opacity duration-200`}
+                    >
                       {index + 1}
                     </div>
-                  ) : (
-                    <div className="flex items-center justify-center">
+                    <div
+                      className={`absolute inset-0 flex items-center justify-center ${
+                        selectedBlacklistUsers.includes(user.id)
+                          ? "opacity-100"
+                          : "opacity-0 group-hover:opacity-100"
+                      } transition-opacity duration-200`}
+                    >
                       <input
                         type="checkbox"
                         checked={selectedBlacklistUsers.includes(user.id)}
@@ -168,7 +179,7 @@ export function CampaignBlacklistTab() {
                         className="w-4 h-4 accent-[#f71e1e] cursor-pointer"
                       />
                     </div>
-                  )}
+                  </div>
                 </TableCell>
                 <TableCell data-sticky="left-2">{user.name}</TableCell>
                 <TableCell>{user.email}</TableCell>

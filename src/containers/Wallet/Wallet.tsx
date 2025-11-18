@@ -2,6 +2,8 @@ import { useEventEmitter } from "@/hooks/useEventEmitter";
 import { useEffect, useState } from "react";
 import { SearchInput } from "@/components/SearchInput";
 import { Select } from "@/components/Select";
+import { RightSidePanel } from "@/components/RightSidePanel";
+import { WalletDetails } from "./WalletDetails";
 import {
   Table,
   TableHead,
@@ -121,6 +123,10 @@ export function Wallet() {
     });
   };
 
+  const handleWalletClick = (walletId: number) => {
+    publish("show-right-panel", walletId.toString()); // Mở panel
+  };
+
   return (
     <div className="flex flex-col gap-4">
       {/*Wallet-section*/}
@@ -161,32 +167,32 @@ export function Wallet() {
                   <TableRow className="bg-white">
                     <TableHeaderCell
                       align="left"
-                      className="bg-white shadow-[6px_0px_8px_0px_rgba(0,0,0,0.08)] sticky left-0 z-30 min-w-[250px] h-8 px-2.5 py-2"
+                      className="w-[250px] shrink-0"
                       data-sticky="left-1"
                     >
                       Ví người dùng
                     </TableHeaderCell>
                     <TableHeaderCell
                       align="right"
-                      className="min-w-[200px] h-8 px-2.5 py-2"
+                      className="w-[200px] shrink-0"
                     >
                       Tổng tài sản quy đổi USDT
                     </TableHeaderCell>
                     <TableHeaderCell
                       align="right"
-                      className="min-w-[150px] h-8 px-2.5 py-2"
+                      className="w-[150px] shrink-0"
                     >
                       Khả dụng
                     </TableHeaderCell>
                     <TableHeaderCell
                       align="right"
-                      className="min-w-[150px] h-8 px-2.5 py-2"
+                      className="w-[150px] shrink-0"
                     >
                       Đang khoá
                     </TableHeaderCell>
                     <TableHeaderCell
                       align="left"
-                      className="bg-white shadow-[-6px_0px_8px_0px_rgba(0,0,0,0.08)] sticky right-0 z-30 min-w-[140px] h-8 px-2.5 py-2"
+                      className="w-[140px] shrink-0"
                       data-sticky="right"
                     >
                       Trạng thái tài khoản
@@ -198,32 +204,32 @@ export function Wallet() {
                   <TableRow className="bg-[#f0f2f4]">
                     <TableCell
                       align="left"
-                      className="bg-[#f0f2f4] shadow-[6px_0px_8px_0px_rgba(0,0,0,0.08)] sticky left-0 z-30 font-semibold text-xs leading-4 h-8 px-2.5 py-2"
+                      className="bg-[#f0f2f4] font-semibold text-xs leading-4"
                       data-sticky="left-1"
                     >
                       12
                     </TableCell>
                     <TableCell
                       align="right"
-                      className="bg-[#f0f2f4] font-semibold text-xs leading-4 h-8 px-2.5 py-2"
+                      className="bg-[#f0f2f4] font-semibold text-xs leading-4"
                     >
                       {formatNumber(totals.totalAssets)}
                     </TableCell>
                     <TableCell
                       align="right"
-                      className="bg-[#f0f2f4] font-semibold text-xs leading-4 h-8 px-2.5 py-2"
+                      className="bg-[#f0f2f4] font-semibold text-xs leading-4"
                     >
                       {formatNumber(totals.available)}
                     </TableCell>
                     <TableCell
                       align="right"
-                      className="bg-[#f0f2f4] font-semibold text-xs leading-4 h-8 px-2.5 py-2"
+                      className="bg-[#f0f2f4] font-semibold text-xs leading-4"
                     >
                       {formatNumber(totals.locked)}
                     </TableCell>
                     <TableCell
                       align="left"
-                      className="bg-[#f0f2f4] shadow-[-6px_0px_8px_0px_rgba(0,0,0,0.08)] sticky right-0 z-30 font-semibold text-xs leading-4 h-8 px-2.5 py-2"
+                      className="bg-[#f0f2f4] font-semibold text-xs leading-4"
                       data-sticky="right"
                     >
                       --
@@ -232,12 +238,11 @@ export function Wallet() {
 
                   {/* Data Rows */}
                   {walletUsers.map((user) => (
-                    <TableRow key={user.id}>
-                      <TableCell
-                        align="left"
-                        className="bg-white shadow-[6px_0px_8px_0px_rgba(0,0,0,0.08)] sticky left-0 z-30 h-14 px-2.5 py-2"
-                        data-sticky="left-1"
-                      >
+                    <TableRow
+                      key={user.id}
+                      onClick={() => handleWalletClick(user.id)}
+                    >
+                      <TableCell align="left" data-sticky="left-1">
                         <div className="flex flex-col gap-0">
                           <div className="text-sm leading-5 text-[#021337] font-normal">
                             {user.name}
@@ -247,35 +252,22 @@ export function Wallet() {
                           </div>
                         </div>
                       </TableCell>
-                      <TableCell
-                        align="right"
-                        className="text-sm leading-5 h-14 px-2.5 py-2"
-                      >
+                      <TableCell align="right" className="text-sm leading-5">
                         {user.totalAssets}
                       </TableCell>
-                      <TableCell
-                        align="right"
-                        className="text-sm leading-5 h-14 px-2.5 py-2"
-                      >
+                      <TableCell align="right" className="text-sm leading-5">
                         <div className="flex items-center justify-end gap-2.5">
                           <span>{user.available}</span>
                           <ChevronRightIcon className="w-5 h-5 text-[#677187]" />
                         </div>
                       </TableCell>
-                      <TableCell
-                        align="right"
-                        className="text-sm leading-5 h-14 px-2.5 py-2"
-                      >
+                      <TableCell align="right" className="text-sm leading-5">
                         <div className="flex items-center justify-end gap-2.5">
                           <span>{user.locked}</span>
                           <ChevronRightIcon className="w-5 h-5 text-[#677187]" />
                         </div>
                       </TableCell>
-                      <TableCell
-                        align="left"
-                        className="bg-white shadow-[-6px_0px_8px_0px_rgba(0,0,0,0.08)] sticky right-0 z-30 h-14 px-2.5 py-2"
-                        data-sticky="right"
-                      >
+                      <TableCell align="left" data-sticky="right">
                         {getStatusBadge(user.status)}
                       </TableCell>
                     </TableRow>
@@ -297,6 +289,11 @@ export function Wallet() {
           </div>
         )}
       </Tabs>
+
+      {/* Right-side-panel */}
+      <RightSidePanel>
+        <WalletDetails />
+      </RightSidePanel>
     </div>
   );
 }
