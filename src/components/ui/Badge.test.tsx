@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest'
-import { render, screen } from '../test/utils'
-import { Badge, BadgeVariant } from './Badge'
+import { render, screen } from '../../test/utils'
+import { Badge } from './Badge'
+import type { BadgeVariant } from './Badge'
 
 describe('Badge', () => {
   it('renders without crashing', () => {
@@ -37,6 +38,7 @@ describe('Badge', () => {
   })
 
   describe('variants', () => {
+
     const variants: BadgeVariant[] = [
       'default',
       'success',
@@ -167,7 +169,7 @@ describe('Badge', () => {
 
   describe('edge cases', () => {
     it('handles empty children', () => {
-      render(<Badge></Badge>)
+      render(<Badge>Test</Badge>)
 
       // Find the badge by its classes since it has no text content
       const badge = document.querySelector('.inline-flex.items-center.justify-center')

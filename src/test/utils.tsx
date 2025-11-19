@@ -1,5 +1,5 @@
-import React, { ReactElement } from 'react'
-import { render, RenderOptions } from '@testing-library/react'
+import React, { type ReactElement } from 'react'
+import { render, type RenderOptions } from '@testing-library/react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { BrowserRouter } from 'react-router-dom'
 import { vi } from 'vitest'
@@ -11,7 +11,7 @@ const AllTheProviders: React.FC<{ children: React.ReactNode }> = ({ children }) 
     defaultOptions: {
       queries: {
         retry: false,
-        cacheTime: 0,
+        gcTime: Infinity,
       },
       mutations: {
         retry: false,

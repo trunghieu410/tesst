@@ -3,7 +3,7 @@ import { describe, it, expect, vi } from "vitest";
 import { KYCStatsGrid } from "./KYCStatsGrid";
 
 // Mock CompactStatsCard
-vi.mock("./StatsCard", () => ({
+vi.mock("@/components/ui/StatsCard", () => ({
   CompactStatsCard: vi.fn(({
     label,
     value,

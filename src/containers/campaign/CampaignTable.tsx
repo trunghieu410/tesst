@@ -1,5 +1,5 @@
-import { Badge } from "@/components/Badge";
-import type { BadgeVariant } from "@/components/Badge";
+import { Badge } from "@/components/ui/Badge";
+import type { BadgeVariant } from "@/components/ui/Badge";
 import {
   Table,
   TableHead,
@@ -7,7 +7,7 @@ import {
   TableRow,
   TableHeaderCell,
   TableCell,
-} from "@/components/Table";
+} from "@/components/ui/Table";
 import type { CampaignType } from "@/types";
 
 interface CampaignTableProps {

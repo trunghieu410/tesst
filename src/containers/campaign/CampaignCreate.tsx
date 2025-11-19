@@ -1,6 +1,6 @@
 import { useEffect } from "react";
-import { Badge } from "@/components/Badge";
-import { Tabs } from "@/components/Tabs";
+import { Badge } from "@/components/ui/Badge";
+import { Tabs } from "@/components/ui/Tabs";
 import { useEventEmitter } from "@/hooks/useEventEmitter";
 import { CampaignBlacklistTab } from "./CampaignBlacklistTab";
 import { CampaignHistoryTab } from "./CampaignHistoryTab";

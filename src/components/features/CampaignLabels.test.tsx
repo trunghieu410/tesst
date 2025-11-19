@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import { render, screen, fireEvent, act } from '../test/utils'
+import { render, screen, fireEvent, act } from '../../test/utils'
 import { CampaignLabels } from './CampaignLabels'
 import { XCircleIcon } from '@/icon/XCircleIcon'
 import { ChevronDownIcon } from 'lucide-react'

@@ -1,7 +1,7 @@
 import { GoogleIcon } from "@/icon/GoogleIcon";
 import { FacebookIcon } from "@/icon/FacebookIcon";
 import { AppleIcon } from "@/icon/AppleIcon";
-import { ClickToCopy } from "@/components/ClickToCopy";
+import { ClickToCopy } from "@/components/ui/ClickToCopy";
 import type { PublisherType } from "@/types";
 
 interface PublisherInfosProps {

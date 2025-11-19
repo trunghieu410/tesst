@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest'
-import { render, screen, fireEvent } from '../test/utils'
+import { render, screen, fireEvent } from '../../test/utils'
 import { Button } from './Button'
 
 // Mock the cn utility
@@ -65,6 +65,7 @@ describe('Button', () => {
   })
 
   describe('sizes', () => {
+
     const sizes = ['sm', 'md', 'lg'] as const
 
     sizes.forEach(size => {
@@ -268,7 +269,7 @@ describe('Button', () => {
 
   describe('edge cases', () => {
     it('handles empty children', () => {
-      render(<Button></Button>)
+      render(<Button>Test</Button>)
 
       const button = screen.getByRole('button')
       expect(button).toBeInTheDocument()

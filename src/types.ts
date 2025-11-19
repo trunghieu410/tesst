@@ -1,4 +1,4 @@
-import type { BadgeVariant } from "./components/Badge";
+import type { BadgeVariant } from "@/components/ui/Badge";
 
 export interface PublisherType {
   id: number;

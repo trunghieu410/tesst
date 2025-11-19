@@ -1,6 +1,6 @@
-import { Badge } from "@/components/Badge";
-import { Button } from "@/components/Button";
-import { PublisherActionsDropdown } from "@/components/PublisherActionsDropdown";
+import { Badge } from "@/components/ui/Badge";
+import { Button } from "@/components/ui/Button";
+import { PublisherActionsDropdown } from "@/components/features/PublisherActionsDropdown";
 import { PublisherOverview } from "./PublisherOverview";
 import { PublisherKYC } from "./PublisherKYC";
 import { PublisherMembers } from "./PublisherMembers";
@@ -8,7 +8,7 @@ import { PublisherInfos } from "./PublisherInfos";
 import { DangerIcon } from "@/icon/DangerIcon";
 import { XIcon } from "@/icon/XIcon";
 import { useEventEmitter, useEventListener } from "@/hooks/useEventEmitter";
-import { Tabs } from "../../components/Tabs";
+import { Tabs } from "@/components/ui/Tabs";
 import { PublisherHistory } from "./PublisherHistory";
 import {
   usePublisher,

@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import { Dropdown } from "@/components/Dropdown";
+import { Dropdown } from "@/components/ui/Dropdown";
 import {
   Table,
   TableHead,
@@ -7,7 +7,7 @@ import {
   TableRow,
   TableHeaderCell,
   TableCell,
-} from "@/components/Table";
+} from "@/components/ui/Table";
 
 type HistoryItem = {
   id: number;

@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { render, screen, fireEvent } from '../test/utils'
+import { render, screen, fireEvent } from '../../test/utils'
 import { Select } from './Select'
 import { ChevronDown } from 'lucide-react'
 
@@ -404,7 +404,7 @@ describe('Select', () => {
       const options = screen.getAllByRole('option')
       expect(options).toHaveLength(4) // placeholder + 3 options, but 2 have same value
 
-      const sameValueOptions = options.filter(option => option.value === 'same')
+      const sameValueOptions = options.filter(option => (option as HTMLOptionElement).value === 'same')
       expect(sameValueOptions).toHaveLength(2)
     })
 

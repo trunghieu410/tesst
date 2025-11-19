@@ -1,4 +1,4 @@
-import { CompactStatsCard } from "./StatsCard";
+import { CompactStatsCard } from "@/components/ui/StatsCard";
 
 interface KYCStats {
   approved: { value: number; percentage: string };

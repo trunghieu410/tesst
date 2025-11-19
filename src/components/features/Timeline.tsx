@@ -1,7 +1,7 @@
 import type { ReactNode, ComponentType } from "react";
 import { cn } from "@/lib/utils/common";
 import { ChevronRightIcon } from "@/icon/ChevronRightIcon";
-import { Button } from "./Button";
+import { Button } from "@/components/ui/Button";
 import { LinkHrefIcon } from "@/icon/LinkHrefIcon";
 
 export interface TimelineItem {

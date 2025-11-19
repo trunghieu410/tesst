@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Pagination } from "@/components/Pagination";
+import { Pagination } from "@/components/ui/Pagination";
 import {
   Table,
   TableBody,
@@ -7,7 +7,7 @@ import {
   TableHead,
   TableHeaderCell,
   TableRow,
-} from "@/components/Table";
+} from "@/components/ui/Table";
 
 // Mock blacklist data
 const mockData = [

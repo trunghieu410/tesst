@@ -3,7 +3,7 @@ import { OpenKingdomIcon } from "@/icon/OpenKingdomIcon";
 import { WalletIcon } from "@/icon/WalletIcon";
 import { InfoIcon } from "@/icon/InfoIcon";
 import { ChevronRightIcon } from "@/icon/ChevronRightIcon";
-import { Button } from "@/components/Button";
+import { Button } from "@/components/ui/Button";
 import {
   Table,
   TableHead,
@@ -11,10 +11,10 @@ import {
   TableRow,
   TableHeaderCell,
   TableCell,
-} from "@/components/Table";
+} from "@/components/ui/Table";
 import { TetherIcon } from "@/icon/TetherIcon";
 import { RoiIcon } from "@/icon/RoiIcon";
-import { Timeline } from "@/components/Timeline";
+import { Timeline } from "@/components/features/Timeline";
 import { Notes } from "@/icon/Notes";
 import { HistoricalIcon } from "@/icon/HistoricalIcon";
 import { ClockIcon } from "@/icon/ClockIcon";

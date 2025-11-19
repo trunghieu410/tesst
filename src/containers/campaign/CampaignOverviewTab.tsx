@@ -1,10 +1,10 @@
 import { useState, useMemo, useEffect, useRef } from "react";
 import { ChevronDownIcon, PaperclipIcon } from "lucide-react";
 import { TrashIcon } from "@/icon/TrashIcon";
-import { Button } from "@/components/Button";
-import { TextEditor } from "@/components/TextEditor";
-import { DateRangeInput } from "@/components/DateRangeInput";
-import { CampaignLabels } from "@/components/CampaignLabels";
+import { Button } from "@/components/ui/Button";
+import { TextEditor } from "@/components/ui/TextEditor";
+import { DateRangeInput } from "@/components/ui/DateRangeInput";
+import { CampaignLabels } from "@/components/features/CampaignLabels";
 
 export function CampaignOverviewTab() {
   const [activeRightTab, setActiveRightTab] = useState<

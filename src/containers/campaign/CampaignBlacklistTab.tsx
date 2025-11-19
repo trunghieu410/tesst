@@ -1,8 +1,8 @@
-import { Badge } from "@/components/Badge";
-import { Button } from "@/components/Button";
-import { Dropdown } from "@/components/Dropdown";
-import { Pagination } from "@/components/Pagination";
-import { SearchInput } from "@/components/SearchInput";
+import { Badge } from "@/components/ui/Badge";
+import { Button } from "@/components/ui/Button";
+import { Dropdown } from "@/components/ui/Dropdown";
+import { Pagination } from "@/components/ui/Pagination";
+import { SearchInput } from "@/components/ui/SearchInput";
 import {
   Table,
   TableBody,
@@ -10,7 +10,7 @@ import {
   TableHead,
   TableHeaderCell,
   TableRow,
-} from "@/components/Table";
+} from "@/components/ui/Table";
 import { InfoIcon } from "@/icon/InfoIcon";
 import { useState } from "react";
 

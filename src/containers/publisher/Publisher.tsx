@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 
-import { SearchInput } from "@/components/SearchInput";
-import { DateRangeInput } from "@/components/DateRangeInput";
-import { Dropdown } from "@/components/Dropdown";
-import { Pagination } from "@/components/Pagination";
-import { RightSidePanel } from "@/components/RightSidePanel";
+import { SearchInput } from "@/components/ui/SearchInput";
+import { DateRangeInput } from "@/components/ui/DateRangeInput";
+import { Dropdown } from "@/components/ui/Dropdown";
+import { Pagination } from "@/components/ui/Pagination";
+import { RightSidePanel } from "@/components/features/RightSidePanel";
 import { useEventEmitter } from "@/hooks/useEventEmitter";
 import { usePublishers } from "@/lib/queries/usePublishers";
-import { Tooltip } from "@/components/Tooltip";
+import { Tooltip } from "@/components/ui/Tooltip";
 import { PublisherDetails } from "./PublisherDetails";
 import { PublisherTable } from "./PublisherTable";
 

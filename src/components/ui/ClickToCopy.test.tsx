@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import { render, screen, fireEvent, waitFor, act } from '../test/utils'
+import { render, screen, fireEvent, waitFor, act } from '../../test/utils'
 import { ClickToCopy } from './ClickToCopy'
 import { CopyIcon } from '@/icon/CopyIcon'
 
@@ -362,7 +362,7 @@ describe('ClickToCopy', () => {
 
   describe('edge cases', () => {
     it('handles empty children', () => {
-      render(<ClickToCopy></ClickToCopy>)
+      render(<ClickToCopy>Test</ClickToCopy>)
 
       const element = screen.getByRole('button')
       expect(element).toBeInTheDocument()

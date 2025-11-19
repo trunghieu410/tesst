@@ -1,8 +1,8 @@
-import { Badge } from "@/components/Badge";
-import { Button } from "@/components/Button";
+import { Badge } from "@/components/ui/Badge";
+import { Button } from "@/components/ui/Button";
 import { XIcon } from "@/icon/XIcon";
 import { useEventEmitter, useEventListener } from "@/hooks/useEventEmitter";
-import { Tabs } from "../../components/Tabs";
+import { Tabs } from "@/components/ui/Tabs";
 import { useState } from "react";
 
 const tabs = [

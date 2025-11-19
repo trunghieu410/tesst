@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 
 import { useEventEmitter } from "@/hooks/useEventEmitter";
-import { Tabs } from "@/components/Tabs";
-import { Alert } from "@/components/Alert";
-import { PercentageInput } from "@/components/PercentageInput";
+import { Tabs } from "@/components/ui/Tabs";
+import { Alert } from "@/components/ui/Alert";
+import { PercentageInput } from "@/components/features/PercentageInput";
 
 const tabs = [
   {

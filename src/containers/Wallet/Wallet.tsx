@@ -1,8 +1,8 @@
 import { useEventEmitter } from "@/hooks/useEventEmitter";
 import { useEffect, useState } from "react";
-import { SearchInput } from "@/components/SearchInput";
-import { Select } from "@/components/Select";
-import { RightSidePanel } from "@/components/RightSidePanel";
+import { SearchInput } from "@/components/ui/SearchInput";
+import { Select } from "@/components/ui/Select";
+import { RightSidePanel } from "@/components/features/RightSidePanel";
 import { WalletDetails } from "./WalletDetails";
 import {
   Table,
@@ -11,10 +11,10 @@ import {
   TableRow,
   TableHeaderCell,
   TableCell,
-} from "@/components/Table";
-import { Badge } from "@/components/Badge";
-import { Pagination } from "@/components/Pagination";
-import { Tabs } from "@/components/Tabs";
+} from "@/components/ui/Table";
+import { Badge } from "@/components/ui/Badge";
+import { Pagination } from "@/components/ui/Pagination";
+import { Tabs } from "@/components/ui/Tabs";
 import { ChevronRightIcon } from "@/icon/ChevronRightIcon";
 
 interface WalletUser {

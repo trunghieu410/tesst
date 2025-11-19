@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 
-import { SearchInput } from "@/components/SearchInput";
-import { DateRangeInput } from "@/components/DateRangeInput";
-import { Dropdown } from "@/components/Dropdown";
-import { Button } from "@/components/Button";
+import { SearchInput } from "@/components/ui/SearchInput";
+import { DateRangeInput } from "@/components/ui/DateRangeInput";
+import { Dropdown } from "@/components/ui/Dropdown";
+import { Button } from "@/components/ui/Button";
 import { CampaignTable } from "./CampaignTable";
-import { Pagination } from "@/components/Pagination";
+import { Pagination } from "@/components/ui/Pagination";
 import { useEventEmitter } from "@/hooks/useEventEmitter";
 import { useCampaigns } from "@/lib/queries/useCampaigns";
 import { useNavigate } from "react-router-dom";

@@ -114,7 +114,7 @@ describe("AgeBarChart", () => {
     const { container } = render(<AgeBarChart data={[]} />);
 
     expect(container.firstChild).toBeInTheDocument();
-    expect(container.firstChild?.children).toHaveLength(0);
+    expect((container.firstChild as HTMLElement)?.children).toHaveLength(0);
   });
 
   it("handles single data point", () => {

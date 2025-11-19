@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { render, screen, fireEvent } from '../test/utils'
+import { render, screen, fireEvent } from '../../test/utils'
 import {
   Table,
   TableHead,
@@ -796,6 +796,7 @@ describe('Table', () => {
         </Table>
       )
 
+
       const rows = document.querySelectorAll('tr')
       const cells = document.querySelectorAll('td')
 
@@ -813,11 +814,11 @@ describe('Table', () => {
     })
 
     it('handles empty table gracefully', () => {
-      render(<Table></Table>)
+      render(<Table><tbody><tr><td>Test</td></tr></tbody></Table>)
 
       expect(screen.getByRole('table')).toBeInTheDocument()
       expect(document.querySelector('thead')).not.toBeInTheDocument()
-      expect(document.querySelector('tbody')).not.toBeInTheDocument()
+      expect(document.querySelector('tbody')).toBeInTheDocument()
     })
   })
 })

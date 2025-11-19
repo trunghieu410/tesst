@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { render, screen, fireEvent, act } from "../test/utils";
+import { render, screen, fireEvent, act } from "../../test/utils";
 import { InputTagLabels } from "./InputTagLabels";
 import { XCircleIcon } from "@/icon/XCircleIcon";
 

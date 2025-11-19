@@ -1,8 +1,8 @@
 import { useEventEmitter } from "@/hooks/useEventEmitter";
 import { useEffect, useState } from "react";
-import { SearchInput } from "@/components/SearchInput";
-import { DateRangeInput } from "@/components/DateRangeInput";
-import { Dropdown } from "@/components/Dropdown";
+import { SearchInput } from "@/components/ui/SearchInput";
+import { DateRangeInput } from "@/components/ui/DateRangeInput";
+import { Dropdown } from "@/components/ui/Dropdown";
 import {
   Table,
   TableHead,
@@ -10,14 +10,14 @@ import {
   TableRow,
   TableHeaderCell,
   TableCell,
-} from "@/components/Table";
-import { Badge } from "@/components/Badge";
-import { Pagination } from "@/components/Pagination";
-import { ClickToCopy } from "@/components/ClickToCopy";
+} from "@/components/ui/Table";
+import { Badge } from "@/components/ui/Badge";
+import { Pagination } from "@/components/ui/Pagination";
+import { ClickToCopy } from "@/components/ui/ClickToCopy";
 import { InfoIcon } from "@/icon/InfoIcon";
-import { Tabs } from "@/components/Tabs";
-import { Button } from "@/components/Button";
-import { RightSidePanel } from "@/components/RightSidePanel";
+import { Tabs } from "@/components/ui/Tabs";
+import { Button } from "@/components/ui/Button";
+import { RightSidePanel } from "@/components/features/RightSidePanel";
 import { TransactionDetails } from "./TransactionDetails";
 
 type StatusType = "all" | "pending" | "approving" | "approved" | "rejected";

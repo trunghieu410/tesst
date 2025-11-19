@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest'
-import { render, screen, fireEvent, waitFor } from '../test/utils'
+import { render, screen, fireEvent, waitFor } from '../../test/utils'
 import { Tooltip } from './Tooltip'
 
 // Mock createPortal to render tooltip content in test environment

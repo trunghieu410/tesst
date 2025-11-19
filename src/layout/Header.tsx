@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ChevronDown } from "lucide-react";
-import { ProfilePicture } from "@/components/ProfilePicture";
-import { Button } from "@/components/Button";
+import { ProfilePicture } from "@/components/ui/ProfilePicture";
+import { Button } from "@/components/ui/Button";
 import { useEventListener } from "@/hooks/useEventEmitter";
 import { useAuth } from "@/hooks/useAuth";
 import { cn } from "@/lib/utils/common";

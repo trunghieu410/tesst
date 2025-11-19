@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { render, screen, fireEvent } from '../test/utils'
+import { render, screen, fireEvent } from '../../test/utils'
 import { Pagination } from './Pagination'
-import { ChevronLeft, ChevronRight } from 'lucide-react'
+
 
 // Mock the icons
 vi.mock('lucide-react', () => ({

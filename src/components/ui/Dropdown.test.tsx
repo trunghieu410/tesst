@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import { render, screen, fireEvent, act } from '../test/utils'
+import { render, screen, fireEvent, act } from '../../test/utils'
 import { Dropdown } from './Dropdown'
 import { ChevronDown } from 'lucide-react'
 
