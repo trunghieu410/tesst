@@ -18,9 +18,16 @@ interface ChartData {
 interface IntroductionChartProps {
   data: ChartData[];
   className?: string;
+  primaryColor?: string;
+  secondaryColor?: string;
 }
 
-export function IntroductionChart({ data, className }: IntroductionChartProps) {
+export function IntroductionChart({
+  data,
+  className,
+  primaryColor = "#677187",
+  secondaryColor = "#ff3b34",
+}: IntroductionChartProps) {
   // Custom tooltip
   const CustomTooltip = ({ active, payload }: any) => {
     if (active && payload && payload.length) {
@@ -65,7 +72,7 @@ export function IntroductionChart({ data, className }: IntroductionChartProps) {
           <Tooltip content={<CustomTooltip />} cursor={false} />
           <Bar
             dataKey="primary"
-            fill="#677187"
+            fill={primaryColor}
             radius={[2, 2, 0, 0]}
             barSize={16}
           >
@@ -75,7 +82,7 @@ export function IntroductionChart({ data, className }: IntroductionChartProps) {
           </Bar>
           <Bar
             dataKey="secondary"
-            fill="#ff3b34"
+            fill={secondaryColor}
             radius={[2, 2, 0, 0]}
             barSize={16}
           >
