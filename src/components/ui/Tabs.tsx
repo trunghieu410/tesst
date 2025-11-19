@@ -14,13 +14,23 @@ interface TabsProps {
   defaultTab: string;
   className?: string;
   children: (activeTab: string) => React.ReactNode;
+  onTabChange?: (tabId: string) => void;
 }
 
-export function Tabs({ tabs, defaultTab, className, children }: TabsProps) {
+export function Tabs({
+  tabs,
+  defaultTab,
+  className,
+  children,
+  onTabChange,
+}: TabsProps) {
   const [activeTab, setActiveTab] = useState(defaultTab);
 
   const handleTabChange = (tabId: string) => {
     setActiveTab(tabId);
+    if (onTabChange) {
+      onTabChange(tabId);
+    }
   };
 
   return (

@@ -36,6 +36,7 @@ interface TableCellProps {
   align?: "left" | "center" | "right";
   className?: string;
   "data-sticky"?: "left-1" | "left-2" | "right";
+  colSpan?: number;
 }
 
 export function Table({
@@ -131,6 +132,7 @@ export function TableCell({
   className = "",
   "data-sticky": sticky,
   onClick,
+  colSpan,
 }: TableCellProps) {
   const alignClass = {
     left: "text-left",
@@ -140,6 +142,7 @@ export function TableCell({
 
   return (
     <td
+      colSpan={colSpan}
       className={cn(
         "h-9 px-2.5 py-2 bg-white [tr:not(:last-child)_&]:border-b [tr:not(:last-child)_&]:border-[#cfd6de]",
         onClick && "cursor-pointer",

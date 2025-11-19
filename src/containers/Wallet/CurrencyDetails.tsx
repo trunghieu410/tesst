@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useEventListener, useEventEmitter } from "@/hooks/useEventEmitter";
-import { Badge } from "@/components/ui/Badge";
 import { XIcon } from "@/icon/XIcon";
 import { Select } from "@/components/ui/Select";
 import {
@@ -12,11 +11,14 @@ import {
   TableCell,
 } from "@/components/ui/Table";
 import { cn } from "@/lib/utils/common";
-import type { WalletUser } from "./walletUtils";
-import { getTransactionStatusBadge } from "./walletUtils";
+import {
+  getCryptoIcon,
+  getTransactionStatusBadge,
+  formatNumber,
+} from "./walletUtils";
 
 // Data structures
-interface WalletTransaction {
+interface CurrencyTransaction {
   id: string;
   txId: string;
   datetime: string;
@@ -31,7 +33,7 @@ interface WalletTransaction {
   status: "approved" | "pending" | "rejected" | "warning";
 }
 
-interface WalletOperation {
+interface CurrencyOperation {
   id: string;
   datetime: string;
   operatorName: string;
@@ -41,66 +43,70 @@ interface WalletOperation {
   newStatus: string;
 }
 
-interface WalletDetailsData {
+interface CurrencyDetailsData {
   id: number;
   name: string;
-  email: string;
+  ticker: string;
+  icon: string;
   totalAssets: string;
   available: string;
   locked: string;
-  status: WalletUser["status"];
-  transactions: WalletTransaction[];
-  operations: WalletOperation[];
+  usdtValue: string;
+  withdrawalStatus: "enabled" | "disabled";
+  transactions: CurrencyTransaction[];
+  operations: CurrencyOperation[];
 }
 
 // Mock data
-const mockWalletDetails: Record<number, WalletDetailsData> = {
+const mockCurrencyDetails: Record<number, CurrencyDetailsData> = {
   1: {
     id: 1,
-    name: "Phan Công Kiều",
-    email: "kieu.phan@gmail.com",
+    name: "Tether",
+    ticker: "USDT",
+    icon: "usdt",
     totalAssets: "12.32932832",
     available: "0.00840590",
     locked: "0.000000",
-    status: "pending",
+    usdtValue: "12.32932832",
+    withdrawalStatus: "disabled",
     transactions: [
       {
         id: "1",
-        txId: "TxW-312-67000",
+        txId: "TxC-312-67000",
         datetime: "10.13.2025 - 14:52",
         senderName: "Hệ thống",
-        senderEmail: "system@openkingdom.com",
+        senderEmail: "kieu.phan@gmail.com",
         receiverName: "Phan Công Kiều",
         receiverEmail: "kieu.phan@gmail.com",
-        type: "Thu nhập",
-        amount: "+5.000000",
+        type: "Giao dịch",
+        amount: "-5.000000",
         balanceAfter: "12.070000",
         description: "Thu nhập từ chiến dịch",
         status: "approved",
       },
       {
         id: "2",
-        txId: "TxW-9320432-8035",
+        txId: "TxC-9320432-8035",
         datetime: "10.13.2025 - 13:50",
         senderName: "Hệ thống",
-        senderEmail: "system@openkingdom.com",
+        senderEmail: "kieu.phan@gmail.com",
         receiverName: "Phan Công Kiều",
         receiverEmail: "kieu.phan@gmail.com",
-        type: "Thu nhập",
-        amount: "+0.300000",
+        type: "Giao dịch",
+        amount: "-0.300000",
         balanceAfter: "31.334300",
         description: "Thu nhập từ chiến dịch",
         status: "warning",
       },
       {
         id: "3",
-        txId: "TxW-9320432-8035",
+        txId: "TxC-9320432-8035",
         datetime: "10.13.2025 - 13:50",
         senderName: "Phan Công Kiều",
         senderEmail: "kieu.phan@gmail.com",
-        receiverName: "Ví Tether",
+        receiverName: "0×9f1b7FAE548E07F4FEE9f...",
         receiverEmail: "",
-        type: "Rút tiền",
+        type: "Giao dịch",
         amount: "-15.000000",
         balanceAfter: "115.950000",
         description: "Rút USDT",
@@ -108,12 +114,12 @@ const mockWalletDetails: Record<number, WalletDetailsData> = {
       },
       {
         id: "4",
-        txId: "TxW-LOEvBr-24385",
+        txId: "TxC-LOEvBr-24385",
         datetime: "10.12.2025 - 13:50",
-        senderName: "Hệ thống",
-        senderEmail: "system@openkingdom.com",
-        receiverName: "Phan Công Kiều",
-        receiverEmail: "kieu.phan@gmail.com",
+        senderName: "Phan Công Kiều",
+        senderEmail: "kieu.phan@gmail.com",
+        receiverName: "Hệ thống",
+        receiverEmail: "",
         type: "Điều chỉnh",
         amount: "+20.000000",
         balanceAfter: "831.000034",
@@ -122,13 +128,13 @@ const mockWalletDetails: Record<number, WalletDetailsData> = {
       },
       {
         id: "5",
-        txId: "TxW-3296E-33485",
+        txId: "TxC-3296E-33485",
         datetime: "10.11.2025 - 13:50",
-        senderName: "Ví Tether",
+        senderName: "0×9f1b7FAE548E07F4FEE9f...",
         senderEmail: "",
         receiverName: "Phan Công Kiều",
         receiverEmail: "kieu.phan@gmail.com",
-        type: "Nạp tiền",
+        type: "Giao dịch",
         amount: "+0.000001",
         balanceAfter: "81.932001",
         description: "Nạp tiền vào hệ thống",
@@ -141,108 +147,88 @@ const mockWalletDetails: Record<number, WalletDetailsData> = {
         datetime: "10.13.2025 - 13:50",
         operatorName: "Tuấn Phan",
         operatorEmail: "tuanphan@gmail.com",
-        actionDescription: "Cập nhật Trạng thái Tài khoản",
-        previousStatus: "Chờ kích hoạt",
-        newStatus: "Kích hoạt",
+        actionDescription: "Cập nhật Trạng thái Rút",
+        previousStatus: "Khoá rút",
+        newStatus: "Cho rút",
       },
       {
         id: "2",
         datetime: "10.12.2025 - 13:50",
         operatorName: "Trung Nguyễn",
         operatorEmail: "trung@gmail.com",
-        actionDescription: "Cập nhật Trạng thái Tài khoản",
-        previousStatus: "Kích hoạt",
-        newStatus: "Tạm khoá",
+        actionDescription: "Cập nhật Trạng thái Nạp",
+        previousStatus: "Cho nạp",
+        newStatus: "Khoá nạp",
       },
     ],
   },
   2: {
     id: 2,
-    name: "Tuấn Phan",
-    email: "tuanphan@gmail.com",
+    name: "ROI",
+    ticker: "ROI",
+    icon: "roi",
     totalAssets: "723.73829182",
     available: "500.00000000",
     locked: "223.738291",
-    status: "activated",
+    usdtValue: "723.73829182",
+    withdrawalStatus: "enabled",
     transactions: [],
     operations: [],
   },
   3: {
     id: 3,
-    name: "Tuấn Phan",
-    email: "tuanphan@gmail.com",
-    totalAssets: "832.73828291",
-    available: "600.00000000",
-    locked: "232.738282",
-    status: "deleted",
-    transactions: [],
-    operations: [],
-  },
-  4: {
-    id: 4,
-    name: "Trung Nguyễn",
-    email: "trung@gmail.com",
+    name: "OpenKingdom",
+    ticker: "OKT",
+    icon: "okt",
     totalAssets: "1,324.85938271",
     available: "1000.00000000",
     locked: "324.859382",
-    status: "locked",
+    usdtValue: "1,324.85938271",
+    withdrawalStatus: "enabled",
     transactions: [],
     operations: [],
   },
 };
 
-export function WalletDetails() {
+export function CurrencyDetails() {
   const { publish } = useEventEmitter();
-  const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
+  const [selectedCurrencyId, setSelectedCurrencyId] = useState<number | null>(
+    null
+  );
   const [activeTab, setActiveTab] = useState<"information" | "operations">(
     "information"
   );
   const [transactionTypeFilter, setTransactionTypeFilter] = useState("");
 
-  // Listen for wallet selection
-  useEventListener<string>("show-right-panel", (userId) => {
-    setSelectedUserId(Number(userId));
+  // Listen for currency selection
+  useEventListener<string>("show-currency-panel", (currencyId) => {
+    setSelectedCurrencyId(Number(currencyId));
     setActiveTab("information");
   });
 
   const handleClose = () => {
     publish("hide-right-panel");
-    setSelectedUserId(null);
+    setSelectedCurrencyId(null);
   };
 
-  // Get selected user data
-  const userData = selectedUserId ? mockWalletDetails[selectedUserId] : null;
+  // Get selected currency data
+  const currencyData = selectedCurrencyId
+    ? mockCurrencyDetails[selectedCurrencyId]
+    : null;
 
-  if (!userData) {
+  if (!currencyData) {
     return null;
   }
 
-  const getStatusBadge = (status: WalletUser["status"]) => {
-    switch (status) {
-      case "pending":
-        return <Badge variant="warning">Chờ kích hoạt</Badge>;
-      case "activated":
-        return <Badge variant="success">Kích hoạt</Badge>;
-      case "deleted":
-        return <Badge variant="error">Đã xoá</Badge>;
-      case "locked":
-        return <Badge variant="pending">Tạm khoá</Badge>;
-      default:
-        return null;
-    }
-  };
-
   const transactionTypeOptions = [
     { value: "", label: "Loại giao dịch" },
-    { value: "Thu nhập", label: "Thu nhập" },
-    { value: "Rút tiền", label: "Rút tiền" },
-    { value: "Nạp tiền", label: "Nạp tiền" },
+    { value: "Giao dịch", label: "Giao dịch" },
     { value: "Điều chỉnh", label: "Điều chỉnh" },
   ];
 
   const filteredTransactions = transactionTypeFilter
-    ? userData.transactions.filter((t) => t.type === transactionTypeFilter)
-    : userData.transactions;
+    ? currencyData.transactions.filter((t) => t.type === transactionTypeFilter)
+    : currencyData.transactions;
 
   return (
     <div className="bg-white h-full flex flex-col rounded-tl-3xl rounded-bl-3xl overflow-hidden w-full md:w-[600px]">
@@ -251,7 +237,7 @@ export function WalletDetails() {
         <div className="flex gap-4 items-center w-full">
           <div className="flex-1 flex gap-2.5 items-center">
             <h2 className="text-xl font-semibold text-[#021337] leading-7">
-              Chi tiết ví người dùng
+              Chi tiết ví tổng
             </h2>
           </div>
           <button
@@ -298,36 +284,27 @@ export function WalletDetails() {
           {/* Tab 1: Information */}
           {activeTab === "information" && (
             <div className="flex flex-col gap-4 pt-4">
-              {/* Account Status */}
+              {/* Withdrawal Status */}
               <div className="flex flex-col gap-1">
                 <p className="text-xs text-[#677187] leading-4">
-                  Trạng thái tài khoản
+                  Trạng thái rút
                 </p>
                 <div className="flex items-center gap-2">
-                  {getStatusBadge(userData.status)}
-                </div>
-              </div>
-
-              {/* User Info */}
-              <div className="flex flex-col gap-1">
-                <p className="text-xs text-[#677187] leading-4">
-                  Thông tin người dùng
-                </p>
-                <div className="border border-[#cfd6de] rounded-lg p-3">
-                  <div className="flex flex-col gap-2">
-                    <div className="flex justify-between">
-                      <span className="text-sm text-[#677187]">Tên:</span>
-                      <span className="text-sm font-medium text-[#021337]">
-                        {userData.name}
-                      </span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-sm text-[#677187]">Email:</span>
-                      <span className="text-sm font-medium text-[#021337]">
-                        {userData.email}
-                      </span>
-                    </div>
+                  <div
+                    className={cn(
+                      "w-10 h-6 rounded-full p-0.5 flex",
+                      currencyData.withdrawalStatus === "disabled"
+                        ? "bg-[#ff3b34] items-start"
+                        : "bg-[#00a349] items-end"
+                    )}
+                  >
+                    <div className="w-5 h-5 bg-white rounded-full shadow-sm" />
                   </div>
+                  <span className="text-sm text-[#021337] leading-5">
+                    {currencyData.withdrawalStatus === "disabled"
+                      ? "Khoá rút"
+                      : "Cho rút"}
+                  </span>
                 </div>
               </div>
 
@@ -337,8 +314,8 @@ export function WalletDetails() {
                   <Table>
                     <TableHead>
                       <TableRow className="bg-white">
-                        <TableHeaderCell align="left" className="min-w-[120px]">
-                          Loại tài sản
+                        <TableHeaderCell align="left" className="min-w-[140px]">
+                          Tên tài sản
                         </TableHeaderCell>
                         <TableHeaderCell
                           align="right"
@@ -352,21 +329,40 @@ export function WalletDetails() {
                         <TableHeaderCell align="right" className="min-w-[90px]">
                           Đang khoá
                         </TableHeaderCell>
+                        <TableHeaderCell
+                          align="right"
+                          className="min-w-[120px]"
+                        >
+                          Tổng tài sản quy đổi USDT
+                        </TableHeaderCell>
                       </TableRow>
                     </TableHead>
                     <TableBody>
                       <TableRow className="h-14">
-                        <TableCell align="left" className="text-sm font-medium">
-                          USDT
+                        <TableCell align="left">
+                          <div className="flex items-center gap-2">
+                            {getCryptoIcon(currencyData.icon)}
+                            <div className="flex items-center gap-2 text-sm leading-[18px]">
+                              <span className="font-medium text-[#021337]">
+                                {currencyData.name}
+                              </span>
+                              <span className="text-[#777e90]">
+                                {currencyData.ticker}
+                              </span>
+                            </div>
+                          </div>
                         </TableCell>
                         <TableCell align="right" className="text-sm">
-                          {userData.totalAssets}
+                          {currencyData.totalAssets}
                         </TableCell>
                         <TableCell align="right" className="text-sm">
-                          {userData.available}
+                          {currencyData.available}
                         </TableCell>
                         <TableCell align="right" className="text-sm">
-                          {userData.locked}
+                          {currencyData.locked}
+                        </TableCell>
+                        <TableCell align="right" className="text-sm">
+                          {currencyData.usdtValue}
                         </TableCell>
                       </TableRow>
                     </TableBody>
@@ -502,7 +498,7 @@ export function WalletDetails() {
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {userData.operations.length === 0 ? (
+                    {currencyData.operations.length === 0 ? (
                       <TableRow>
                         <TableCell colSpan={3} align="center" className="py-8">
                           <p className="text-sm text-[#677187]">
@@ -511,7 +507,7 @@ export function WalletDetails() {
                         </TableCell>
                       </TableRow>
                     ) : (
-                      userData.operations.map((operation) => (
+                      currencyData.operations.map((operation) => (
                         <TableRow key={operation.id} className="h-[50px]">
                           <TableCell align="left">
                             <div className="flex flex-col gap-0.5">
