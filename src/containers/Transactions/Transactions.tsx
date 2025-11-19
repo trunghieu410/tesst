@@ -19,31 +19,9 @@ import { Tabs } from "@/components/ui/Tabs";
 import { Button } from "@/components/ui/Button";
 import { RightSidePanel } from "@/components/features/RightSidePanel";
 import { TransactionDetails } from "./TransactionDetails";
+import type { Transaction } from "@/types";
 
 type StatusType = "all" | "pending" | "approving" | "approved" | "rejected";
-
-interface Transaction {
-  id: number;
-  sender: string;
-  receiver: string;
-  content: string;
-  wallet: string;
-  walletAddress: string;
-  amount: string;
-  currency: string;
-  balance: string;
-  note: string;
-  statusUpdateTime: string;
-  updater: string;
-  txId: string;
-  createdAt: string;
-  status:
-    | "pending"
-    | "approving"
-    | "approved"
-    | "rejected"
-    | "temporarily-approved";
-}
 
 export function Transactions() {
   const { publish } = useEventEmitter();

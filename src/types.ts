@@ -53,3 +53,26 @@ export interface CampaignType {
     flagUrl: string;
   };
 }
+
+export interface Transaction {
+  id: number;
+  sender: string;
+  receiver: string;
+  content: string;
+  wallet: string;
+  walletAddress: string;
+  amount: string;
+  currency: string;
+  balance: string;
+  note: string;
+  statusUpdateTime: string;
+  updater: string;
+  txId: string;
+  createdAt: string;
+  status:
+    | "pending"
+    | "approving"
+    | "approved"
+    | "rejected"
+    | "temporarily-approved";
+}
