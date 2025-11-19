@@ -57,6 +57,7 @@ export function Button({
 }: ButtonProps) {
   return (
     <button
+      type="button"
       className={cn(
         // Base styles
         "inline-flex items-center justify-center gap-2 font-medium transition-colors",

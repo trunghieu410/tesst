@@ -45,7 +45,7 @@ export function SettingsCard({
       onClick={onClick}
     >
       {/* Text content */}
-      <div className="flex flex-col gap-2.5 flex-1]">
+      <div className="flex flex-col gap-2.5 flex-1">
         <h3 className="font-medium text-[16px] leading-5 text-[#021337] m-0">
           {title}
         </h3>

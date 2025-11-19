@@ -39,10 +39,12 @@ export function Badge({
   isActive = false,
 }: BadgeProps) {
   const radius = isCircle ? "rounded-full" : "rounded";
-  const activeStyles = isActive ? "bg-black text-white" : "";
+  const baseClasses = "inline-flex items-center justify-center px-1.5 py-0 h-5 font-medium text-xs leading-4 text-nowrap";
+  const variantClasses = isActive ? "bg-black text-white" : variantStyles[variant];
+
   return (
     <div
-      className={`inline-flex items-center justify-center px-1.5 py-0 h-5 font-medium text-xs leading-4 text-nowrap ${variantStyles[variant]} ${className} ${radius} ${activeStyles}`}
+      className={`${baseClasses} ${variantClasses} ${className} ${radius}`}
     >
       {children}
     </div>
