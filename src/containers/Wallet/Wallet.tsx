@@ -2,9 +2,7 @@ import { useEventEmitter } from "@/hooks/useEventEmitter";
 import { useEffect, useState } from "react";
 import { RightSidePanel } from "@/components/features/RightSidePanel";
 import { WalletDetails } from "./WalletDetails";
-import { CurrencyDetails } from "./CurrencyDetails";
 import { WalletUsers } from "./WalletUsers";
-import { WalletCurrency } from "./WalletCurrency";
 import { Tabs } from "@/components/ui/Tabs";
 
 export function Wallet() {
@@ -35,7 +33,9 @@ export function Wallet() {
             {activeTab === "users" ? (
               <WalletUsers onUserSelect={handleUserSelect} />
             ) : (
-              <WalletCurrency />
+              <div>
+                <h1>Đơn vị tiền</h1>
+              </div>
             )}
           </div>
         )}
@@ -44,7 +44,6 @@ export function Wallet() {
       {/* Right-side Panel */}
       <RightSidePanel>
         <WalletDetails />
-        <CurrencyDetails />
       </RightSidePanel>
     </div>
   );
