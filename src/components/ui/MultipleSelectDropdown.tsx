@@ -1,5 +1,5 @@
-import { useState, type ReactNode } from "react";
-import { ChevronDown } from "lucide-react";
+import { useState, type ReactNode, useRef, useEffect } from "react";
+import { ChevronDown, Search } from "lucide-react";
 import { cn } from "@/lib/utils/common";
 import { Button } from "./Button";
 import { XIcon } from "@/icon/XIcon";
@@ -27,6 +27,8 @@ interface MultipleSelectDropdownProps {
   onSelectedChange?: (values: string[]) => void;
   /** Optional initial selected values */
   initialValues?: string[];
+  /** Enable/disable search filtering */
+  filterable?: boolean;
 }
 
 export function MultipleSelectDropdown({
@@ -37,15 +39,35 @@ export function MultipleSelectDropdown({
   children,
   onSelectedChange,
   initialValues = [],
+  filterable = true,
 }: MultipleSelectDropdownProps) {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [values, setValues] = useState<string[]>(initialValues);
+  const [searchQuery, setSearchQuery] = useState("");
+  const searchInputRef = useRef<HTMLInputElement>(null);
 
   const domNode = useClickOutside<HTMLDivElement>(() => {
     setDropdownOpen(false);
+    if (filterable) {
+      setSearchQuery("");
+    }
   });
 
+  // Focus search input when dropdown opens (only when filterable)
+  useEffect(() => {
+    if (dropdownOpen && filterable && searchInputRef.current) {
+      searchInputRef.current.focus();
+    }
+  }, [dropdownOpen, filterable]);
+
   const selectedCount = values.length;
+
+  // Filter options based on search query (only when filterable)
+  const displayedOptions = filterable
+    ? options.filter((option) =>
+        option.label.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    : options;
 
   const toggleValue = (val: string) => {
     const exists = values.includes(val);
@@ -123,40 +145,72 @@ export function MultipleSelectDropdown({
             : "top-[110%] invisible opacity-0"
         )}
       >
-        {options.map((option) => {
-          const checked = values.includes(option.value);
-          return (
-            <Button
-              key={option.value}
-              variant="ghost"
-              size="sm"
-              onClick={(e) => {
-                e.preventDefault();
-                toggleValue(option.value);
-              }}
-              className={cn(
-                "w-full justify-start rounded-none px-4 py-2 text-left",
-                checked
-                  ? "bg-[#ff3131]! text-white hover:bg-[#f1caca]"
-                  : "hover:bg-[#f1caca]"
-              )}
-            >
-              <div className="flex items-center gap-3 text-inherit">
-                <input
-                  type="checkbox"
-                  checked={checked}
-                  onChange={() => toggleValue(option.value)}
-                  onClick={(e) => e.stopPropagation()}
+        {/* Search Input - only shown when filterable */}
+        {filterable && (
+          <div className="px-3 py-2 border-b border-gray-200">
+            <div className="relative">
+              <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+              <input
+                ref={searchInputRef}
+                type="text"
+                placeholder="Search options..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full pl-8 pr-3 py-1.5 text-sm border border-gray-300 rounded-md focus:outline-none"
+                onClick={(e) => e.stopPropagation()}
+              />
+            </div>
+          </div>
+        )}
+
+        {/* Options List */}
+        <div
+          className={cn(
+            "overflow-y-auto",
+            filterable ? "max-h-48" : "max-h-60"
+          )}
+        >
+          {displayedOptions.length > 0 ? (
+            displayedOptions.map((option) => {
+              const checked = values.includes(option.value);
+              return (
+                <Button
+                  key={option.value}
+                  variant="ghost"
+                  size="sm"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    toggleValue(option.value);
+                  }}
                   className={cn(
-                    "size-4 rounded border border-[#cfd6de]",
-                    checked && "accent-white"
+                    "w-full justify-start rounded-none px-4 py-2 text-left",
+                    checked
+                      ? "bg-[#ff3131]! text-white hover:bg-[#f1caca]"
+                      : "hover:bg-[#f1caca]"
                   )}
-                />
-                <span>{option.label}</span>
-              </div>
-            </Button>
-          );
-        })}
+                >
+                  <div className="flex items-center gap-3 text-inherit">
+                    <input
+                      type="checkbox"
+                      checked={checked}
+                      onChange={() => toggleValue(option.value)}
+                      onClick={(e) => e.stopPropagation()}
+                      className={cn(
+                        "size-4 rounded border border-[#cfd6de]",
+                        checked && "accent-white"
+                      )}
+                    />
+                    <span>{option.label}</span>
+                  </div>
+                </Button>
+              );
+            })
+          ) : filterable ? (
+            <div className="px-4 py-2 text-sm text-gray-500 text-center">
+              No options found
+            </div>
+          ) : null}
+        </div>
       </div>
     </div>
   );

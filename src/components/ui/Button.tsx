@@ -1,22 +1,49 @@
 import type { ReactNode, ButtonHTMLAttributes } from "react";
-import { cn } from "@/lib/utils/common";
+import { tv, type VariantProps } from "tailwind-variants";
 
-interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  /**
-   * Visual style variant of the button
-   */
-  variant?:
-    | "primary"
-    | "secondary"
-    | "danger"
-    | "success"
-    | "ghost"
-    | "outline"
-    | "tab";
-  /**
-   * Size of the button
-   */
-  size?: "sm" | "md" | "lg";
+const button = tv({
+  base: "inline-flex items-center justify-center gap-2 font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer",
+  variants: {
+    variant: {
+      primary: "bg-[#0066ff] text-white rounded hover:bg-[#0052cc] focus-visible:ring-[#0066ff]",
+      secondary: "bg-[#e6e9ed] text-[#021337] rounded hover:bg-[#d4d8dd] focus-visible:ring-[#e6e9ed]",
+      danger: "bg-[#ff3131] text-white rounded hover:bg-[#e52c2c] focus-visible:ring-[#ff3131]",
+      success: "bg-[#00a349] text-white rounded hover:bg-[#009440] focus-visible:ring-[#00a349]",
+      ghost: "bg-transparent text-[#021337] rounded hover:bg-[#f1caca] focus-visible:ring-gray-300",
+      outline: "bg-white border border-[#cfd6de] text-[#021337] rounded hover:bg-gray-50 focus-visible:ring-gray-300",
+      tab: "h-10 px-4 bg-transparent border-0 rounded-none text-[13px] leading-4",
+    },
+    size: {
+      sm: "h-8 px-3 text-[13px] leading-4",
+      md: "h-10 px-4 text-sm",
+      lg: "h-12 px-6 text-base",
+    },
+    isActive: {
+      true: "",
+      false: "",
+    },
+  },
+  compoundVariants: [
+    {
+      variant: "tab",
+      isActive: true,
+      class: "text-[#021337] border-b-2 border-[#021337]",
+    },
+    {
+      variant: "tab",
+      isActive: false,
+      class: "text-[#4e5a73]",
+    },
+  ],
+  defaultVariants: {
+    variant: "primary",
+    // size default is handled in component to allow unsetting it for 'tab' variant
+  },
+});
+
+type ButtonVariants = VariantProps<typeof button>;
+
+interface ButtonProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, "color">, Omit<ButtonVariants, "isActive"> {
   /**
    * Whether the button is in a loading state
    */
@@ -55,44 +82,13 @@ export function Button({
   isActive = false,
   ...rest
 }: ButtonProps) {
+  // Disable size styles for tab variant to avoid conflicts
+  const finalSize = variant === "tab" ? undefined : size;
+
   return (
     <button
       type="button"
-      className={cn(
-        // Base styles
-        "inline-flex items-center justify-center gap-2 font-medium transition-colors",
-        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2",
-        "disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer",
-
-        // Size variants (only apply if not tab)
-        variant !== "tab" && size === "sm" && "h-8 px-3 text-[13px] leading-4",
-        variant !== "tab" && size === "md" && "h-10 px-4 text-sm",
-        variant !== "tab" && size === "lg" && "h-12 px-6 text-base",
-
-        // Style variants
-        variant === "primary" &&
-          "bg-[#0066ff] text-white rounded hover:bg-[#0052cc] focus-visible:ring-[#0066ff]",
-        variant === "secondary" &&
-          "bg-[#e6e9ed] text-[#021337] rounded hover:bg-[#d4d8dd] focus-visible:ring-[#e6e9ed]",
-        variant === "danger" &&
-          "bg-[#ff3131] text-white rounded hover:bg-[#e52c2c] focus-visible:ring-[#ff3131]",
-        variant === "success" &&
-          "bg-[#00a349] text-white rounded hover:bg-[#009440] focus-visible:ring-[#00a349]",
-        variant === "ghost" &&
-          "bg-transparent text-[#021337] hover:bg-[#f1caca] rounded focus-visible:ring-gray-300",
-        variant === "outline" &&
-          "bg-white border border-[#cfd6de] text-[#021337] rounded hover:bg-gray-50 focus-visible:ring-gray-300",
-
-        // Tab variant
-        variant === "tab" &&
-          "h-10 px-4 bg-transparent border-0 rounded-none text-[13px] leading-4",
-        variant === "tab" &&
-          isActive &&
-          "text-[#021337] border-b-2 border-[#021337]",
-        variant === "tab" && !isActive && "text-[#4e5a73]",
-
-        className
-      )}
+      className={button({ variant, size: finalSize, isActive, className })}
       disabled={disabled || isLoading}
       {...rest}
     >
@@ -111,3 +107,4 @@ export function Button({
     </button>
   );
 }
+
