@@ -1,4 +1,5 @@
 import { useEventEmitter } from "@/hooks/useEventEmitter";
+import { ChevronRight } from "lucide-react";
 import { useEffect, useState } from "react";
 import { StatsCard } from "@/components/ui/StatsCard";
 import { SectionCard } from "@/components/ui/SectionCard";
@@ -29,20 +30,20 @@ export function ReportsPublishers() {
 
   // Sample data for charts
   const introductionData = [
-    { date: "26.10", primary: 11900, secondary: 11900 },
-    { date: "26.10", primary: 11900, secondary: 11900 },
-    { date: "26.10", primary: 11900, secondary: 11900 },
-    { date: "26.10", primary: 11900, secondary: 11800 },
-    { date: "26.10", primary: 11900, secondary: 11900 },
-    { date: "26.10", primary: 11900, secondary: 11800 },
-    { date: "26.10", primary: 11800, secondary: 11900 },
-    { date: "26.10", primary: 11900, secondary: 11900 },
-    { date: "26.10", primary: 11900, secondary: 11900 },
-    { date: "26.10", primary: 11900, secondary: 11900 },
-    { date: "26.10", primary: 11900, secondary: 11900 },
-    { date: "26.10", primary: 11000, secondary: 11900 },
-    { date: "26.10", primary: 11900, secondary: 11900 },
-    { date: "26.10", primary: 11900, secondary: 11900 },
+    { date: "26.10", referrals: 11900, newAccounts: 11900 },
+    { date: "27.10", referrals: 12500, newAccounts: 11000 },
+    { date: "28.10", referrals: 13000, newAccounts: 12500 },
+    { date: "29.10", referrals: 11500, newAccounts: 10000 },
+    { date: "30.10", referrals: 14000, newAccounts: 13000 },
+    { date: "31.10", referrals: 12000, newAccounts: 11500 },
+    { date: "01.11", referrals: 13500, newAccounts: 12000 },
+    { date: "02.11", referrals: 14500, newAccounts: 13500 },
+    { date: "03.11", referrals: 12500, newAccounts: 11000 },
+    { date: "04.11", referrals: 13000, newAccounts: 12000 },
+    { date: "05.11", referrals: 15000, newAccounts: 14000 },
+    { date: "06.11", referrals: 14000, newAccounts: 13000 },
+    { date: "07.11", referrals: 13500, newAccounts: 12500 },
+    { date: "08.11", referrals: 14500, newAccounts: 13500 },
   ];
 
   const genderData = [
@@ -234,32 +235,29 @@ export function ReportsPublishers() {
 
       <div className="p-3 flex flex-col gap-4 bg-[#f3f4f5]">
         {/* Introduction Chart Section */}
-        <SectionCard title="Giới thiệu" showInfoIcon contentClassName="pb-0">
+        <SectionCard
+          title="Giới thiệu"
+          showInfoIcon
+          contentClassName="pb-0"
+          headerActions={<ChevronRight className="w-5 h-5 text-gray-400" />}
+        >
           {/* Stats row */}
           <div className="flex items-center gap-6 mb-4 pb-4 border-b border-[#d0d5dd]">
             <div className="flex flex-col">
-              <span className="text-[10px] font-normal leading-3.5 text-[#677187]">
+              <span className="text-sm font-normal text-gray-500">
                 Tổng click link referral
               </span>
-              <span className="text-[18px] font-semibold leading-[26px] text-[#021337]">
-                100,000
-              </span>
+              <span className="text-2xl font-bold text-gray-900">100,000</span>
             </div>
             <div className="flex flex-col border-l border-[#d0d5dd] pl-6">
-              <span className="text-[10px] font-normal leading-3.5 text-[#677187]">
+              <span className="text-sm font-normal text-gray-500">
                 Tài khoản mới
               </span>
-              <span className="text-[18px] font-semibold leading-[26px] text-[#ff3b34]">
-                92,920
-              </span>
+              <span className="text-2xl font-bold text-[#FF5246]">92,920</span>
             </div>
             <div className="flex flex-col border-l border-[#d0d5dd] pl-6">
-              <span className="text-[10px] font-normal leading-3.5 text-[#677187]">
-                CVR
-              </span>
-              <span className="text-[18px] font-semibold leading-[26px] text-[#00a349]">
-                92.92%
-              </span>
+              <span className="text-sm font-normal text-gray-500">CVR</span>
+              <span className="text-2xl font-bold text-green-500">92.92%</span>
             </div>
           </div>
 
