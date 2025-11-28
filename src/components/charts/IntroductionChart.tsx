@@ -108,8 +108,10 @@ export function IntroductionChart({ data, className }: IntroductionChartProps) {
     return value.toString();
   };
 
+  const Y_AXIS_WIDTH = 80;
+
   return (
-    <div className={`w-full overflow-hidden ${className} ${isMobile ? "-ml-8" : ""}`}>
+    <div className={`relative w-full overflow-hidden ${className} ${isMobile ? "-ml-8" : ""}`}>
       <div className="w-full overflow-x-auto no-scrollbar">
         <div style={{ width: `${chartWidthPercent}%`, minWidth: "100%" }}>
           <ResponsiveContainer width="100%" height={240}>
@@ -134,6 +136,7 @@ export function IntroductionChart({ data, className }: IntroductionChartProps) {
               {/* Left Y-Axis */}
               <YAxis
                 yAxisId="left"
+                width={Y_AXIS_WIDTH}
                 axisLine={false}
                 tickLine={false}
                 tick={{ fill: "#9ca3af", fontSize: 12 }}
@@ -191,6 +194,30 @@ export function IntroductionChart({ data, className }: IntroductionChartProps) {
             </BarChart>
           </ResponsiveContainer>
         </div>
+      </div>
+
+      {/* Sticky Left Y-Axis Overlay */}
+      <div 
+        className="absolute top-0 left-0 h-full bg-white pointer-events-none"
+        style={{ width: Y_AXIS_WIDTH }}
+      >
+        <ResponsiveContainer width="100%" height={240}>
+          <BarChart
+            data={data}
+            margin={{ top: 20, right: 0, left: 0, bottom: 5 }}
+          >
+            <YAxis
+              yAxisId="left"
+              width={Y_AXIS_WIDTH}
+              axisLine={false}
+              tickLine={false}
+              tick={{ fill: "#9ca3af", fontSize: 12 }}
+              tickFormatter={formatYAxisTick}
+              domain={yAxisDomain}
+              ticks={yAxisTicks}
+            />
+          </BarChart>
+        </ResponsiveContainer>
       </div>
     </div>
   );
