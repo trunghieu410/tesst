@@ -242,20 +242,20 @@ export function ReportsPublishers() {
           headerActions={<ChevronRight className="w-5 h-5 text-gray-400" />}
         >
           {/* Stats row */}
-          <div className="flex items-center gap-6 mb-4 pb-4 border-b border-[#d0d5dd]">
-            <div className="flex flex-col">
+          <div className="grid grid-cols-2 gap-3 mb-4 md:flex md:flex-row md:items-center md:gap-6 md:pb-4 md:border-b md:border-[#d0d5dd]">
+            <div className="col-span-2 flex flex-col items-center justify-center p-4 border border-[#d0d5dd] rounded-lg md:col-span-auto md:items-start md:justify-start md:p-0 md:border-0 md:rounded-none">
               <span className="text-sm font-normal text-gray-500">
                 Tổng click link referral
               </span>
               <span className="text-2xl font-bold text-gray-900">100,000</span>
             </div>
-            <div className="flex flex-col border-l border-[#d0d5dd] pl-6">
+            <div className="col-span-1 flex flex-col items-center justify-center p-4 border border-[#d0d5dd] rounded-lg md:col-span-auto md:items-start md:justify-start md:p-0 md:border-0 md:border-l md:border-[#d0d5dd] md:pl-6 md:rounded-none">
               <span className="text-sm font-normal text-gray-500">
                 Tài khoản mới
               </span>
               <span className="text-2xl font-bold text-[#FF5246]">92,920</span>
             </div>
-            <div className="flex flex-col border-l border-[#d0d5dd] pl-6">
+            <div className="col-span-1 flex flex-col items-center justify-center p-4 border border-[#d0d5dd] rounded-lg md:col-span-auto md:items-start md:justify-start md:p-0 md:border-0 md:border-l md:border-[#d0d5dd] md:pl-6 md:rounded-none">
               <span className="text-sm font-normal text-gray-500">CVR</span>
               <span className="text-2xl font-bold text-green-500">92.92%</span>
             </div>

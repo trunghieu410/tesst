@@ -15,6 +15,28 @@ import { BellIcon } from "@/icon/BellIcon";
 import { useIsMobile } from "../hooks/use-mobile";
 import useClickOutside from "@/hooks/useClickOutside";
 
+// Custom hook for small screens (<= 430px)
+function useIsSmallScreen() {
+  const [isSmallScreen, setIsSmallScreen] = React.useState<boolean>(() => {
+    if (typeof window !== "undefined") {
+      return window.innerWidth <= 430;
+    }
+    return false;
+  });
+
+  React.useEffect(() => {
+    const mql = window.matchMedia("(max-width: 430px)");
+    const onChange = () => {
+      setIsSmallScreen(window.innerWidth <= 430);
+    };
+    mql.addEventListener("change", onChange);
+    setIsSmallScreen(window.innerWidth <= 430);
+    return () => mql.removeEventListener("change", onChange);
+  }, []);
+
+  return isSmallScreen;
+}
+
 interface MenuItem {
   id: string;
   label: string;
@@ -72,6 +94,7 @@ const menuItems: MenuItem[] = [
 export function Sidebar() {
   const location = useLocation();
   const isMobile = useIsMobile();
+  const isSmallScreen = useIsSmallScreen();
   const [isCollapsed, setIsCollapsed] = useState(isMobile);
   const [userOverride, setUserOverride] = useState(false);
   const [openSubmenu, setOpenSubmenu] = useState<string | null>(null);
@@ -112,6 +135,11 @@ export function Sidebar() {
     setIsCollapsed(false);
     setUserOverride(true);
   });
+
+  // Hide sidebar completely on screens <= 430px
+  if (isSmallScreen) {
+    return null;
+  }
 
   return (
     <div
