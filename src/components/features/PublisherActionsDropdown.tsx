@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/Button";
+import { ConfirmationModal } from "@/components/ui/ConfirmationModal";
 // import { MoreVertical } from "lucide-react";
 import useClickOutside from "@/hooks/useClickOutside";
 import { EllipsisIcon } from "@/icon/EllipsisIcon";
@@ -20,6 +21,9 @@ export function PublisherActionsDropdown({
   accountState,
 }: PublisherActionsDropdownProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [pendingAction, setPendingAction] = useState<string | null>(null);
+  
   const dropdownRef = useClickOutside<HTMLDivElement>(() => setIsOpen(false), {
     enabled: isOpen,
   });
@@ -30,7 +34,28 @@ export function PublisherActionsDropdown({
 
   const handleSelect = (action: string) => {
     setIsOpen(false);
-    onAction(action);
+    
+    // Show confirmation modal for critical actions
+    if (action === "activate") {
+      setPendingAction(action);
+      setShowModal(true);
+    } else {
+      onAction(action);
+    }
+  };
+
+  const handleModalClose = () => {
+    setShowModal(false);
+    setPendingAction(null);
+  };
+
+  const handleModalConfirm = (reason: string) => {
+    if (pendingAction) {
+      // You can pass the reason to your backend here
+      console.log("Action:", pendingAction, "Reason:", reason);
+      onAction(pendingAction);
+    }
+    handleModalClose();
   };
 
   const validActions = ACTIONS.filter((s) => s.value !== accountState);
@@ -62,6 +87,15 @@ export function PublisherActionsDropdown({
           ))}
         </div>
       )}
+
+      <ConfirmationModal
+        isOpen={showModal}
+        onClose={handleModalClose}
+        onConfirm={handleModalConfirm}
+        title="Tạm khóa tài khoản?"
+        description="Publisher sau khi bị khoá sẽ không thể đăng nhập và thực hiện các hoạt động trên hệ thống."
+        warningMessage="Vui lòng cung cấp lý do tạm khóa để đảm bảo tính minh bạch trong quản lý."
+      />
     </div>
   );
 }

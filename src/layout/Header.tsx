@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, MenuIcon, X } from "lucide-react";
 import { ProfilePicture } from "@/components/ui/ProfilePicture";
 import { Button } from "@/components/ui/Button";
-import { useEventListener } from "@/hooks/useEventEmitter";
+import { useEventEmitter, useEventListener } from "@/hooks/useEventEmitter";
 import { useAuth } from "@/hooks/useAuth";
 import { cn } from "@/lib/utils/common";
 import useClickOutside from "@/hooks/useClickOutside";
@@ -15,9 +15,11 @@ interface HeaderProps {
 export function Header({ defaultTitle = "Publisher" }: HeaderProps) {
   const navigate = useNavigate();
   const { logout } = useAuth();
+  const { publish } = useEventEmitter();
   const [title, setTitle] = useState(defaultTitle);
   const [backRoute, setBackRoute] = useState<string | null>(null);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   const dropdownRef = useClickOutside<HTMLDivElement>(
     () => setIsDropdownOpen(false),
     { enabled: isDropdownOpen }
@@ -30,6 +32,14 @@ export function Header({ defaultTitle = "Publisher" }: HeaderProps) {
       setBackRoute(data.backRoute || null);
     }
   );
+
+  useEventListener("openSideBar", () => {
+    setIsMobileSidebarOpen(true);
+  });
+
+  useEventListener("closeSideBar", () => {
+    setIsMobileSidebarOpen(false);
+  });
 
   // Outside click is handled by useClickOutside
 
@@ -50,6 +60,23 @@ export function Header({ defaultTitle = "Publisher" }: HeaderProps) {
 
   return (
     <div className="h-[68px] border-b border-[#d0d5dd] bg-white flex items-center justify-between px-4 py-4.5">
+      {/* button-to-open-sidebar-menu-on-mobile */}
+      <button 
+        className="md:hidden"
+        onClick={() => {
+          if (isMobileSidebarOpen) {
+            publish("closeSideBar");
+          } else {
+            publish("openSideBar");
+          }
+        }}
+      >
+        {isMobileSidebarOpen ? (
+          <X className="w-6 h-6 text-[#021337]" />
+        ) : (
+          <MenuIcon className="w-6 h-6 text-[#021337]" />
+        )}
+      </button>
       {/* Title */}
       <div className="flex items-center gap-2.5">
         {backRoute && (
