@@ -323,7 +323,7 @@ export function ReportsPublishers() {
           </SectionCard>
 
           {/* ageBlock */}
-          <SectionCard title="Tuổi" contentClassName="py-3">
+          <SectionCard title="Tuổi" contentClassName="py-3 h-[268px] overflow-scroll">
             <AgeBarChart data={ageData} />
           </SectionCard>
         </div>

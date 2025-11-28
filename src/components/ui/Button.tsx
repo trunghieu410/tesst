@@ -5,8 +5,8 @@ const button = tv({
   base: "inline-flex items-center justify-center gap-2 font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer",
   variants: {
     variant: {
-      primary: "bg-[#0066ff] text-white rounded hover:bg-[#0052cc] focus-visible:ring-[#0066ff]",
-      secondary: "bg-[#e6e9ed] text-[#021337] rounded hover:bg-[#d4d8dd] focus-visible:ring-[#e6e9ed]",
+      primary: "bg-[#FF3B34] text-white rounded-[8px] hover:bg-[#0052cc] ",
+      secondary: "bg-white text-[#021337] rounded-[8px] border border-[#CFD6DE]",
       danger: "bg-[#ff3131] text-white rounded hover:bg-[#e52c2c] focus-visible:ring-[#ff3131]",
       success: "bg-[#00a349] text-white rounded hover:bg-[#009440] focus-visible:ring-[#00a349]",
       ghost: "bg-transparent text-[#021337] rounded hover:bg-[#f1caca] focus-visible:ring-gray-300",

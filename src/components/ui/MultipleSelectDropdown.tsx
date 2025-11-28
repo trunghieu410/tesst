@@ -117,10 +117,11 @@ export function MultipleSelectDropdown({
                 toggleValue(option.value);
               }}
               className={cn(
-                "w-full justify-between rounded-none px-4 py-3 text-left border-b border-gray-50 last:border-0",
+                "w-full justify-between rounded-none px-4 py-3 text-left",
                 checked
                   ? "bg-transparent text-[#021337]"
-                  : "hover:bg-[#f1caca]"
+                  : "hover:bg-[#f1caca]",
+                isMobile ? "h-[44px]" : ""
               )}
             >
               <div className="flex items-center gap-3 text-inherit w-full">
@@ -263,7 +264,7 @@ export function MultipleSelectDropdown({
                   placeholder="Search options..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-10 pr-4 py-3 text-base border border-gray-300 rounded-xl focus:outline-none focus:border-blue-500 bg-gray-50"
+                  className="w-full pl-10 pr-4 py-[4px] text-base border border-gray-300 rounded-[8px] focus:outline-none"
                 />
               </div>
             </div>
