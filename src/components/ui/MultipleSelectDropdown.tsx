@@ -1,5 +1,5 @@
 import { useState, type ReactNode, useRef, useEffect } from "react";
-import { ChevronDown, Search } from "lucide-react";
+import { ChevronDown, Search, Check } from "lucide-react";
 import { cn } from "@/lib/utils/common";
 import { Button } from "./Button";
 import { XIcon } from "@/icon/XIcon";
@@ -183,24 +183,15 @@ export function MultipleSelectDropdown({
                     toggleValue(option.value);
                   }}
                   className={cn(
-                    "w-full justify-start rounded-none px-4 py-2 text-left",
+                    "w-full justify-between rounded-none px-4 py-2 text-left",
                     checked
-                      ? "bg-[#ff3131]! text-white hover:bg-[#f1caca]"
+                      ? "bg-transparent text-[#021337]"
                       : "hover:bg-[#f1caca]"
                   )}
                 >
-                  <div className="flex items-center gap-3 text-inherit">
-                    <input
-                      type="checkbox"
-                      checked={checked}
-                      onChange={() => toggleValue(option.value)}
-                      onClick={(e) => e.stopPropagation()}
-                      className={cn(
-                        "size-4 rounded border border-[#cfd6de]",
-                        checked && "accent-white"
-                      )}
-                    />
-                    <span>{option.label}</span>
+                  <div className="flex items-center gap-3 text-inherit w-full">
+                    <span className="flex-1">{option.label}</span>
+                    {checked && <Check className="w-4 h-4 text-green-500" />}
                   </div>
                 </Button>
               );
