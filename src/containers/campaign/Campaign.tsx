@@ -44,6 +44,9 @@ export function Campaign() {
   const [selectedStatus, setSelectedStatus] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [selectedCampaignId, setSelectedCampaignId] = useState<
+    string | number | null
+  >(null);
 
   // Debounce search query
   useEffect(() => {
@@ -81,10 +84,12 @@ export function Campaign() {
   const pagination = campaignsData?.data.pagination || 0;
 
   const handleCampaignClick = (campaign: (typeof campaigns)[0]) => {
-    console.log("Campaign clicked:", campaign);
+    setSelectedCampaignId(campaign.id);
+    publish("show-right-panel");
   };
 
   const handleCreateCampaign = () => {
+    setSelectedCampaignId(null);
     publish("show-right-panel");
   };
 
@@ -187,9 +192,9 @@ export function Campaign() {
           </>
         )}
       </div>
-      {/* Right-side-panel */}
+      {/* Right-side-panel CampaignCreate */}
       <RightSidePanel>
-        <CampaignCreate />
+        <CampaignCreate campaignId={selectedCampaignId} />
       </RightSidePanel>
     </div>
   );

@@ -1,9 +1,22 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { ChevronDownIcon } from "lucide-react";
 import { DateRangeInput } from "@/components/ui/DateRangeInput";
 import { CampaignLabels } from "@/components/features/CampaignLabels";
 
-export function CampaignOverviewTab() {
+interface CampaignOverviewTabProps {
+  defaultValues?: any;
+}
+
+export function CampaignOverviewTab({
+  defaultValues,
+}: CampaignOverviewTabProps) {
+  useEffect(() => {
+    if (defaultValues) {
+      setCampaignName(defaultValues.name || "");
+      if (defaultValues.dateRange) setDateRange(defaultValues.dateRange);
+      // Add other fields mapping here as needed
+    }
+  }, [defaultValues]);
 
   const [campaignName, setCampaignName] = useState("");
   const [commissionType, setCommissionType] = useState<"fixed" | "percentage">(
