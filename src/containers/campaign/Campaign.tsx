@@ -9,6 +9,8 @@ import { Pagination } from "@/components/ui/Pagination";
 import { useEventEmitter } from "@/hooks/useEventEmitter";
 import { useCampaigns } from "@/lib/queries/useCampaigns";
 import { useNavigate } from "react-router-dom";
+import { RightSidePanel } from "@/components/features/RightSidePanel";
+import { CampaignCreate } from "./CampaignCreate";
 
 const countryOptions = [
   { value: "VN", label: "Vietnam" },
@@ -83,7 +85,7 @@ export function Campaign() {
   };
 
   const handleCreateCampaign = () => {
-    navigate(`/dashboard/campaigns/create`);
+    publish("show-right-panel");
   };
 
   return (
@@ -185,6 +187,10 @@ export function Campaign() {
           </>
         )}
       </div>
+      {/* Right-side-panel */}
+      <RightSidePanel>
+        <CampaignCreate />
+      </RightSidePanel>
     </div>
   );
 }

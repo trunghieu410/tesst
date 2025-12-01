@@ -1,15 +1,10 @@
-import { useState, useMemo, useEffect, useRef } from "react";
-import { ChevronDownIcon, PaperclipIcon } from "lucide-react";
-import { TrashIcon } from "@/icon/TrashIcon";
-import { Button } from "@/components/ui/Button";
-import { TextEditor } from "@/components/ui/TextEditor";
+import { useState, useMemo } from "react";
+import { ChevronDownIcon } from "lucide-react";
 import { DateRangeInput } from "@/components/ui/DateRangeInput";
 import { CampaignLabels } from "@/components/features/CampaignLabels";
 
 export function CampaignOverviewTab() {
-  const [activeRightTab, setActiveRightTab] = useState<
-    "images" | "method" | "conditions" | "rules" | "banners"
-  >("images");
+
   const [campaignName, setCampaignName] = useState("");
   const [commissionType, setCommissionType] = useState<"fixed" | "percentage">(
     "fixed"
@@ -27,21 +22,6 @@ export function CampaignOverviewTab() {
     "Đề xuất",
   ]);
   const [isAdvertiserExpanded, setIsAdvertiserExpanded] = useState(true);
-
-  const [mainCoverImage, setMainCoverImage] = useState<string | null>(
-    "http://localhost:3845/assets/00fe3968d9281a33a03ef71e91f3b65853878c7e.png"
-  );
-  const [squareCoverImage, setSquareCoverImage] = useState<string | null>(
-    "http://localhost:3845/assets/00fe3968d9281a33a03ef71e91f3b65853878c7e.png"
-  );
-  const [ongoingImage, setOngoingImage] = useState<string | null>(
-    "http://localhost:3845/assets/a72a5705eb3a0b2c01b842b2ba6a9871d720833b.png"
-  );
-
-  // Right tab content state
-  const [methodContent, setMethodContent] = useState("");
-  const [conditionsContent, setConditionsContent] = useState("");
-  const [rulesContent, setRulesContent] = useState("");
 
   // Calculate days difference between start and end dates
   const daysDifference = useMemo(() => {
@@ -72,56 +52,13 @@ export function CampaignOverviewTab() {
     return null;
   }, [dateRange]);
 
-  const handleImageUpload = (
-    setter: (value: string | null) => void,
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setter(reader.result as string);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
-  const removeImage = (setter: (value: string | null) => void) => {
-    setter(null);
-  };
-
-  // Track container position to align fixed bottom bar with parent width
-  const containerRef = useRef<HTMLDivElement | null>(null);
-  const [bottomBarDims, setBottomBarDims] = useState<{
-    left: number;
-    width: number;
-  }>({ left: 0, width: 0 });
-
-  useEffect(() => {
-    const updateDims = () => {
-      if (!containerRef.current) return;
-      const rect = containerRef.current.getBoundingClientRect();
-      setBottomBarDims({ left: rect.left, width: rect.width });
-    };
-
-    updateDims();
-    window.addEventListener("resize", updateDims);
-    // Capture scroll events on ancestors that might shift layout
-    window.addEventListener("scroll", updateDims, true);
-    return () => {
-      window.removeEventListener("resize", updateDims);
-      window.removeEventListener("scroll", updateDims, true);
-    };
-  }, []);
-
   return (
     <>
       <div
-        ref={containerRef}
-        className="p-4 flex gap-4 relative w-full bg-[#F3F4F5] h-full overflow-auto pb-[72px]"
+        className="p-4 flex gap-4 relative w-full bg-[#F3F4F5] h-full overflow-auto"
       >
         {/* Left Column */}
-        <div className="flex flex-col gap-2.5 w-[537px]">
+        <div className="flex flex-col gap-2.5 w-full">
           {/* General Information Section */}
           <div className="bg-white border border-[#e7e9eb] rounded-lg p-4 flex flex-col gap-3">
             <h2 className="font-medium text-sm leading-5 text-[#021337]">
@@ -371,248 +308,6 @@ export function CampaignOverviewTab() {
               </>
             )}
           </div>
-        </div>
-
-        {/* Right Column */}
-        <div className="flex-1 bg-white border border-[#e7e9eb] rounded-lg p-4 flex flex-col gap-3">
-          {/* Segment Tabs */}
-          <div className="bg-[#edf2fd] rounded-md p-0.5 flex gap-0.5">
-            <button
-              onClick={() => setActiveRightTab("images")}
-              className={`cursor-pointer rounded px-2 py-1.5 text-xs leading-4 transition-colors ${
-                activeRightTab === "images"
-                  ? "bg-white font-medium text-[#021337]"
-                  : "font-normal text-[#677187] hover:text-[#021337]"
-              }`}
-            >
-              Hình ảnh
-            </button>
-            <button
-              onClick={() => setActiveRightTab("method")}
-              className={`cursor-pointer rounded px-2 py-1.5 text-xs leading-4 transition-colors ${
-                activeRightTab === "method"
-                  ? "bg-white font-medium text-[#021337]"
-                  : "font-normal text-[#677187] hover:text-[#021337]"
-              }`}
-            >
-              Cách thức thực hiện
-            </button>
-            <button
-              onClick={() => setActiveRightTab("conditions")}
-              className={`cursor-pointer rounded px-2 py-1.5 text-xs leading-4 transition-colors ${
-                activeRightTab === "conditions"
-                  ? "bg-white font-medium text-[#021337]"
-                  : "font-normal text-[#677187] hover:text-[#021337]"
-              }`}
-            >
-              Điều kiện chấp nhận
-            </button>
-            <button
-              onClick={() => setActiveRightTab("rules")}
-              className={`cursor-pointer rounded px-2 py-1.5 text-xs leading-4 transition-colors ${
-                activeRightTab === "rules"
-                  ? "bg-white font-medium text-[#021337]"
-                  : "font-normal text-[#677187] hover:text-[#021337]"
-              }`}
-            >
-              Quy định khác
-            </button>
-          </div>
-
-          {/* Images Tab Content */}
-          {activeRightTab === "images" && (
-            <>
-              {/* Main Cover Image */}
-              <div className="flex items-center gap-0 py-1.5">
-                <span className="font-medium text-[10px] leading-3.5 text-[#677187]">
-                  ẢNH COVER CHÍNH
-                </span>
-                <div className="flex-1 h-px bg-[#e7e9eb] ml-2.5" />
-              </div>
-
-              <div className="flex gap-4">
-                <div className="bg-[#e6e9ed] rounded-md w-[95px] h-8 px-3 py-2 flex items-center gap-2.5 cursor-pointer">
-                  <PaperclipIcon className="w-4 h-4" />
-                  <label className="font-medium text-[13px] leading-4 text-[#021337] cursor-pointer">
-                    Tải ảnh
-                    <input
-                      type="file"
-                      accept="image/*"
-                      className="hidden"
-                      onChange={(e) => handleImageUpload(setMainCoverImage, e)}
-                    />
-                  </label>
-                </div>
-                <div className="text-sm leading-5 text-[#021337]">
-                  <p>Kích thước: 800px x 400px</p>
-                  <p>Tỉ lệ: Chữ nhật, 2:1</p>
-                  <p>Dung lượng tối đa: 500Kb</p>
-                </div>
-              </div>
-
-              {mainCoverImage && (
-                <div className="bg-[#f2f4f5] border border-[#cfd6de] rounded-xl p-2.5 relative flex justify-center">
-                  <img
-                    src={mainCoverImage}
-                    alt="Main cover"
-                    className="w-[350px] h-[175px] object-cover rounded-lg"
-                  />
-                  <button
-                    onClick={() => removeImage(setMainCoverImage)}
-                    className="absolute top-4 right-4 bg-white border border-[#cfd6de] rounded-md w-8 h-8 flex items-center justify-center"
-                  >
-                    <TrashIcon className="text-[#021337]" />
-                  </button>
-                </div>
-              )}
-
-              {/* Square Cover Image */}
-              <div className="flex items-center gap-0 py-1.5">
-                <span className="font-medium text-[10px] leading-3.5 text-[#677187]">
-                  ẢNH COVER VUÔNG
-                </span>
-                <div className="flex-1 h-px bg-[#e7e9eb] ml-2.5" />
-              </div>
-
-              <div className="flex gap-4">
-                <div className="bg-[#e6e9ed] rounded-md w-[95px] h-8 px-3 py-2 flex items-center gap-2.5 cursor-pointer">
-                  <PaperclipIcon className="w-4 h-4" />
-                  <label className="font-medium text-[13px] leading-4 text-[#021337] cursor-pointer">
-                    Tải ảnh
-                    <input
-                      type="file"
-                      accept="image/*"
-                      className="hidden"
-                      onChange={(e) =>
-                        handleImageUpload(setSquareCoverImage, e)
-                      }
-                    />
-                  </label>
-                </div>
-                <div className="text-sm leading-5 text-[#021337]">
-                  <p>
-                    Ảnh này sử dụng làm thumbnail khi chia sẻ link chiến dịch
-                    lên MXH.
-                  </p>
-                  <p>Kích thước: 800px x 800px</p>
-                  <p>Tỉ lệ: Vuông, 1:1</p>
-                  <p>Dung lượng tối đa: 500Kb</p>
-                </div>
-              </div>
-
-              {squareCoverImage && (
-                <div className="bg-[#f2f4f5] border border-[#cfd6de] rounded-xl p-2.5 relative flex justify-center">
-                  <img
-                    src={squareCoverImage}
-                    alt="Square cover"
-                    className="w-[175px] h-[175px] object-cover rounded-lg"
-                  />
-                  <button
-                    onClick={() => removeImage(setSquareCoverImage)}
-                    className="absolute top-4 right-4 bg-white border border-[#cfd6de] rounded-md w-8 h-8 flex items-center justify-center"
-                  >
-                    <TrashIcon className="text-[#021337]" />
-                  </button>
-                </div>
-              )}
-
-              {/* Ongoing Campaign Image */}
-              <div className="flex items-center gap-0 py-1.5">
-                <span className="font-medium text-[10px] leading-3.5 text-[#677187]">
-                  ẢNH CHIẾN DỊCH ĐANG DIỄN RA
-                </span>
-                <div className="flex-1 h-px bg-[#e7e9eb] ml-2.5" />
-              </div>
-
-              <div className="flex gap-4">
-                <div className="bg-[#e6e9ed] rounded-md w-[95px] h-8 px-3 py-2 flex items-center gap-2.5 cursor-pointer">
-                  <PaperclipIcon className="w-4 h-4" />
-                  <label className="font-medium text-[13px] leading-4 text-[#021337] cursor-pointer">
-                    Tải ảnh
-                    <input
-                      type="file"
-                      accept="image/*"
-                      className="hidden"
-                      onChange={(e) => handleImageUpload(setOngoingImage, e)}
-                    />
-                  </label>
-                </div>
-                <div className="text-sm leading-5 text-[#021337]">
-                  <p>Kích thước: 650px x 780px</p>
-                  <p>Tỉ lệ: Chữ nhật, 1:1.2</p>
-                  <p>Dung lượng tối đa: 500Kb</p>
-                </div>
-              </div>
-
-              {ongoingImage && (
-                <div className="bg-[#f2f4f5] border border-[#cfd6de] rounded-xl p-2.5 relative flex justify-center">
-                  <img
-                    src={ongoingImage}
-                    alt="Ongoing campaign"
-                    className="w-[175px] h-[210px] object-cover rounded-lg"
-                  />
-                  <button
-                    onClick={() => removeImage(setOngoingImage)}
-                    className="absolute top-4 right-4 bg-white border border-[#cfd6de] rounded-md w-8 h-8 flex items-center justify-center"
-                  >
-                    <TrashIcon className="text-[#021337]" />
-                  </button>
-                </div>
-              )}
-            </>
-          )}
-
-          {/* Method Tab Content */}
-          {activeRightTab === "method" && (
-            <div className="flex flex-col h-[500px]">
-              <TextEditor
-                value={methodContent}
-                onChange={setMethodContent}
-                placeholder="Nhập cách thức thực hiện chiến dịch..."
-              />
-            </div>
-          )}
-
-          {/* Conditions Tab Content */}
-          {activeRightTab === "conditions" && (
-            <div className="flex flex-col h-[500px]">
-              <TextEditor
-                value={conditionsContent}
-                onChange={setConditionsContent}
-                placeholder="Nhập điều kiện chấp nhận..."
-              />
-            </div>
-          )}
-
-          {/* Rules Tab Content */}
-          {activeRightTab === "rules" && (
-            <div className="flex flex-col h-[500px]">
-              <TextEditor
-                value={rulesContent}
-                onChange={setRulesContent}
-                placeholder="Nhập quy định khác..."
-              />
-            </div>
-          )}
-        </div>
-        {/* Bottom Action Bar */}
-        <div
-          className="fixed bottom-0 border-t border-[#b5bcc4] bg-white px-4 py-3 flex items-center justify-end gap-2.5 z-50"
-          style={{ left: bottomBarDims.left, width: bottomBarDims.width }}
-        >
-          <Button variant="success" size="sm">
-            Lưu Đã lên lịch
-          </Button>
-          <Button
-            variant="secondary"
-            size="sm"
-            className="bg-[#ffe2a9] text-[#021337] hover:bg-[#ffd77a]"
-          >
-            Lưu Sắp ra mắt
-          </Button>
-          <Button variant="secondary" size="sm">
-            Lưu Nháp
-          </Button>
         </div>
       </div>
     </>
