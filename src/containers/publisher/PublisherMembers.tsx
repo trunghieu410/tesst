@@ -77,7 +77,7 @@ export function PublisherMembers({
   members = defaultMembers,
 }: PublisherMembersProps) {
   const [memberSearch, setMemberSearch] = useState("");
-  const [selectedCountry, setSelectedCountry] = useState("");
+  const [selectedCountry, setSelectedCountry] = useState<string[]>([]);
   const [selectedStatuses, setSelectedStatuses] = useState<string[]>([]);
   const [selectedTier, setSelectedTier] = useState<"all" | "F1" | "F2" | "F3">(
     "all"
@@ -93,7 +93,7 @@ export function PublisherMembers({
       member.email.toLowerCase().includes(memberSearch.toLowerCase());
 
     const matchesCountry =
-      selectedCountry === "" || member.country.code === selectedCountry;
+      selectedCountry.length === 0 || selectedCountry.includes(member.country.code);
 
     const matchesStatus =
       selectedStatuses.length === 0 || selectedStatuses.includes(member.status);
@@ -125,7 +125,7 @@ export function PublisherMembers({
           className="w-[250px]"
         />
 
-        <Dropdown
+        {/* <Dropdown
           value={selectedCountry}
           onChange={setSelectedCountry}
           placeholder="Quốc gia"
@@ -136,7 +136,20 @@ export function PublisherMembers({
             { value: "MY", label: "Malaysia" },
           ]}
           className="w-[103px]"
-        />
+        /> */}
+
+          <MultipleSelectDropdown
+            onSelectedChange={setSelectedCountry}
+            placeholder="Quốc gia"
+            options={[
+            { value: "VN", label: "Vietnam" },
+            { value: "TH", label: "Thailand" },
+            { value: "ID", label: "Indonesia" },
+            { value: "MY", label: "Malaysia" },
+          ]}
+             className="w-auto min-w-[120px]"
+          />
+
 
         {/*MultipleSelectDropdown status*/}
         <MultipleSelectDropdown

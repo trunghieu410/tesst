@@ -7,12 +7,14 @@ import { IntroductionChart } from "@/components/charts/IntroductionChart";
 import { GenderPieChart } from "@/components/charts/GenderPieChart";
 import { ActivityLineChart } from "@/components/charts/ActivityLineChart";
 import { AgeBarChart } from "@/components/charts/AgeBarChart";
+import { GeneralPieChart } from "@/components/charts/GeneralPieChart";
 import { KYCStatsGrid } from "@/components/features/KYCStatsGrid";
 import { CountriesTable } from "@/components/features/CountriesTable";
 import { MembersTable } from "@/components/features/MembersTable";
 import { Dropdown } from "@/components/ui/Dropdown";
 import { DateRangeInput } from "@/components/ui/DateRangeInput";
 import { Tooltip } from "@/components/ui/Tooltip";
+import MultipleSelectDropdown from "@/components/ui/MultipleSelectDropdown";
 
 type CountryTabType = "members" | "airdrop" | "camp";
 type MembersTabType = "members" | "airdrop" | "camp";
@@ -21,7 +23,7 @@ export function ReportsPublishers() {
   const { publish } = useEventEmitter();
   const [countryTab, setCountryTab] = useState<CountryTabType>("members");
   const [membersTab, setMembersTab] = useState<MembersTabType>("members");
-  const [selectedCountry, setSelectedCountry] = useState("");
+  const [selectedCountry, setSelectedCountry] = useState<string[]>([]);
   const [dateRange, setDateRange] = useState("1.10 - 30.11");
 
   useEffect(() => {
@@ -50,6 +52,12 @@ export function ReportsPublishers() {
     { name: "Kích hoạt", value: 12300, percentage: "6.7%", color: "#00a349" },
     { name: "Tạm khoá", value: 23600, percentage: "27.9%", color: "#d0d5dd" },
     { name: "Đã xoá", value: 2400, percentage: "14.1%", color: "#ff3b34" },
+  ];
+
+  const generalMockData = [
+    { name: "Chưa khai báo", value: 23600, percentage: "27.9%", color: "#b1b5c3" }, // Gray
+    { name: "Nữ", value: 12300, percentage: "6.7%", color: "#ff3b34" }, // Red
+    { name: "Nam", value: 2400, percentage: "14.1%", color: "#0017e6" }, // Blue
   ];
 
   const activityData = Array.from({ length: 20 }, (_, i) => ({
@@ -184,8 +192,8 @@ export function ReportsPublishers() {
     },
   ];
   const countryOptions = [
-    { value: "VN", label: "Vietnam" },
-    { value: "TH", label: "Thailand" },
+    { value: "VN", label: "Việt Nam" },
+    { value: "TH", label: "Thái Lan" },
     { value: "ID", label: "Indonesia" },
     { value: "MY", label: "Malaysia" },
   ];
@@ -224,12 +232,12 @@ export function ReportsPublishers() {
             className="w-[140px]"
           />
         </Tooltip>
-        <Dropdown
-          value={selectedCountry}
-          onChange={setSelectedCountry}
+     
+         <MultipleSelectDropdown
+          onSelectedChange={setSelectedCountry}
           placeholder="Quốc gia"
           options={countryOptions}
-          className="w-auto min-w-[120px]"
+            className="w-auto min-w-[120px]"
         />
       </div>
 
@@ -319,11 +327,11 @@ export function ReportsPublishers() {
 
           {/* genderBlock */}
           <SectionCard title="Giới tính" contentClassName="pb-2 relative">
-            <GenderPieChart data={genderData} />
+            <GeneralPieChart data={generalMockData} showInfo={true} />
           </SectionCard>
 
           {/* ageBlock */}
-          <SectionCard title="Tuổi" contentClassName="py-3 h-[268px] overflow-scroll">
+          <SectionCard title="Tuổi" contentClassName="py-3 h-[195px] overflow-scroll">
             <AgeBarChart data={ageData} />
           </SectionCard>
         </div>

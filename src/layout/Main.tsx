@@ -1,6 +1,7 @@
 import { Sidebar } from "@/layout/Sidebar";
 import { Header } from "@/layout/Header";
 import { Outlet } from "react-router-dom";
+import { MobileSidebar } from "@/layout/MobileSidebar";
 
 export function Main() {
   return (
@@ -11,6 +12,7 @@ export function Main() {
         <div className="flex-1 overflow-auto">
           <Outlet />
         </div>
+        <MobileSidebar />
       </div>
     </div>
   );

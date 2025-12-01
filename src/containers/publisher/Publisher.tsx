@@ -10,10 +10,11 @@ import { usePublishers } from "@/lib/queries/usePublishers";
 import { Tooltip } from "@/components/ui/Tooltip";
 import { PublisherDetails } from "./PublisherDetails";
 import { PublisherTable } from "./PublisherTable";
+import MultipleSelectDropdown from "@/components/ui/MultipleSelectDropdown";
 
 const countryOptions = [
-  { value: "VN", label: "Vietnam" },
-  { value: "TH", label: "Thailand" },
+  { value: "VN", label: "Việt Nam" },
+  { value: "TH", label: "Thái Lan" },
   { value: "ID", label: "Indonesia" },
   { value: "MY", label: "Malaysia" },
 ];
@@ -29,8 +30,8 @@ export function Publisher() {
   const [searchQuery, setSearchQuery] = useState("");
   const [debouncedSearchQuery, setDebouncedSearchQuery] = useState("");
   const [dateRange, setDateRange] = useState("1.10 - 30.11");
-  const [selectedCountry, setSelectedCountry] = useState("");
-  const [selectedStatus, setSelectedStatus] = useState("");
+  const [selectedCountry, setSelectedCountry] = useState<string[]>([]);
+  const [selectedStatus, setSelectedStatus] =  useState<string[]>([]);
   const [minMembers, setMinMembers] = useState("0");
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -91,20 +92,34 @@ export function Publisher() {
           />
         </Tooltip>
 
-        <Dropdown
+        {/* <Dropdown
           value={selectedCountry}
           onChange={setSelectedCountry}
           placeholder="Quốc gia"
           options={countryOptions}
           className="w-auto min-w-[120px]"
-        />
+        /> */}
 
-        <Dropdown
+          <MultipleSelectDropdown
+            onSelectedChange={setSelectedCountry}
+            placeholder="Quốc gia"
+            options={countryOptions}
+           className="w-auto min-w-[120px]"
+          />
+
+        {/* <Dropdown
           value={selectedStatus}
           onChange={setSelectedStatus}
           placeholder="Trạng thái"
           options={statusOptions}
           className="w-auto min-w-[120px]"
+        /> */}
+
+        <MultipleSelectDropdown
+          onSelectedChange={setSelectedStatus}
+          placeholder="Trạng thái"
+          options={statusOptions}
+         className="w-auto min-w-[120px]"
         />
 
         <div className="relative">
