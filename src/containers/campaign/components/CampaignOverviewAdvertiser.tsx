@@ -29,7 +29,7 @@ export function CampaignOverviewAdvertiser({
   return (
     <SectionCard
       title="Nhà quảng cáo (Advertiser)"
-      className="flex flex-col gap-3"
+      className="flex flex-col"
       headerActions={
         <ChevronDownIcon
           className={`w-6 h-6 text-[#021337] transition-transform duration-200 cursor-pointer ${
@@ -38,11 +38,13 @@ export function CampaignOverviewAdvertiser({
           onClick={() => setIsExpanded(!isExpanded)}
         />
       }
-    >
+    > 
+      <div className="flex flex-col mt-[-16px] gap-4">
+
       {isExpanded && (
         <div className="flex flex-col gap-3">
           <div className="flex gap-4">
-            <div className="border border-[#cfd6de] w-[88px] h-[88px] bg-gray-100" />
+            <div className="border border-[#cfd6de] rounded-md w-[88px] h-[88px] bg-gray-100" />
             <div className="flex-1 flex flex-col gap-1">
               <label className="font-medium text-sm leading-5 text-[#021337]">
                 Tên nhà quảng cáo
@@ -80,41 +82,44 @@ export function CampaignOverviewAdvertiser({
             </div>
           </div>
 
-          <div className="flex flex-col gap-1">
-            <label className="font-medium text-sm leading-5 text-[#021337]">
-              Thời hạn hoa hồng được duyệt trên hệ thống
-            </label>
-            <div className="bg-white border border-[#cfd6de] rounded-md px-3 py-2 flex items-center">
-              <input
-                type="text"
-                value={approvalPeriod}
-                onChange={(e) => setApprovalPeriod(e.target.value)}
-                className="flex-1 text-sm leading-5 text-[#021337] focus:outline-none"
-              />
-              <span className="font-medium text-sm leading-5 text-[#021337]">
-                ngày
-              </span>
+          <div className="flex flex-row gap-4">
+            <div className="flex-1 flex flex-col gap-1">
+              <label className="font-medium text-sm leading-5 text-[#021337]">
+                Thời hạn hoa hồng được duyệt trên hệ thống
+              </label>
+              <div className="bg-white border border-[#cfd6de] rounded-md px-3 py-2 flex items-center">
+                <input
+                  type="text"
+                  value={approvalPeriod}
+                  onChange={(e) => setApprovalPeriod(e.target.value)}
+                  className="flex-1 text-sm leading-5 text-[#021337] focus:outline-none"
+                />
+                <span className="font-medium text-sm leading-5 text-[#021337]">
+                  ngày
+                </span>
+              </div>
             </div>
-          </div>
 
-          <div className="flex flex-col gap-1">
-            <label className="font-medium text-sm leading-5 text-[#021337]">
-              Cookie LTV (life-time value)
-            </label>
-            <div className="bg-white border border-[#cfd6de] rounded-md px-3 py-2 flex items-center">
-              <input
-                type="text"
-                value={cookieLTV}
-                onChange={(e) => setCookieLTV(e.target.value)}
-                className="flex-1 text-sm leading-5 text-[#021337] focus:outline-none"
-              />
-              <span className="font-medium text-sm leading-5 text-[#021337]">
-                ngày
-              </span>
+            <div className="flex-1 flex flex-col gap-1">
+              <label className="font-medium text-sm leading-5 text-[#021337]">
+                Thời gian tồn tại cookie (cookie LTV - life time value)
+              </label>
+              <div className="bg-white border border-[#cfd6de] rounded-md px-3 py-2 flex items-center">
+                <input
+                  type="text"
+                  value={cookieLTV}
+                  onChange={(e) => setCookieLTV(e.target.value)}
+                  className="flex-1 text-sm leading-5 text-[#021337] focus:outline-none"
+                />
+                <span className="font-medium text-sm leading-5 text-[#021337]">
+                  ngày
+                </span>
+              </div>
             </div>
           </div>
         </div>
       )}
+      </div>
     </SectionCard>
   );
 }

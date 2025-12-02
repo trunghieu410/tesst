@@ -43,9 +43,9 @@ export function CampaignOverviewTab({
 
   return (
     <>
-      <div className="p-4 flex gap-4 relative w-full bg-[#F3F4F5] h-full overflow-auto">
+      <div className="p-4 flex gap-4 w-full bg-[#F3F4F5] min-h-full">
         {/* Left Column */}
-        <div className="flex flex-col gap-2.5 w-full">
+        <div className="flex flex-col gap-2.5 w-full rounded-lg border border-[#e7e9eb]">
           {/* General Information Section */}
           <CampaignOverviewGeneral
             campaignName={campaignName}
