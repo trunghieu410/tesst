@@ -8,7 +8,7 @@ import { CampaignWhitelistTab } from "./CampaignWhitelistTab";
 import { Button } from "@/components/ui/Button";
 import { XIcon } from "@/icon/XIcon";
 import { CampaignAssets } from "./CampaignAssets";
-import { useEffect, useState } from "react";
+import { useCampaignDetails } from "./hooks/useCampaignDetails";
 
 interface CampaignCreateProps {
   campaignId?: string | number | null;
@@ -17,30 +17,7 @@ interface CampaignCreateProps {
 export function CampaignCreate({ campaignId }: CampaignCreateProps) {
   const { publish } = useEventEmitter();
   const isEdit = !!campaignId;
-  const [isLoading, setIsLoading] = useState(false);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [campaignDetails, setCampaignDetails] = useState<any>(null);
-
-  useEffect(() => {
-    if (isEdit && campaignId) {
-      setIsLoading(true);
-      // Mock API call
-      console.log(`Fetching details for campaign ${campaignId}`);
-      const timer = setTimeout(() => {
-        setCampaignDetails({
-          id: campaignId,
-          name: "Mock Campaign Details",
-          description: "This is a mock description fetched from API",
-          // Add other mock fields as needed
-        });
-        setIsLoading(false);
-      }, 500);
-
-      return () => clearTimeout(timer);
-    } else {
-      setCampaignDetails(null);
-    }
-  }, [campaignId, isEdit]);
+  const { isLoading, campaignDetails } = useCampaignDetails(campaignId || null);
 
   const handleClose = () => {
     publish("hide-right-panel");

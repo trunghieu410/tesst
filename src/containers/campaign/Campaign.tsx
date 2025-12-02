@@ -12,25 +12,11 @@ import { useNavigate } from "react-router-dom";
 import { RightSidePanel } from "@/components/features/RightSidePanel";
 import { CampaignCreate } from "./CampaignCreate";
 
-const countryOptions = [
-  { value: "VN", label: "Vietnam" },
-  { value: "TH", label: "Thailand" },
-  { value: "ID", label: "Indonesia" },
-  { value: "MY", label: "Malaysia" },
-];
-
-const imageTypeOptions = [
-  { value: "daily_checkin", label: "Daily Checkin" },
-  { value: "view_ads", label: "View Ads" },
-  { value: "shorten_link", label: "Shorten Link" },
-];
-
-const statusOptions = [
-  { value: "active", label: "Đang diễn ra" },
-  { value: "pending", label: "Sắp ra mắt" },
-  { value: "completed", label: "Đã kết thúc" },
-  { value: "inactive", label: "Nhập" },
-];
+import {
+  COUNTRY_OPTIONS,
+  IMAGE_TYPE_OPTIONS,
+  STATUS_OPTIONS,
+} from "./constants";
 
 export function Campaign() {
   const navigate = useNavigate();
@@ -116,7 +102,7 @@ export function Campaign() {
             value={selectedCountry}
             onChange={setSelectedCountry}
             placeholder="Quốc gia"
-            options={countryOptions}
+            options={COUNTRY_OPTIONS}
             className="w-auto min-w-[103px]"
           />
 
@@ -124,7 +110,7 @@ export function Campaign() {
             value={selectedImageType}
             onChange={setSelectedImageType}
             placeholder="Hình thức"
-            options={imageTypeOptions}
+            options={IMAGE_TYPE_OPTIONS}
             className="w-auto min-w-[108px]"
           />
 
@@ -132,7 +118,7 @@ export function Campaign() {
             value={selectedStatus}
             onChange={setSelectedStatus}
             placeholder="Trạng thái"
-            options={statusOptions}
+            options={STATUS_OPTIONS}
             className="w-auto min-w-[110px]"
           />
         </div>
