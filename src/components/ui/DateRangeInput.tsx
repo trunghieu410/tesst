@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo, useCallback } from "react";
 import { Calendar, ChevronLeft, ChevronRight, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils/common";
 import useClickOutside from "@/hooks/useClickOutside";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { BottomSheet } from "./BottomSheet";
 import { Button } from "./Button";
+import { areDatesEqual, formatDateForDisplay, formatDateRange, isDayInRange, parseDateString } from "@/lib/utils/date";
 
 interface DateRangeInputProps {
   value: string;
@@ -13,6 +14,10 @@ interface DateRangeInputProps {
   showYear?: boolean;
 }
 
+// Constants
+const TOTAL_CALENDAR_SLOTS = 42; // 6 rows * 7 days
+const WEEKDAY_LABELS = ["S", "M", "T", "W", "T", "F", "S"];
+
 export function DateRangeInput({
   value,
   onChange,
@@ -20,83 +25,28 @@ export function DateRangeInput({
   showYear = false,
 }: DateRangeInputProps) {
   const isMobile = useIsMobile();
-  
+
+  // State management
   const [currentDate, setCurrentDate] = useState(() => {
-    // Initialize to October (month 9) to match the Publisher's initial value "1.10 - 30.11"
     const now = new Date();
     return new Date(now.getFullYear(), 9, 1); // October 1st
   });
-  const [selectedStartDate, setSelectedStartDate] = useState<string | null>(
-    null
-  );
+  const [selectedStartDate, setSelectedStartDate] = useState<string | null>(null);
   const [selectedEndDate, setSelectedEndDate] = useState<string | null>(null);
-  
-  // Temporary states for mobile (transactional selection)
   const [tempStartDate, setTempStartDate] = useState<string | null>(null);
   const [tempEndDate, setTempEndDate] = useState<string | null>(null);
-  
   const [isOpen, setIsOpen] = useState(false);
   const [isInitialized, setIsInitialized] = useState(false);
 
-  // Bind click-outside to the container; close only when both dates are selected (desktop only)
+  // Click outside handler
   const datepickerRef = useClickOutside<HTMLDivElement>(
     () => {
       if (!isMobile && selectedStartDate && selectedEndDate) {
         setIsOpen(false);
       }
     },
-    {
-      enabled: isOpen && !isMobile,
-    }
+    { enabled: isOpen && !isMobile }
   );
-
-  // Helper function to parse date string to Date object
-  const parseDateString = (dateString: string): Date | null => {
-    // Try different formats: "MM/DD/YYYY", "DD.MM", "DD.MM.YYYY"
-    const formats = [
-      // MM/DD/YYYY format
-      (str: string) => {
-        const parts = str.split("/");
-        if (parts.length === 3) {
-          const [month, day, year] = parts.map(Number);
-          return new Date(year, month - 1, day);
-        }
-        return null;
-      },
-      // DD.MM or DD.MM.YYYY format
-      (str: string) => {
-        const parts = str.split(".");
-        if (parts.length >= 2) {
-          const [day, month, year] = parts.map(Number);
-          const currentYear = year || new Date().getFullYear();
-          return new Date(currentYear, month - 1, day);
-        }
-        return null;
-      },
-    ];
-
-    for (const formatParser of formats) {
-      const date = formatParser(dateString);
-      if (date && !isNaN(date.getTime())) {
-        return date;
-      }
-    }
-    return null;
-  };
-
-  // Helper function to format date for display/output
-  const formatDateForDisplay = (
-    date: Date,
-    showYear: boolean = false
-  ): string => {
-    const day = date.getDate();
-    const month = date.getMonth() + 1;
-    if (showYear) {
-      const year = date.getFullYear();
-      return `${day}.${month}.${year}`;
-    }
-    return `${day}.${month}`;
-  };
 
   // Parse value to set initial dates
   useEffect(() => {
@@ -105,22 +55,16 @@ export function DateRangeInput({
       if (parts.length === 2) {
         setSelectedStartDate(parts[0]);
         setSelectedEndDate(parts[1]);
-        // Set current date to the month of the start date
         const startDate = parseDateString(parts[0]);
         if (startDate) {
-          setCurrentDate(
-            new Date(startDate.getFullYear(), startDate.getMonth(), 1)
-          );
+          setCurrentDate(new Date(startDate.getFullYear(), startDate.getMonth(), 1));
         }
       } else if (parts.length === 1) {
         setSelectedStartDate(parts[0]);
         setSelectedEndDate(null);
-        // Set current date to the month of the selected date
         const selectedDate = parseDateString(parts[0]);
         if (selectedDate) {
-          setCurrentDate(
-            new Date(selectedDate.getFullYear(), selectedDate.getMonth(), 1)
-          );
+          setCurrentDate(new Date(selectedDate.getFullYear(), selectedDate.getMonth(), 1));
         }
       }
     } else {
@@ -130,38 +74,18 @@ export function DateRangeInput({
     setIsInitialized(true);
   }, [value]);
 
-  // Update parent value when dates change (only after initialization and only on desktop)
+  // Update parent value when dates change (desktop only)
   useEffect(() => {
     if (!isInitialized || isMobile) return;
 
-    const startDate = selectedStartDate
-      ? parseDateString(selectedStartDate)
-      : null;
+    const startDate = selectedStartDate ? parseDateString(selectedStartDate) : null;
     const endDate = selectedEndDate ? parseDateString(selectedEndDate) : null;
+    const newValue = formatDateRange(startDate, endDate, showYear);
 
-    let newValue = "";
-    if (startDate && endDate) {
-      newValue = `${formatDateForDisplay(
-        startDate,
-        showYear
-      )} - ${formatDateForDisplay(endDate, showYear)}`;
-    } else if (startDate) {
-      newValue = formatDateForDisplay(startDate, showYear);
-    }
-
-    // Only update if the value has actually changed
     if (newValue !== value) {
       onChange(newValue);
     }
-  }, [
-    selectedStartDate,
-    selectedEndDate,
-    onChange,
-    isInitialized,
-    value,
-    showYear,
-    isMobile,
-  ]);
+  }, [selectedStartDate, selectedEndDate, onChange, isInitialized, value, showYear, isMobile]);
 
   // Initialize temp states when opening on mobile
   useEffect(() => {
@@ -171,181 +95,60 @@ export function DateRangeInput({
     }
   }, [isMobile, isOpen, selectedStartDate, selectedEndDate]);
 
-  const renderCalendar = (monthOffset: number = 0, useTempState: boolean = false) => {
-    const baseDate = new Date(currentDate);
-    baseDate.setMonth(baseDate.getMonth() + monthOffset);
-    
-    const year = baseDate.getFullYear();
-    const month = baseDate.getMonth();
+  // Event handlers
+  const toggleDatepicker = useCallback(() => {
+    setIsOpen((prev) => !prev);
+  }, []);
 
-    const firstDayOfMonth = new Date(year, month, 1).getDay();
-
-    const daysArray: React.JSX.Element[] = [];
-
-    // Use temp states on mobile, regular states on desktop
-    const startDateStr = useTempState ? tempStartDate : selectedStartDate;
-    const endDateStr = useTempState ? tempEndDate : selectedEndDate;
-
-    const startDate = startDateStr ? parseDateString(startDateStr) : null;
-    const endDate = endDateStr ? parseDateString(endDateStr) : null;
-
-    // 6 rows * 7 cols = 42 cells to cover all possible month layouts
-    const totalSlots = 42;
-
-    for (let i = 0; i < totalSlots; i++) {
-      const dayOffset = i - firstDayOfMonth + 1;
-      const day = new Date(year, month, dayOffset);
-      const dayString = day.toLocaleDateString("en-US");
-      const isCurrentMonth = day.getMonth() === month;
-
-      const isStartDate =
-        isCurrentMonth &&
-        startDate &&
-        day.getDate() === startDate.getDate() &&
-        day.getMonth() === startDate.getMonth() &&
-        day.getFullYear() === startDate.getFullYear();
-
-      const isEndDate =
-        isCurrentMonth &&
-        endDate &&
-        day.getDate() === endDate.getDate() &&
-        day.getMonth() === endDate.getMonth() &&
-        day.getFullYear() === endDate.getFullYear();
-
-      const isInRange =
-        isCurrentMonth &&
-        startDate &&
-        endDate &&
-        day > startDate &&
-        day < endDate;
-
-      const isRangeStart =
-        isStartDate && endDate && startDate.getTime() !== endDate.getTime();
-      const isRangeEnd =
-        isEndDate && startDate && startDate.getTime() !== endDate.getTime();
-
-      const isSunday = day.getDay() === 0;
-      const isSaturday = day.getDay() === 6;
-      const isFirstDayOfMonth = day.getDate() === 1;
-      // Calculate last day of the current month
-      const daysInCurrentMonth = new Date(year, month + 1, 0).getDate();
-      const isLastDayOfMonth = day.getDate() === daysInCurrentMonth;
-
-      const shouldRoundLeft = isSunday || isFirstDayOfMonth;
-      const shouldRoundRight = isSaturday || isLastDayOfMonth;
-
-      daysArray.push(
-        <div
-          key={i}
-          className={cn(
-            "relative h-8 w-full flex items-center justify-center mb-1",
-            isCurrentMonth ? "cursor-pointer" : "cursor-default"
-          )}
-          onClick={() =>
-            isCurrentMonth && handleDayClick(dayString, useTempState)
-          }
-        >
-          {isInRange && (
-            <div
-              className={cn(
-                "absolute inset-0 bg-[#FFD3D5]",
-                shouldRoundLeft && "rounded-l-[6px]",
-                shouldRoundRight && "rounded-r-[6px]"
-              )}
-            />
-          )}
-          {isRangeStart && (
-            <div
-              className={cn(
-                "absolute right-0 top-0 bottom-0 w-1/2 bg-[#FFD3D5]",
-                shouldRoundRight && "rounded-r-[6px]"
-              )}
-            />
-          )}
-          {isRangeEnd && (
-            <div
-              className={cn(
-                "absolute left-0 top-0 bottom-0 w-1/2 bg-[#FFD3D5]",
-                shouldRoundLeft && "rounded-l-[6px]"
-              )}
-            />
-          )}
-
-          <div
-            className={cn(
-              "relative z-10 h-8 w-8 flex items-center justify-center rounded-[6px] transition-colors text-[13px]",
-              isStartDate || isEndDate
-                ? "bg-[#FF3B34] text-white"
-                : isCurrentMonth
-                ? "hover:bg-gray-100"
-                : "text-[#B0B5C1]"
-            )}
-          >
-            {day.getDate()}
-          </div>
-        </div>
-      );
-    }
-
-    return daysArray;
-  };
-
-  const handleDayClick = (selectedDay: string, useTempState: boolean = false) => {
-    const clickedDate = parseDateString(selectedDay);
-    if (!clickedDate) return;
-
-    const formattedDate = formatDateForDisplay(clickedDate, showYear);
-
-    if (useTempState) {
-      // Mobile: update temp states
-      if (!tempStartDate || (tempStartDate && tempEndDate)) {
-        setTempStartDate(formattedDate);
-        setTempEndDate(null);
-      } else {
-        const currentStart = parseDateString(tempStartDate);
-
-        if (currentStart && clickedDate < currentStart) {
-          setTempEndDate(tempStartDate);
-          setTempStartDate(formattedDate);
-        } else {
-          setTempEndDate(formattedDate);
-        }
-      }
-    } else {
-      // Desktop: update actual states
-      if (!selectedStartDate || (selectedStartDate && selectedEndDate)) {
-        setSelectedStartDate(formattedDate);
-        setSelectedEndDate(null);
-      } else {
-        const currentStart = parseDateString(selectedStartDate);
-
-        if (currentStart && clickedDate < currentStart) {
-          setSelectedEndDate(selectedStartDate);
-          setSelectedStartDate(formattedDate);
-        } else {
-          setSelectedEndDate(formattedDate);
-        }
-      }
-    }
-  };
-
-  const toggleDatepicker = () => {
-    setIsOpen(!isOpen);
-  };
-
-  const navigateMonth = (direction: "prev" | "next") => {
+  const navigateMonth = useCallback((direction: "prev" | "next") => {
     setCurrentDate((prevDate) => {
       const newDate = new Date(prevDate);
-      if (direction === "prev") {
-        newDate.setMonth(newDate.getMonth() - 1);
-      } else {
-        newDate.setMonth(newDate.getMonth() + 1);
-      }
+      newDate.setMonth(newDate.getMonth() + (direction === "prev" ? -1 : 1));
       return newDate;
     });
-  };
+  }, []);
 
-  const handleClear = () => {
+  const handleDayClick = useCallback(
+    (selectedDay: string, useTempState: boolean = false) => {
+      const clickedDate = parseDateString(selectedDay);
+      if (!clickedDate) return;
+
+      const formattedDate = formatDateForDisplay(clickedDate, showYear);
+
+      if (useTempState) {
+        // Mobile: update temp states
+        if (!tempStartDate || (tempStartDate && tempEndDate)) {
+          setTempStartDate(formattedDate);
+          setTempEndDate(null);
+        } else {
+          const currentStart = parseDateString(tempStartDate);
+          if (currentStart && clickedDate < currentStart) {
+            setTempEndDate(tempStartDate);
+            setTempStartDate(formattedDate);
+          } else {
+            setTempEndDate(formattedDate);
+          }
+        }
+      } else {
+        // Desktop: update actual states
+        if (!selectedStartDate || (selectedStartDate && selectedEndDate)) {
+          setSelectedStartDate(formattedDate);
+          setSelectedEndDate(null);
+        } else {
+          const currentStart = parseDateString(selectedStartDate);
+          if (currentStart && clickedDate < currentStart) {
+            setSelectedEndDate(selectedStartDate);
+            setSelectedStartDate(formattedDate);
+          } else {
+            setSelectedEndDate(formattedDate);
+          }
+        }
+      }
+    },
+    [showYear, tempStartDate, tempEndDate, selectedStartDate, selectedEndDate]
+  );
+
+  const handleClear = useCallback(() => {
     if (isMobile) {
       setTempStartDate(null);
       setTempEndDate(null);
@@ -353,44 +156,157 @@ export function DateRangeInput({
       setSelectedStartDate(null);
       setSelectedEndDate(null);
     }
-  };
+  }, [isMobile]);
 
-  const handleDefault = () => {
+  const handleDefault = useCallback(() => {
     setTempStartDate(null);
     setTempEndDate(null);
-  };
+  }, []);
 
-  const handleApply = () => {
-    // Commit temp states to actual states
+  const handleApply = useCallback(() => {
     setSelectedStartDate(tempStartDate);
     setSelectedEndDate(tempEndDate);
-    
-    // Trigger onChange
+
     const startDate = tempStartDate ? parseDateString(tempStartDate) : null;
     const endDate = tempEndDate ? parseDateString(tempEndDate) : null;
-
-    let newValue = "";
-    if (startDate && endDate) {
-      newValue = `${formatDateForDisplay(
-        startDate,
-        showYear
-      )} - ${formatDateForDisplay(endDate, showYear)}`;
-    } else if (startDate) {
-      newValue = formatDateForDisplay(startDate, showYear);
-    }
+    const newValue = formatDateRange(startDate, endDate, showYear);
 
     onChange(newValue);
     setIsOpen(false);
-  };
+  }, [tempStartDate, tempEndDate, showYear, onChange]);
 
-  const renderMonthHeader = (monthOffset: number = 0) => {
-    const baseDate = new Date(currentDate);
-    baseDate.setMonth(baseDate.getMonth() + monthOffset);
-    return `Tháng ${baseDate.getMonth() + 1} năm ${baseDate.getFullYear()}`;
-  };
+  const renderMonthHeader = useCallback(
+    (monthOffset: number = 0) => {
+      const baseDate = new Date(currentDate);
+      baseDate.setMonth(baseDate.getMonth() + monthOffset);
+      return `Tháng ${baseDate.getMonth() + 1} năm ${baseDate.getFullYear()}`;
+    },
+    [currentDate]
+  );
+
+  const renderCalendar = useCallback(
+    (monthOffset: number = 0, useTempState: boolean = false) => {
+      const baseDate = new Date(currentDate);
+      baseDate.setMonth(baseDate.getMonth() + monthOffset);
+
+      const year = baseDate.getFullYear();
+      const month = baseDate.getMonth();
+      const firstDayOfMonth = new Date(year, month, 1).getDay();
+      const daysInCurrentMonth = new Date(year, month + 1, 0).getDate();
+
+      // Use temp states on mobile, regular states on desktop
+      const startDateStr = useTempState ? tempStartDate : selectedStartDate;
+      const endDateStr = useTempState ? tempEndDate : selectedEndDate;
+      const startDate = startDateStr ? parseDateString(startDateStr) : null;
+      const endDate = endDateStr ? parseDateString(endDateStr) : null;
+
+      const daysArray: React.JSX.Element[] = [];
+
+      for (let i = 0; i < TOTAL_CALENDAR_SLOTS; i++) {
+        const dayOffset = i - firstDayOfMonth + 1;
+        const day = new Date(year, month, dayOffset);
+        const dayString = day.toLocaleDateString("en-US");
+        const isCurrentMonth = day.getMonth() === month;
+
+        // Date state checks
+        const isStartDate = isCurrentMonth && startDate && areDatesEqual(day, startDate);
+        const isEndDate = isCurrentMonth && endDate && areDatesEqual(day, endDate);
+        const isInRange = isCurrentMonth && isDayInRange(day, startDate, endDate);
+        const isRangeStart = isStartDate && endDate && startDate.getTime() !== endDate.getTime();
+        const isRangeEnd = isEndDate && startDate && startDate.getTime() !== endDate.getTime();
+
+        // Boundary checks for rounded corners
+        const isSunday = day.getDay() === 0;
+        const isSaturday = day.getDay() === 6;
+        const isFirstDayOfMonth = day.getDate() === 1;
+        const isLastDayOfMonth = day.getDate() === daysInCurrentMonth;
+        const shouldRoundLeft = isSunday || isFirstDayOfMonth;
+        const shouldRoundRight = isSaturday || isLastDayOfMonth;
+
+        daysArray.push(
+          <div
+            key={i}
+            className={cn(
+              "relative h-8 w-full flex items-center justify-center mb-1",
+              isCurrentMonth ? "cursor-pointer" : "cursor-default"
+            )}
+            onClick={() => isCurrentMonth && handleDayClick(dayString, useTempState)}
+          >
+            {/* Range background */}
+            {isInRange && (
+              <div
+                className={cn(
+                  "absolute inset-0 bg-[#FFD3D5]",
+                  shouldRoundLeft && "rounded-l-[6px]",
+                  shouldRoundRight && "rounded-r-[6px]"
+                )}
+              />
+            )}
+            {/* Range start half background */}
+            {isRangeStart && (
+              <div
+                className={cn(
+                  "absolute right-0 top-0 bottom-0 w-1/2 bg-[#FFD3D5]",
+                  shouldRoundRight && "rounded-r-[6px]"
+                )}
+              />
+            )}
+            {/* Range end half background */}
+            {isRangeEnd && (
+              <div
+                className={cn(
+                  "absolute left-0 top-0 bottom-0 w-1/2 bg-[#FFD3D5]",
+                  shouldRoundLeft && "rounded-l-[6px]"
+                )}
+              />
+            )}
+
+            {/* Day number */}
+            <div
+              className={cn(
+                "relative z-10 h-8 w-8 flex items-center justify-center rounded-[6px] transition-colors text-[14px]",
+                isStartDate || isEndDate
+                  ? "bg-[#FF3B34] text-white"
+                  : isCurrentMonth
+                  ? "hover:bg-gray-100"
+                  : "text-[#B0B5C1]"
+              )}
+            >
+              {day.getDate()}
+            </div>
+          </div>
+        );
+      }
+
+      return daysArray;
+    },
+    [currentDate, tempStartDate, tempEndDate, selectedStartDate, selectedEndDate, handleDayClick]
+  );
+
+  // Memoized weekday headers
+  const weekdayHeaders = useMemo(
+    () =>
+      WEEKDAY_LABELS.map((day) => (
+        <div key={day} className="flex h-6 w-11 items-center justify-center text-[14px] color-[#2C2A2A] font-bold">
+          {day}
+        </div>
+      )),
+    []
+  );
+
+  const weekdayHeadersMobile = useMemo(
+    () =>
+      WEEKDAY_LABELS.map((day) => (
+        <div key={day} className="flex h-6 w-full items-center justify-center text-[14px] color-[#2C2A2A] font-bold">
+          {day}
+        </div>
+      )),
+    []
+  );
 
   return (
     <div className={cn("relative", className)} ref={datepickerRef}>
+      {/* Input trigger */}
       <div onClick={toggleDatepicker} className="cursor-pointer">
         <div className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none">
           <Calendar className="w-4 h-4 text-[#677187]" />
@@ -408,6 +324,7 @@ export function DateRangeInput({
       {/* Desktop Popover */}
       {isOpen && !isMobile && (
         <div className="absolute top-full left-0 mt-1 bg-white border border-[#cfd6de] rounded-md shadow-lg z-50 p-3 w-[250px]">
+          {/* Header with navigation */}
           <div className="flex items-center justify-between mb-3">
             <h3 className="text-[14px] font-medium text-[#021337]">
               {renderMonthHeader()}
@@ -421,34 +338,30 @@ export function DateRangeInput({
               </button>
               <button
                 onClick={() => navigateMonth("next")}
-                className="flex h-7 w-7 items-center justify-center rounded border border-[#cfd6de] bg-white text-[#021337] hover:bg-gray-50 focus:outline-none  transition-colors"
+                className="flex h-7 w-7 items-center justify-center rounded border border-[#cfd6de] bg-white text-[#021337] hover:bg-gray-50 focus:outline-none transition-colors"
               >
                 <ChevronRight className="w-3 h-3" />
               </button>
             </div>
           </div>
 
+          {/* Weekday headers */}
           <div className="grid grid-cols-7 gap-0 mb-1 text-[14px] font-medium text-[#677187] uppercase">
-            {["CN", "T2", "T3", "T4", "T5", "T6", "T7"].map((day) => (
-              <div
-                key={day}
-                className="flex h-6 w-11 items-center justify-center"
-              >
-                {day}
-              </div>
-            ))}
+            {weekdayHeaders}
           </div>
 
+          {/* Calendar grid */}
           <div className="grid grid-cols-7 gap-0 text-[14px] font-medium text-[#021337]">
             {renderCalendar(0, false)}
           </div>
 
+          {/* Date range display */}
           <div className="flex items-center justify-center gap-2 pt-3 mt-3 border-t border-[#cfd6de]">
-            <button className="h-7 rounded border border-[#cfd6de] bg-transparent px-2 text-[14px] font-medium text-[#677187] hover:border-[#FF3B34] focus:outline-none  transition-colors">
+            <button className="h-7 rounded border border-[#cfd6de] bg-transparent px-2 text-[14px] font-medium text-[#677187] hover:border-[#FF3B34] focus:outline-none transition-colors">
               {selectedStartDate || "Bắt đầu"}
             </button>
             {" - "}
-            <button className="h-7 rounded border border-[#cfd6de] bg-transparent px-2 text-[14px] font-medium text-[#677187] hover:border-[#FF3B34] focus:outline-none  transition-colors">
+            <button className="h-7 rounded border border-[#cfd6de] bg-transparent px-2 text-[14px] font-medium text-[#677187] hover:border-[#FF3B34] focus:outline-none transition-colors">
               {selectedEndDate || "Kết thúc"}
             </button>
           </div>
@@ -462,91 +375,36 @@ export function DateRangeInput({
           onClose={() => setIsOpen(false)}
           title="Thời gian"
           rightAction={
-            <button
-              onClick={handleClear}
-              className="text-[#0066ff] font-medium"
-            >
+            <button onClick={handleClear} className="text-[#0066ff] font-medium">
               Clear
             </button>
           }
           footer={
             <div className="flex gap-3">
-              <Button
-                variant="outline"
-                size="md"
-                onClick={handleDefault}
-                className="flex-1"
-              >
+              <Button variant="outline" size="md" onClick={handleDefault} className="flex-1">
                 Mặc Định
               </Button>
-              <Button
-                variant="primary"
-                size="md"
-                onClick={handleApply}
-                className="flex-1"
-              >
+              <Button variant="primary" size="md" onClick={handleApply} className="flex-1">
                 Áp Dụng
               </Button>
             </div>
           }
         >
-          {/* Navigation Controls */}
-          {/* <div className="flex items-center justify-between mb-4">
-            <button
-              onClick={() => navigateMonth("prev")}
-              className="flex h-8 w-8 items-center justify-center rounded border border-[#cfd6de] bg-white text-[#021337] hover:bg-gray-50 focus:outline-none transition-colors"
-            >
-              <ChevronLeft className="w-4 h-4" />
-            </button>
-            <button
-              onClick={() => navigateMonth("next")}
-              className="flex h-8 w-8 items-center justify-center rounded border border-[#cfd6de] bg-white text-[#021337] hover:bg-gray-50 focus:outline-none transition-colors"
-            >
-              <ChevronRight className="w-4 h-4" />
-            </button>
-          </div> */}
-
           {/* Two Months Display */}
           <div className="space-y-6">
-            {/* First Month */}
-            <div>
-              <h3 className="text-[14px] font-medium text-[#021337] mb-3">
-                {renderMonthHeader(0)}
-              </h3>
-              <div className="grid grid-cols-7 gap-0 mb-1 text-[11px] font-medium text-[#677187] uppercase">
-                {["CN", "T2", "T3", "T4", "T5", "T6", "T7"].map((day) => (
-                  <div
-                    key={day}
-                    className="flex h-6 w-full items-center justify-center"
-                  >
-                    {day}
-                  </div>
-                ))}
+            {[0, 1].map((offset) => (
+              <div key={offset}>
+                <h3 className="text-[14px] font-medium text-[#021337] mb-3">
+                  {renderMonthHeader(offset)}
+                </h3>
+                <div className="grid grid-cols-7 gap-0 mb-1 text-[11px] font-medium text-[#677187] uppercase">
+                  {weekdayHeadersMobile}
+                </div>
+                <div className="grid grid-cols-7 gap-0 text-[14px] font-medium text-[#021337]">
+                  {renderCalendar(offset, true)}
+                </div>
               </div>
-              <div className="grid grid-cols-7 gap-0 text-[14px] font-medium text-[#021337]">
-                {renderCalendar(0, true)}
-              </div>
-            </div>
-
-            {/* Second Month */}
-            <div>
-              <h3 className="text-[14px] font-medium text-[#021337] mb-3">
-                {renderMonthHeader(1)}
-              </h3>
-              <div className="grid grid-cols-7 gap-0 mb-1 text-[11px] font-medium text-[#677187] uppercase">
-                {["CN", "T2", "T3", "T4", "T5", "T6", "T7"].map((day) => (
-                  <div
-                    key={day}
-                    className="flex h-6 w-full items-center justify-center"
-                  >
-                    {day}
-                  </div>
-                ))}
-              </div>
-              <div className="grid grid-cols-7 gap-0 text-[14px] font-medium text-[#021337]">
-                {renderCalendar(1, true)}
-              </div>
-            </div>
+            ))}
           </div>
         </BottomSheet>
       )}
