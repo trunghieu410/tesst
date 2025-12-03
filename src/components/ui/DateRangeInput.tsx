@@ -179,57 +179,110 @@ export function DateRangeInput({
     const month = baseDate.getMonth();
 
     const firstDayOfMonth = new Date(year, month, 1).getDay();
-    const daysInMonth = new Date(year, month + 1, 0).getDate();
-    const daysArray: React.JSX.Element[] = [];
 
-    // Empty cells for days before the first day of the month
-    for (let i = 0; i < firstDayOfMonth; i++) {
-      daysArray.push(<div key={`empty-${i}`} className="h-8 w-8"></div>);
-    }
+    const daysArray: React.JSX.Element[] = [];
 
     // Use temp states on mobile, regular states on desktop
     const startDateStr = useTempState ? tempStartDate : selectedStartDate;
     const endDateStr = useTempState ? tempEndDate : selectedEndDate;
 
-    // Days of the month
-    for (let i = 1; i <= daysInMonth; i++) {
-      const day = new Date(year, month, i);
-      const dayString = day.toLocaleDateString("en-US");
-      let className =
-        "flex h-8 w-8 items-center justify-center rounded-full hover:bg-gray-100 mb-1 cursor-pointer transition-colors mx-auto";
+    const startDate = startDateStr ? parseDateString(startDateStr) : null;
+    const endDate = endDateStr ? parseDateString(endDateStr) : null;
 
-      const startDate = startDateStr ? parseDateString(startDateStr) : null;
-      const endDate = endDateStr ? parseDateString(endDateStr) : null;
+    // 6 rows * 7 cols = 42 cells to cover all possible month layouts
+    const totalSlots = 42;
+
+    for (let i = 0; i < totalSlots; i++) {
+      const dayOffset = i - firstDayOfMonth + 1;
+      const day = new Date(year, month, dayOffset);
+      const dayString = day.toLocaleDateString("en-US");
+      const isCurrentMonth = day.getMonth() === month;
 
       const isStartDate =
+        isCurrentMonth &&
         startDate &&
         day.getDate() === startDate.getDate() &&
         day.getMonth() === startDate.getMonth() &&
         day.getFullYear() === startDate.getFullYear();
 
       const isEndDate =
+        isCurrentMonth &&
         endDate &&
         day.getDate() === endDate.getDate() &&
         day.getMonth() === endDate.getMonth() &&
         day.getFullYear() === endDate.getFullYear();
-      const isInRange =
-        startDate && endDate && day > startDate && day < endDate;
 
-      if (isStartDate) {
-        className += " bg-[#ff3131] text-white";
-      } else if (isEndDate) {
-        className += " bg-[#ff3131] text-white";
-      } else if (isInRange) {
-        className += " bg-[#ff3131]/10";
-      }
+      const isInRange =
+        isCurrentMonth &&
+        startDate &&
+        endDate &&
+        day > startDate &&
+        day < endDate;
+
+      const isRangeStart =
+        isStartDate && endDate && startDate.getTime() !== endDate.getTime();
+      const isRangeEnd =
+        isEndDate && startDate && startDate.getTime() !== endDate.getTime();
+
+      const isSunday = day.getDay() === 0;
+      const isSaturday = day.getDay() === 6;
+      const isFirstDayOfMonth = day.getDate() === 1;
+      // Calculate last day of the current month
+      const daysInCurrentMonth = new Date(year, month + 1, 0).getDate();
+      const isLastDayOfMonth = day.getDate() === daysInCurrentMonth;
+
+      const shouldRoundLeft = isSunday || isFirstDayOfMonth;
+      const shouldRoundRight = isSaturday || isLastDayOfMonth;
 
       daysArray.push(
         <div
           key={i}
-          className={className}
-          onClick={() => handleDayClick(dayString, useTempState)}
+          className={cn(
+            "relative h-8 w-full flex items-center justify-center mb-1",
+            isCurrentMonth ? "cursor-pointer" : "cursor-default"
+          )}
+          onClick={() =>
+            isCurrentMonth && handleDayClick(dayString, useTempState)
+          }
         >
-          {i}
+          {isInRange && (
+            <div
+              className={cn(
+                "absolute inset-0 bg-[#FFD3D5]",
+                shouldRoundLeft && "rounded-l-[6px]",
+                shouldRoundRight && "rounded-r-[6px]"
+              )}
+            />
+          )}
+          {isRangeStart && (
+            <div
+              className={cn(
+                "absolute right-0 top-0 bottom-0 w-1/2 bg-[#FFD3D5]",
+                shouldRoundRight && "rounded-r-[6px]"
+              )}
+            />
+          )}
+          {isRangeEnd && (
+            <div
+              className={cn(
+                "absolute left-0 top-0 bottom-0 w-1/2 bg-[#FFD3D5]",
+                shouldRoundLeft && "rounded-l-[6px]"
+              )}
+            />
+          )}
+
+          <div
+            className={cn(
+              "relative z-10 h-8 w-8 flex items-center justify-center rounded-[6px] transition-colors text-[13px]",
+              isStartDate || isEndDate
+                ? "bg-[#FF3B34] text-white"
+                : isCurrentMonth
+                ? "hover:bg-gray-100"
+                : "text-[#B0B5C1]"
+            )}
+          >
+            {day.getDate()}
+          </div>
         </div>
       );
     }
@@ -346,7 +399,7 @@ export function DateRangeInput({
           type="text"
           value={value}
           placeholder="Select date range"
-          className="w-full h-8 bg-white border border-[#cfd6de] rounded-md pl-9 pr-8 py-2 font-normal text-[13px] leading-4 text-[#021337] placeholder:text-[#677187] focus:outline-none cursor-pointer"
+          className="w-full h-8 bg-white border border-[#cfd6de] rounded-md pl-9 pr-8 py-2 font-normal text-[14px] leading-4 text-[#021337] placeholder:text-[#677187] focus:outline-none cursor-pointer"
           readOnly
         />
         <ChevronDown className="w-4 h-4 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-[#677187]" />
@@ -356,7 +409,7 @@ export function DateRangeInput({
       {isOpen && !isMobile && (
         <div className="absolute top-full left-0 mt-1 bg-white border border-[#cfd6de] rounded-md shadow-lg z-50 p-3 w-[250px]">
           <div className="flex items-center justify-between mb-3">
-            <h3 className="text-[13px] font-medium text-[#021337]">
+            <h3 className="text-[14px] font-medium text-[#021337]">
               {renderMonthHeader()}
             </h3>
             <div className="flex items-center gap-1">
@@ -375,7 +428,7 @@ export function DateRangeInput({
             </div>
           </div>
 
-          <div className="grid grid-cols-7 gap-0 mb-1 text-[13px] font-medium text-[#677187] uppercase">
+          <div className="grid grid-cols-7 gap-0 mb-1 text-[14px] font-medium text-[#677187] uppercase">
             {["CN", "T2", "T3", "T4", "T5", "T6", "T7"].map((day) => (
               <div
                 key={day}
@@ -386,16 +439,16 @@ export function DateRangeInput({
             ))}
           </div>
 
-          <div className="grid grid-cols-7 gap-0 text-[13px] font-medium text-[#021337]">
+          <div className="grid grid-cols-7 gap-0 text-[14px] font-medium text-[#021337]">
             {renderCalendar(0, false)}
           </div>
 
           <div className="flex items-center justify-center gap-2 pt-3 mt-3 border-t border-[#cfd6de]">
-            <button className="h-7 rounded border border-[#cfd6de] bg-transparent px-2 text-[13px] font-medium text-[#677187] hover:border-[#ff3131] focus:outline-none  transition-colors">
+            <button className="h-7 rounded border border-[#cfd6de] bg-transparent px-2 text-[14px] font-medium text-[#677187] hover:border-[#FF3B34] focus:outline-none  transition-colors">
               {selectedStartDate || "Bắt đầu"}
             </button>
             {" - "}
-            <button className="h-7 rounded border border-[#cfd6de] bg-transparent px-2 text-[13px] font-medium text-[#677187] hover:border-[#ff3131] focus:outline-none  transition-colors">
+            <button className="h-7 rounded border border-[#cfd6de] bg-transparent px-2 text-[14px] font-medium text-[#677187] hover:border-[#FF3B34] focus:outline-none  transition-colors">
               {selectedEndDate || "Kết thúc"}
             </button>
           </div>
@@ -457,7 +510,7 @@ export function DateRangeInput({
           <div className="space-y-6">
             {/* First Month */}
             <div>
-              <h3 className="text-[13px] font-medium text-[#021337] mb-3">
+              <h3 className="text-[14px] font-medium text-[#021337] mb-3">
                 {renderMonthHeader(0)}
               </h3>
               <div className="grid grid-cols-7 gap-0 mb-1 text-[11px] font-medium text-[#677187] uppercase">
@@ -470,14 +523,14 @@ export function DateRangeInput({
                   </div>
                 ))}
               </div>
-              <div className="grid grid-cols-7 gap-0 text-[13px] font-medium text-[#021337]">
+              <div className="grid grid-cols-7 gap-0 text-[14px] font-medium text-[#021337]">
                 {renderCalendar(0, true)}
               </div>
             </div>
 
             {/* Second Month */}
             <div>
-              <h3 className="text-[13px] font-medium text-[#021337] mb-3">
+              <h3 className="text-[14px] font-medium text-[#021337] mb-3">
                 {renderMonthHeader(1)}
               </h3>
               <div className="grid grid-cols-7 gap-0 mb-1 text-[11px] font-medium text-[#677187] uppercase">
@@ -490,7 +543,7 @@ export function DateRangeInput({
                   </div>
                 ))}
               </div>
-              <div className="grid grid-cols-7 gap-0 text-[13px] font-medium text-[#021337]">
+              <div className="grid grid-cols-7 gap-0 text-[14px] font-medium text-[#021337]">
                 {renderCalendar(1, true)}
               </div>
             </div>
