@@ -44,7 +44,7 @@ export function MultipleSelectDropdown({
   onSelectedChange,
   initialValues = [],
   filterable = true,
-  mobileTitle = "Select Options",
+  mobileTitle = "Quốc gia",
 }: MultipleSelectDropdownProps) {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [values, setValues] = useState<string[]>(initialValues);

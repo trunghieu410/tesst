@@ -33,7 +33,16 @@ export function CampaignTable({ campaigns, onRowClick }: CampaignTableProps) {
       onRowClick(campaign);
     }
   };
-
+// {
+//     "id": "1",
+//     "name": "Welcome Airdrop Campaign",
+//     "description": "Welcome to Open Kingdom! Complete daily check-ins to earn rewards.",
+//     "status": "active",
+//     "startDate": "2025-12-02T15:21:33.736Z",
+//     "endDate": "2026-01-01T15:21:33.736Z",
+//     "createdAt": "2025-12-02T15:21:33.764Z",
+//     "updatedAt": "2025-12-02T15:21:33.764Z"
+// }
   return (
     <Table horizontalScrollWithStickyColumns={true}>
       <TableHead>

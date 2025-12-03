@@ -27,6 +27,10 @@ interface SectionCardProps {
    * Additional CSS classes for the content area
    */
   contentClassName?: string;
+  /**
+   * Additional CSS classes for the header area
+   */
+  headerClassName?: string;
 }
 
 export function SectionCard({
@@ -35,6 +39,7 @@ export function SectionCard({
   headerActions,
   children,
   className,
+  headerClassName,
   contentClassName,
 }: SectionCardProps) {
   return (
@@ -45,7 +50,10 @@ export function SectionCard({
       )}
     >
       {/* Header */}
-      <div className="flex-row items-center justify-between gap-2 px-4 py-3 ">
+      <div className={cn(
+        "flex flex-row items-center gap-2 px-4 py-3",
+        headerClassName
+      )}>
         <div className="flex items-center gap-2">
           <h3 className="text-[14px] font-medium leading-5 text-[#021337] m-0">
             {title}

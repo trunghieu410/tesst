@@ -303,9 +303,9 @@ export function ReportsPublishers() {
           <SectionCard
             title="Hoạt động"
             className="h-full max-h-[268px]"
-            contentClassName="p-4 pb-2 flex-1 overflow-y-auto"
+            contentClassName="flex-1 overflow-y-auto flex flex-col justify-between"
           >
-            <div className="mb-2">
+            <div className="pl-4">
               <p className="text-[24px] font-semibold leading-8 text-[#021337]">
                 76.21%
               </p>
@@ -320,9 +320,9 @@ export function ReportsPublishers() {
           <SectionCard
             title="Năng động"
             className="h-full max-h-[268px]"
-            contentClassName="p-4 pb-2 flex-1 overflow-y-auto"
+            contentClassName="flex-1 overflow-y-auto flex flex-col justify-between"
           >
-            <div className="mb-2">
+            <div className="pl-4">
               <p className="text-[24px] font-semibold leading-8 text-[#021337]">
                 32.21%
               </p>
@@ -338,7 +338,7 @@ export function ReportsPublishers() {
             <SectionCard
               title="Giới tính"
               className="h-full max-h-[268px]"
-              contentClassName="p-4 pb-2 relative flex-1 overflow-y-auto"
+              contentClassName="p-4 py-0 relative flex-1 overflow-y-auto"
             >
               <GeneralPieChart data={generalMockData} showInfo={true} />
             </SectionCard>
@@ -349,7 +349,7 @@ export function ReportsPublishers() {
             <SectionCard
               title="Tuổi"
               className="h-full max-h-[268px]"
-              contentClassName="p-4 py-3 h-[195px] overflow-scroll flex-1"
+              contentClassName="p-4 py-3 h-[195px] overflow-scroll flex-1 mb-4"
             >
               <AgeBarChart data={ageData} />
             </SectionCard>

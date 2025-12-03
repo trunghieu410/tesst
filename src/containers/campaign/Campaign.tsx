@@ -68,7 +68,8 @@ export function Campaign() {
 
   const campaigns = campaignsData?.data.data || [];
   const pagination = campaignsData?.data.pagination || 0;
-
+  console.log(isLoading, campaignsData, error);
+  
   const handleCampaignClick = (campaign: (typeof campaigns)[0]) => {
     setSelectedCampaignId(campaign.id);
     publish("show-right-panel");

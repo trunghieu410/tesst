@@ -18,6 +18,20 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
+// Handle 401 responses by redirecting to login
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      // Clear auth token
+      localStorage.removeItem("authToken");
+      // Redirect to login page
+      window.location.href = "/";
+    }
+    return Promise.reject(error);
+  }
+);
+
 // Auth API
 export const authApi = {
   requestOtp: async (email: string) => {
@@ -95,7 +109,8 @@ export const publishersApi = {
       queryParams.append("members_gte", minMembers.toString());
 
     const response = await api.get(
-      `/admin/publishers?${queryParams.toString()}`
+      `/admin/publishers`
+      // `/admin/publishers?${queryParams.toString()}`
     );
     return {
       data: response.data,
@@ -147,7 +162,7 @@ export const campaignsApi = {
     if (imageType) queryParams.append("imageType", imageType);
     if (status) queryParams.append("status", status);
 
-    const response = await api.get(`/campaigns?${queryParams.toString()}`);
+    const response = await api.get(`/campaigns`);
     return {
       data: response.data,
       total: parseInt(response.headers["x-total-count"] || "0"),
