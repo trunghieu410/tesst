@@ -61,35 +61,37 @@ export function Header({ defaultTitle = "Publisher" }: HeaderProps) {
   return (
     <div className="h-[68px] border-b border-[#d0d5dd] bg-white flex items-center justify-between px-4 py-4.5">
       {/* button-to-open-sidebar-menu-on-mobile */}
-      <button 
-        className="md:hidden"
-        onClick={() => {
-          if (isMobileSidebarOpen) {
-            publish("closeSideBar");
-          } else {
-            publish("openSideBar");
-          }
-        }}
-      >
-        {isMobileSidebarOpen ? (
-          <X className="w-6 h-6 text-[#021337]" />
-        ) : (
-          <MenuIcon className="w-6 h-6 text-[#021337]" />
-        )}
-      </button>
-      {/* Title */}
-      <div className="flex items-center gap-2.5">
-        {backRoute && (
-          <button
-            onClick={handleBack}
-            className="w-8 h-8 flex items-center justify-center border border-[#cfd6de] rounded hover:bg-gray-50 cursor-pointer"
-          >
-            ←
-          </button>
-        )}
-        <h1 className="font-semibold text-xl leading-7 text-[#021337]">
-          {title}
-        </h1>
+      <div className="flex items-start gap-2.5">
+        <button 
+          className="md:hidden border border-[#CFD6DE] rounded"
+          onClick={() => {
+            if (isMobileSidebarOpen) {
+              publish("closeSideBar");
+            } else {
+              publish("openSideBar");
+            }
+          }}
+        >
+          {isMobileSidebarOpen ? (
+            <X className="w-6 h-6  text-[#CFD6DE]" />
+          ) : (
+            <MenuIcon className="w-6 h-6 text-[#CFD6DE]" />
+          )}
+        </button>
+        {/* Title */}
+        <div className="flex items-center gap-2.5">
+          {backRoute && (
+            <button
+              onClick={handleBack}
+              className="w-8 h-8 flex items-center justify-center border border-[#cfd6de] rounded hover:bg-gray-50 cursor-pointer"
+            >
+              ←
+            </button>
+          )}
+          <h1 className="font-semibold text-xl leading-7 text-[#021337]">
+            {title}
+          </h1>
+        </div>
       </div>
 
       {/* User Profile */}

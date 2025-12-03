@@ -40,7 +40,7 @@ export function StatsCard({
   return (
     <div
       className={cn(
-        "flex gap-[8px] items-center px-[16px] py-[8px] shrink-0",
+        "flex md:gap-[8px] items-start md:items-center px-[16px] py-[8px] shrink-0 flex-col md:flex-row ",
         showBorder && "border-l border-[#cfd6de]",
         className
       )}

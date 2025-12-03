@@ -19,6 +19,7 @@ import { Notes } from "@/icon/Notes";
 import { HistoricalIcon } from "@/icon/HistoricalIcon";
 import { ClockIcon } from "@/icon/ClockIcon";
 import { DangerIcon } from "@/icon/DangerIcon";
+import { useNavigate } from "react-router-dom";
 
 import type { PublisherType } from "@/types";
 
@@ -63,6 +64,8 @@ const mockWallets = [
 ];
 
 export function PublisherOverview({ publisher }: PublisherOverviewProps) {
+  const navigate = useNavigate();
+
   return (
     <div className="p-4 space-y-4 pb-20 ">
       {/* Total Members Card */}
@@ -131,6 +134,7 @@ export function PublisherOverview({ publisher }: PublisherOverviewProps) {
             size="sm"
             rightIcon={<ChevronRightIcon className="w-4 h-4 text-[#021337]" />}
             className="h-8 px-3 py-2 text-[13px]"
+            onClick={() => navigate("/dashboard/wallet")}
           >
             Chi tiết
           </Button>

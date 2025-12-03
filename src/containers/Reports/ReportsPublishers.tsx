@@ -202,8 +202,8 @@ export function ReportsPublishers() {
   return (
     <>
       {/* Top Stats Bar */}
-      <div className="bg-[#feeddc] box-border flex items-center px-[16px] py-0 overflow-x-auto">
-        <span className="font-medium leading-4 text-[#021337] text-[12px] whitespace-nowrap">
+      <div className="bg-[#feeddc] box-border flex items-cente md:px-[16px] py-0 overflow-x-auto ">
+        <span className="font-medium leading-4 text-[#021337] text-[12px] whitespace-nowrap hidden md:flex md:items-center">
           All time
         </span>
         <StatsCard label="Tổng pub" value="54.6k" showBorder={false} />
@@ -298,7 +298,7 @@ export function ReportsPublishers() {
         </div>
 
         {/* Third Row: Activity, Engagement, Gender, and Age */}
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
+        <div className="grid grid-cols-2 gap-3 md:grid-cols-4 md:gap-4">
           {/* activeBlock */}
           <SectionCard title="Hoạt động" contentClassName="pb-2">
             <div className="mb-2">
@@ -312,7 +312,7 @@ export function ReportsPublishers() {
             <ActivityLineChart data={activityData} color="#021337" />
           </SectionCard>
 
-          {/* tasstBlock */}
+          {/*  */}
           <SectionCard title="Năng động" contentClassName="pb-2">
             <div className="mb-2">
               <p className="text-[24px] font-semibold leading-8 text-[#021337]">
@@ -326,14 +326,18 @@ export function ReportsPublishers() {
           </SectionCard>
 
           {/* genderBlock */}
-          <SectionCard title="Giới tính" contentClassName="pb-2 relative">
-            <GeneralPieChart data={generalMockData} showInfo={true} />
-          </SectionCard>
+          <div className="col-span-2 md:col-span-1">
+            <SectionCard title="Giới tính" contentClassName="pb-2 relative">
+              <GeneralPieChart data={generalMockData} showInfo={true} />
+            </SectionCard>
+          </div>
 
           {/* ageBlock */}
-          <SectionCard title="Tuổi" contentClassName="py-3 h-[195px] overflow-scroll">
-            <AgeBarChart data={ageData} />
-          </SectionCard>
+          <div className="col-span-2 md:col-span-1">
+            <SectionCard title="Tuổi" contentClassName="py-3 h-[195px] overflow-scroll">
+              <AgeBarChart data={ageData} />
+            </SectionCard>
+          </div>
         </div>
 
         {/* Bottom Row: Tables */}
