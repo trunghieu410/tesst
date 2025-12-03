@@ -7,6 +7,7 @@ import { useEventEmitter, useEventListener } from "@/hooks/useEventEmitter";
 import { useAuth } from "@/hooks/useAuth";
 import { cn } from "@/lib/utils/common";
 import useClickOutside from "@/hooks/useClickOutside";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface HeaderProps {
   defaultTitle?: string;
@@ -14,6 +15,7 @@ interface HeaderProps {
 
 export function Header({ defaultTitle = "Publisher" }: HeaderProps) {
   const navigate = useNavigate();
+  const isMobile = useIsMobile();
   const { logout } = useAuth();
   const { publish } = useEventEmitter();
   const [title, setTitle] = useState(defaultTitle);
@@ -62,8 +64,8 @@ export function Header({ defaultTitle = "Publisher" }: HeaderProps) {
     <div className="h-[68px] border-b border-[#d0d5dd] bg-white flex items-center justify-between px-4 py-4.5">
       {/* button-to-open-sidebar-menu-on-mobile */}
       <div className="flex items-start gap-2.5">
-        <button 
-          className="md:hidden border border-[#CFD6DE] rounded"
+        {isMobile && <button 
+          className="border border-[#CFD6DE] rounded"
           onClick={() => {
             if (isMobileSidebarOpen) {
               publish("closeSideBar");
@@ -78,6 +80,7 @@ export function Header({ defaultTitle = "Publisher" }: HeaderProps) {
             <MenuIcon className="w-6 h-6 text-[#CFD6DE]" />
           )}
         </button>
+        }
         {/* Title */}
         <div className="flex items-center gap-2.5">
           {backRoute && (
