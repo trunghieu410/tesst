@@ -1,4 +1,12 @@
 import { cn } from "@/lib/utils/common";
+import {
+  Table,
+  TableHead,
+  TableBody,
+  TableRow,
+  TableHeaderCell,
+  TableCell,
+} from "@/components/ui/Table";
 
 interface MemberData {
   rank: number;
@@ -18,43 +26,48 @@ interface MembersTableProps {
 
 export function MembersTable({ data, className }: MembersTableProps) {
   return (
-    <div className={cn("overflow-x-auto", className)}>
-      <table className="w-full">
-        <thead>
-          <tr className="border-b border-[#cfd6de]">
-            <th className="text-left py-2 px-3 text-[12px] font-medium leading-4 text-[#677187] min-w-[40px]">
-              #
-            </th>
-            <th className="text-left py-2 px-3 text-[12px] font-medium leading-4 text-[#677187] min-w-[180px]">
-              Họ tên
-            </th>
-            <th className="text-right py-2 px-3 text-[12px] font-medium leading-4 text-[#677187] min-w-[100px]">
-              Tổng Pub
-            </th>
-            <th className="text-right py-2 px-3 text-[12px] font-medium leading-4 text-[#677187] min-w-[80px]">
-              F1
-            </th>
-            <th className="text-right py-2 px-3 text-[12px] font-medium leading-4 text-[#677187] min-w-[80px]">
-              F2
-            </th>
-            <th className="text-right py-2 px-3 text-[12px] font-medium leading-4 text-[#677187] min-w-[80px]">
-              F3
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {data.map((row, index) => (
-            <tr
-              key={index}
-              className={cn(
-                "border-b border-[#e6e9ed] transition-colors",
-                index === data.length - 1 && "border-b-0"
-              )}
+    <div className={cn("w-full h-full", className)}>
+      <Table>
+        <TableHead>
+          <TableRow>
+            <TableHeaderCell
+              align="left"
+              className="min-w-[40px] w-[70px] hidden md:table-cell"
+              data-sticky="left-1"
             >
-              <td className="py-4 px-3 text-[14px] font-normal leading-5 text-[#021337]">
+              #
+            </TableHeaderCell>
+            <TableHeaderCell
+              align="left"
+              className="min-w-[180px] max-md:left-0!"
+              data-sticky="left-2"
+            >
+              Họ tên
+            </TableHeaderCell>
+            <TableHeaderCell align="right" className="min-w-[100px]">
+              Tổng Pub
+            </TableHeaderCell>
+            <TableHeaderCell align="right" className="min-w-[80px]">
+              F1
+            </TableHeaderCell>
+            <TableHeaderCell align="right" className="min-w-[80px]">
+              F2
+            </TableHeaderCell>
+            <TableHeaderCell align="right" className="min-w-[80px]">
+              F3
+            </TableHeaderCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {data.map((row, index) => (
+            <TableRow key={index}>
+              <TableCell
+                className="py-4 px-3 hidden md:table-cell"
+                data-sticky="left-1"
+              >
                 {row.rank}
-              </td>
-              <td className="py-4 px-3">
+              </TableCell>
+              <TableCell className="py-4 px-3 max-md:left-0!" data-sticky="left-2">
                 <div className="flex items-center gap-2">
                   <span className="text-[18px]">{row.flag}</span>
                   <div className="flex flex-col">
@@ -66,23 +79,23 @@ export function MembersTable({ data, className }: MembersTableProps) {
                     </span>
                   </div>
                 </div>
-              </td>
-              <td className="py-4 px-3 text-right text-[14px] font-normal leading-5 text-[#021337]">
+              </TableCell>
+              <TableCell align="right" className="py-4 px-3">
                 {row.totalPub.toLocaleString()}
-              </td>
-              <td className="py-4 px-3 text-right text-[14px] font-normal leading-5 text-[#021337]">
+              </TableCell>
+              <TableCell align="right" className="py-4 px-3">
                 {row.f1.toLocaleString()}
-              </td>
-              <td className="py-4 px-3 text-right text-[14px] font-normal leading-5 text-[#021337]">
+              </TableCell>
+              <TableCell align="right" className="py-4 px-3">
                 {row.f2.toLocaleString()}
-              </td>
-              <td className="py-4 px-3 text-right text-[14px] font-normal leading-5 text-[#021337]">
+              </TableCell>
+              <TableCell align="right" className="py-4 px-3">
                 {row.f3.toLocaleString()}
-              </td>
-            </tr>
+              </TableCell>
+            </TableRow>
           ))}
-        </tbody>
-      </table>
+        </TableBody>
+      </Table>
     </div>
   );
 }

@@ -45,7 +45,7 @@ export function SectionCard({
       )}
     >
       {/* Header */}
-      <div className="flex items-center justify-between gap-2 px-4 py-3 ">
+      <div className="flex-row items-center justify-between gap-2 px-4 py-3 ">
         <div className="flex items-center gap-2">
           <h3 className="text-[14px] font-medium leading-5 text-[#021337] m-0">
             {title}

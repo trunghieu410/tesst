@@ -300,7 +300,11 @@ export function ReportsPublishers() {
         {/* Third Row: Activity, Engagement, Gender, and Age */}
         <div className="grid grid-cols-2 gap-3 md:grid-cols-4 md:gap-4">
           {/* activeBlock */}
-          <SectionCard title="Hoạt động" contentClassName="p-4 pb-2">
+          <SectionCard
+            title="Hoạt động"
+            className="h-full max-h-[268px]"
+            contentClassName="p-4 pb-2 flex-1 overflow-y-auto"
+          >
             <div className="mb-2">
               <p className="text-[24px] font-semibold leading-8 text-[#021337]">
                 76.21%
@@ -313,7 +317,11 @@ export function ReportsPublishers() {
           </SectionCard>
 
           {/*  */}
-          <SectionCard title="Năng động" contentClassName="p-4 pb-2">
+          <SectionCard
+            title="Năng động"
+            className="h-full max-h-[268px]"
+            contentClassName="p-4 pb-2 flex-1 overflow-y-auto"
+          >
             <div className="mb-2">
               <p className="text-[24px] font-semibold leading-8 text-[#021337]">
                 32.21%
@@ -327,14 +335,22 @@ export function ReportsPublishers() {
 
           {/* genderBlock */}
           <div className="col-span-2 md:col-span-1">
-            <SectionCard title="Giới tính" contentClassName="p-4 pb-2 relative">
+            <SectionCard
+              title="Giới tính"
+              className="h-full max-h-[268px]"
+              contentClassName="p-4 pb-2 relative flex-1 overflow-y-auto"
+            >
               <GeneralPieChart data={generalMockData} showInfo={true} />
             </SectionCard>
           </div>
 
           {/* ageBlock */}
           <div className="col-span-2 md:col-span-1">
-            <SectionCard title="Tuổi" contentClassName="p-4 py-3 h-[195px] overflow-scroll">
+            <SectionCard
+              title="Tuổi"
+              className="h-full max-h-[268px]"
+              contentClassName="p-4 py-3 h-[195px] overflow-scroll flex-1"
+            >
               <AgeBarChart data={ageData} />
             </SectionCard>
           </div>
