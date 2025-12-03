@@ -30,6 +30,7 @@ export function CampaignOverviewAdvertiser({
     <SectionCard
       title="Nhà quảng cáo (Advertiser)"
       className="flex flex-col"
+      contentClassName="p-4"
       headerActions={
         <ChevronDownIcon
           className={`w-6 h-6 text-[#021337] transition-transform duration-200 cursor-pointer ${

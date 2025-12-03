@@ -244,7 +244,7 @@ export function ReportsCampaigns() {
         <SectionCard
           title="Lượt checkin mỗi ngày"
           showInfoIcon
-          contentClassName="pb-0"
+          contentClassName="p-4 pb-0"
         >
           {/* Stats row */}
           <div className="flex items-center gap-6 mb-4 pb-4 border-b border-[#d0d5dd]">
@@ -285,7 +285,7 @@ export function ReportsCampaigns() {
             <SectionCard
               title="Token phân phối cho checkin"
               showInfoIcon
-              contentClassName="pb-0"
+              contentClassName="p-4 pb-0"
             >
               {/* Stats row */}
               <div className="flex items-center gap-6 mb-4 pb-4 border-b border-[#d0d5dd]">

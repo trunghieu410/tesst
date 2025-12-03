@@ -62,7 +62,7 @@ export function SectionCard({
       </div>
 
       {/* Content */}
-      <div className={cn("p-4", contentClassName)}>{children}</div>
+      <div className={cn(contentClassName)}>{children}</div>
     </div>
   );
 }

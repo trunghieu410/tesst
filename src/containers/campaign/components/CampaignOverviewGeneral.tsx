@@ -34,7 +34,7 @@ export function CampaignOverviewGeneral({
   daysDifference,
 }: CampaignOverviewGeneralProps) {
   return (
-    <SectionCard title="Thông tin chung" className="flex flex-col">
+    <SectionCard title="Thông tin chung" className="flex flex-col" contentClassName="p-4">
       <div className="flex flex-col mt-[-16px] gap-4">
       {/* Campaign Name */}
       <div className="flex flex-col gap-1">
