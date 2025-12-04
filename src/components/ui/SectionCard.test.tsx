@@ -1,7 +1,6 @@
 import { describe, it, expect, vi } from 'vitest'
 import { render, screen } from '../../test/utils'
 import { SectionCard } from './SectionCard'
-import { InfoIcon } from '@/icon/InfoIcon'
 
 // Mock the InfoIcon component
 vi.mock('@/icon/InfoIcon', () => ({
@@ -12,7 +11,7 @@ vi.mock('@/icon/InfoIcon', () => ({
 
 // Mock the cn utility
 vi.mock('@/lib/utils/common', () => ({
-  cn: (...classes: any[]) => classes.filter(Boolean).join(' ')
+  cn: (...classes: unknown[]) => classes.filter(Boolean).join(' ')
 }))
 
 describe('SectionCard', () => {
@@ -85,7 +84,9 @@ describe('SectionCard', () => {
     )
 
     const contentArea = screen.getByText('Content').parentElement
-    expect(contentArea).toHaveClass('p-4', contentClass)
+    // Content area should not have p-4 by default anymore
+    expect(contentArea).not.toHaveClass('p-4')
+    expect(contentArea).toHaveClass(contentClass)
   })
 
   describe('info icon', () => {
@@ -190,7 +191,7 @@ describe('SectionCard', () => {
       )
 
       const contentArea = screen.getByText('Content').parentElement
-      expect(contentArea).toHaveClass('p-4')
+      expect(contentArea).not.toHaveClass('p-4')
     })
 
     it('positions title and info icon correctly', () => {

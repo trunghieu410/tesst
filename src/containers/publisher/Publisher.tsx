@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 import { SearchInput } from "@/components/ui/SearchInput";
-import { DateRangeInput } from "@/components/ui/DateRangeInput";
+import { DateRangeInput, type DateRangeValue } from "@/components/ui/DateRangeInput";
 import { Dropdown } from "@/components/ui/Dropdown";
 import { Pagination } from "@/components/ui/Pagination";
 import { RightSidePanel } from "@/components/features/RightSidePanel";
@@ -10,14 +10,8 @@ import { usePublishers } from "@/lib/queries/usePublishers";
 import { Tooltip } from "@/components/ui/Tooltip";
 import { PublisherDetails } from "./PublisherDetails";
 import { PublisherTable } from "./PublisherTable";
+import { MultipleSelectCountryDropdown } from "@/components/ui/MultipleSelectCountryDropdown";
 import MultipleSelectDropdown from "@/components/ui/MultipleSelectDropdown";
-
-const countryOptions = [
-  { value: "VN", label: "Việt Nam" },
-  { value: "TH", label: "Thái Lan" },
-  { value: "ID", label: "Indonesia" },
-  { value: "MY", label: "Malaysia" },
-];
 
 const statusOptions = [
   { value: "active", label: "Kích hoạt" },
@@ -29,7 +23,14 @@ export function Publisher() {
   const { publish } = useEventEmitter();
   const [searchQuery, setSearchQuery] = useState("");
   const [debouncedSearchQuery, setDebouncedSearchQuery] = useState("");
-  const [dateRange, setDateRange] = useState("1.10 - 30.11");
+  
+  // Initialize with Oct 1 - Nov 30 (approximate for current year based on original string)
+  const [dateRange, setDateRange] = useState<DateRangeValue | null>(() => {
+    const now = new Date();
+    const start = Date.UTC(now.getFullYear(), 9, 1); // Oct 1
+    const end = Date.UTC(now.getFullYear(), 10, 30); // Nov 30
+    return { start, end };
+  });
   const [selectedCountry, setSelectedCountry] = useState<string[]>([]);
   const [selectedStatus, setSelectedStatus] =  useState<string[]>([]);
   const [minMembers, setMinMembers] = useState("0");
@@ -65,7 +66,8 @@ export function Publisher() {
     country: selectedCountry || undefined,
     status: selectedStatus || undefined,
     minMembers: minMembers ? parseInt(minMembers) : undefined,
-    dateRange: dateRange || undefined,
+    // Pass dateRange as string for API compatibility
+    dateRange: dateRange ? `${new Date(dateRange.start).toLocaleDateString("en-GB").replace(/\//g, ".")} - ${new Date(dateRange.end).toLocaleDateString("en-GB").replace(/\//g, ".")}` : undefined,
   });
   const publishers = publishersData?.data.data || [];
   const pagination = publishersData?.data.pagination;
@@ -100,11 +102,10 @@ export function Publisher() {
           className="w-auto min-w-[120px]"
         /> */}
 
-          <MultipleSelectDropdown
+          <MultipleSelectCountryDropdown
             onSelectedChange={setSelectedCountry}
             placeholder="Quốc gia"
-            options={countryOptions}
-           className="w-auto min-w-[120px]"
+            className="w-auto min-w-[120px]"
           />
 
         {/* <Dropdown

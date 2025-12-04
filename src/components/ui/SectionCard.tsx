@@ -51,7 +51,7 @@ export function SectionCard({
     >
       {/* Header */}
       <div className={cn(
-        "flex flex-row items-center gap-2 px-4 py-3",
+        "flex flex-row items-center justify-between gap-2 px-4 py-3",
         headerClassName
       )}>
         <div className="flex items-center gap-2">

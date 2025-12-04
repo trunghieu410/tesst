@@ -5,11 +5,16 @@ import useClickOutside from "@/hooks/useClickOutside";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { BottomSheet } from "./BottomSheet";
 import { Button } from "./Button";
-import { areDatesEqual, formatDateForDisplay, formatDateRange, isDayInRange, parseDateString } from "@/lib/utils/date";
+import { areDatesEqual, formatDateForDisplay, isDayInRange } from "@/lib/utils/date";
+
+export interface DateRangeValue {
+  start: string;  // ISO 8601 UTC format: "YYYY-MM-DDTHH:mm:ssZ"
+  end: string;    // ISO 8601 UTC format: "YYYY-MM-DDTHH:mm:ssZ"
+}
 
 interface DateRangeInputProps {
-  value: string;
-  onChange: (value: string) => void;
+  value: DateRangeValue | null;
+  onChange: (value: DateRangeValue) => void;
   className?: string;
   showYear?: boolean;
 }
@@ -28,20 +33,24 @@ export function DateRangeInput({
 
   // State management
   const [currentDate, setCurrentDate] = useState(() => {
+    if (value) {
+      return new Date(value.start);
+    }
     const now = new Date();
-    return new Date(now.getFullYear(), 9, 1); // October 1st
+    return new Date(now.getFullYear(), now.getMonth(), 1);
   });
-  const [selectedStartDate, setSelectedStartDate] = useState<string | null>(null);
-  const [selectedEndDate, setSelectedEndDate] = useState<string | null>(null);
-  const [tempStartDate, setTempStartDate] = useState<string | null>(null);
-  const [tempEndDate, setTempEndDate] = useState<string | null>(null);
+
+  const [selectedStartDate, setSelectedStartDate] = useState<Date | null>(null);
+  const [selectedEndDate, setSelectedEndDate] = useState<Date | null>(null);
+  const [tempStartDate, setTempStartDate] = useState<Date | null>(null);
+  const [tempEndDate, setTempEndDate] = useState<Date | null>(null);
   const [isOpen, setIsOpen] = useState(false);
   const [isInitialized, setIsInitialized] = useState(false);
 
   // Click outside handler
   const datepickerRef = useClickOutside<HTMLDivElement>(
     () => {
-      if (!isMobile && selectedStartDate && selectedEndDate) {
+      if (!isMobile && selectedStartDate) {
         setIsOpen(false);
       }
     },
@@ -51,22 +60,17 @@ export function DateRangeInput({
   // Parse value to set initial dates
   useEffect(() => {
     if (value) {
-      const parts = value.split(" - ");
-      if (parts.length === 2) {
-        setSelectedStartDate(parts[0]);
-        setSelectedEndDate(parts[1]);
-        const startDate = parseDateString(parts[0]);
-        if (startDate) {
-          setCurrentDate(new Date(startDate.getFullYear(), startDate.getMonth(), 1));
-        }
-      } else if (parts.length === 1) {
-        setSelectedStartDate(parts[0]);
-        setSelectedEndDate(null);
-        const selectedDate = parseDateString(parts[0]);
-        if (selectedDate) {
-          setCurrentDate(new Date(selectedDate.getFullYear(), selectedDate.getMonth(), 1));
-        }
-      }
+      const startDate = new Date(value.start);
+      const endDate = new Date(value.end);
+      // If end is same as start, treat it as a single day (no end range)
+      const isSingleDay = value.start === value.end;
+
+      setSelectedStartDate(startDate);
+      setSelectedEndDate(isSingleDay ? null : endDate);
+      
+      // Only update current view if not already viewing relevant month
+      // logic could be improved but simple check:
+      // setCurrentDate(new Date(startDate.getFullYear(), startDate.getMonth(), 1));
     } else {
       setSelectedStartDate(null);
       setSelectedEndDate(null);
@@ -74,18 +78,28 @@ export function DateRangeInput({
     setIsInitialized(true);
   }, [value]);
 
+  // Helper to get UTC start of day as ISO 8601 string (e.g., "2024-01-01T00:00:00Z")
+  const toUtcIsoString = (date: Date): string => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}T00:00:00Z`;
+  };
+
   // Update parent value when dates change (desktop only)
   useEffect(() => {
     if (!isInitialized || isMobile) return;
 
-    const startDate = selectedStartDate ? parseDateString(selectedStartDate) : null;
-    const endDate = selectedEndDate ? parseDateString(selectedEndDate) : null;
-    const newValue = formatDateRange(startDate, endDate, showYear);
+    if (selectedStartDate) {
+      const startIso = toUtcIsoString(selectedStartDate);
+      const endIso = selectedEndDate ? toUtcIsoString(selectedEndDate) : startIso;
 
-    if (newValue !== value) {
-      onChange(newValue);
+      // Check if value actually changed to avoid loops
+      if (!value || value.start !== startIso || value.end !== endIso) {
+        onChange({ start: startIso, end: endIso });
+      }
     }
-  }, [selectedStartDate, selectedEndDate, onChange, isInitialized, value, showYear, isMobile]);
+  }, [selectedStartDate, selectedEndDate, isInitialized, isMobile, value, onChange]);
 
   // Initialize temp states when opening on mobile
   useEffect(() => {
@@ -109,43 +123,39 @@ export function DateRangeInput({
   }, []);
 
   const handleDayClick = useCallback(
-    (selectedDay: string, useTempState: boolean = false) => {
-      const clickedDate = parseDateString(selectedDay);
-      if (!clickedDate) return;
-
-      const formattedDate = formatDateForDisplay(clickedDate, showYear);
+    (day: Date, useTempState: boolean = false) => {
+      // Create a new date object to avoid reference issues
+      const clickedDate = new Date(day);
 
       if (useTempState) {
         // Mobile: update temp states
         if (!tempStartDate || (tempStartDate && tempEndDate)) {
-          setTempStartDate(formattedDate);
+          setTempStartDate(clickedDate);
           setTempEndDate(null);
         } else {
-          const currentStart = parseDateString(tempStartDate);
-          if (currentStart && clickedDate < currentStart) {
+          if (clickedDate < tempStartDate) {
             setTempEndDate(tempStartDate);
-            setTempStartDate(formattedDate);
+            setTempStartDate(clickedDate);
           } else {
-            setTempEndDate(formattedDate);
+            setTempEndDate(clickedDate);
           }
         }
       } else {
         // Desktop: update actual states
         if (!selectedStartDate || (selectedStartDate && selectedEndDate)) {
-          setSelectedStartDate(formattedDate);
+          setSelectedStartDate(clickedDate);
           setSelectedEndDate(null);
         } else {
-          const currentStart = parseDateString(selectedStartDate);
-          if (currentStart && clickedDate < currentStart) {
+          if (clickedDate < selectedStartDate) {
             setSelectedEndDate(selectedStartDate);
-            setSelectedStartDate(formattedDate);
+            setSelectedStartDate(clickedDate);
           } else {
-            setSelectedEndDate(formattedDate);
+            setSelectedEndDate(clickedDate);
           }
         }
       }
     },
-    [showYear, tempStartDate, tempEndDate, selectedStartDate, selectedEndDate]
+    [tempStartDate, tempEndDate, selectedStartDate, selectedEndDate]
   );
 
   const handleClear = useCallback(() => {
@@ -167,13 +177,15 @@ export function DateRangeInput({
     setSelectedStartDate(tempStartDate);
     setSelectedEndDate(tempEndDate);
 
-    const startDate = tempStartDate ? parseDateString(tempStartDate) : null;
-    const endDate = tempEndDate ? parseDateString(tempEndDate) : null;
-    const newValue = formatDateRange(startDate, endDate, showYear);
-
-    onChange(newValue);
+    if (tempStartDate) {
+      const startIso = toUtcIsoString(tempStartDate);
+      const endIso = tempEndDate ? toUtcIsoString(tempEndDate) : startIso;
+      
+      onChange({ start: startIso, end: endIso });
+    }
+    
     setIsOpen(false);
-  }, [tempStartDate, tempEndDate, showYear, onChange]);
+  }, [tempStartDate, tempEndDate, onChange]);
 
   const renderMonthHeader = useCallback(
     (monthOffset: number = 0) => {
@@ -195,17 +207,14 @@ export function DateRangeInput({
       const daysInCurrentMonth = new Date(year, month + 1, 0).getDate();
 
       // Use temp states on mobile, regular states on desktop
-      const startDateStr = useTempState ? tempStartDate : selectedStartDate;
-      const endDateStr = useTempState ? tempEndDate : selectedEndDate;
-      const startDate = startDateStr ? parseDateString(startDateStr) : null;
-      const endDate = endDateStr ? parseDateString(endDateStr) : null;
+      const startDate = useTempState ? tempStartDate : selectedStartDate;
+      const endDate = useTempState ? tempEndDate : selectedEndDate;
 
       const daysArray: React.JSX.Element[] = [];
 
       for (let i = 0; i < TOTAL_CALENDAR_SLOTS; i++) {
         const dayOffset = i - firstDayOfMonth + 1;
         const day = new Date(year, month, dayOffset);
-        const dayString = day.toLocaleDateString("en-US");
         const isCurrentMonth = day.getMonth() === month;
 
         // Date state checks
@@ -230,7 +239,7 @@ export function DateRangeInput({
               "relative h-8 w-full flex items-center justify-center mb-1",
               isCurrentMonth ? "cursor-pointer" : "cursor-default"
             )}
-            onClick={() => isCurrentMonth && handleDayClick(dayString, useTempState)}
+            onClick={() => isCurrentMonth && handleDayClick(day, useTempState)}
           >
             {/* Range background */}
             {isInRange && (
@@ -286,8 +295,8 @@ export function DateRangeInput({
   // Memoized weekday headers
   const weekdayHeaders = useMemo(
     () =>
-      WEEKDAY_LABELS.map((day) => (
-        <div key={day} className="flex h-6 w-11 items-center justify-center text-[14px] color-[#2C2A2A] font-bold">
+      WEEKDAY_LABELS.map((day, index) => (
+        <div key={index} className="flex h-6 w-11 items-center justify-center text-[14px] color-[#2C2A2A] font-bold">
           {day}
         </div>
       )),
@@ -296,13 +305,23 @@ export function DateRangeInput({
 
   const weekdayHeadersMobile = useMemo(
     () =>
-      WEEKDAY_LABELS.map((day) => (
-        <div key={day} className="flex h-6 w-full items-center justify-center text-[14px] color-[#2C2A2A] font-bold">
+      WEEKDAY_LABELS.map((day, index) => (
+        <div key={index} className="flex h-6 w-full items-center justify-center text-[14px] color-[#2C2A2A] font-bold">
           {day}
         </div>
       )),
     []
   );
+
+  const displayValue = useMemo(() => {
+    if (selectedStartDate && selectedEndDate) {
+      return `${formatDateForDisplay(selectedStartDate, showYear)} - ${formatDateForDisplay(selectedEndDate, showYear)}`;
+    }
+    if (selectedStartDate) {
+      return formatDateForDisplay(selectedStartDate, showYear);
+    }
+    return "";
+  }, [selectedStartDate, selectedEndDate, showYear]);
 
   return (
     <div className={cn("relative", className)} ref={datepickerRef}>
@@ -313,7 +332,7 @@ export function DateRangeInput({
         </div>
         <input
           type="text"
-          value={value}
+          value={displayValue}
           placeholder="Select date range"
           className="w-full h-8 bg-white border border-[#cfd6de] rounded-md pl-9 pr-8 py-2 font-normal text-[14px] leading-4 text-[#021337] placeholder:text-[#677187] focus:outline-none cursor-pointer"
           readOnly
@@ -358,11 +377,11 @@ export function DateRangeInput({
           {/* Date range display */}
           <div className="flex items-center justify-center gap-2 pt-3 mt-3 border-t border-[#cfd6de]">
             <button className="h-7 rounded border border-[#cfd6de] bg-transparent px-2 text-[14px] font-medium text-[#677187] hover:border-[#FF3B34] focus:outline-none transition-colors">
-              {selectedStartDate || "Bắt đầu"}
+              {selectedStartDate ? formatDateForDisplay(selectedStartDate, showYear) : "Bắt đầu"}
             </button>
             {" - "}
             <button className="h-7 rounded border border-[#cfd6de] bg-transparent px-2 text-[14px] font-medium text-[#677187] hover:border-[#FF3B34] focus:outline-none transition-colors">
-              {selectedEndDate || "Kết thúc"}
+              {selectedEndDate ? formatDateForDisplay(selectedEndDate, showYear) : "Kết thúc"}
             </button>
           </div>
         </div>

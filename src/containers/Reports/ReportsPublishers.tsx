@@ -12,9 +12,9 @@ import { KYCStatsGrid } from "@/components/features/KYCStatsGrid";
 import { CountriesTable } from "@/components/features/CountriesTable";
 import { MembersTable } from "@/components/features/MembersTable";
 import { Dropdown } from "@/components/ui/Dropdown";
-import { DateRangeInput } from "@/components/ui/DateRangeInput";
+import { DateRangeInput, type DateRangeValue } from "@/components/ui/DateRangeInput";
 import { Tooltip } from "@/components/ui/Tooltip";
-import MultipleSelectDropdown from "@/components/ui/MultipleSelectDropdown";
+import { MultipleSelectCountryDropdown } from "@/components/ui/MultipleSelectCountryDropdown";
 
 type CountryTabType = "members" | "airdrop" | "camp";
 type MembersTabType = "members" | "airdrop" | "camp";
@@ -24,7 +24,16 @@ export function ReportsPublishers() {
   const [countryTab, setCountryTab] = useState<CountryTabType>("members");
   const [membersTab, setMembersTab] = useState<MembersTabType>("members");
   const [selectedCountry, setSelectedCountry] = useState<string[]>([]);
-  const [dateRange, setDateRange] = useState("1.10 - 30.11");
+  
+  // Initialize with Oct 1 - Nov 30 (approximate for current year)
+  // Or just use null if no default is strictly required, but the original code had "1.10 - 30.11"
+  // Let's assume current year.
+  const [dateRange, setDateRange] = useState<DateRangeValue | null>(() => {
+    const now = new Date();
+    const start = Date.UTC(now.getFullYear(), 9, 1); // Oct 1
+    const end = Date.UTC(now.getFullYear(), 10, 30); // Nov 30
+    return { start, end };
+  });
 
   useEffect(() => {
     publish("title-change", { title: "Publishers" });
@@ -191,12 +200,8 @@ export function ReportsPublishers() {
       f3: 100,
     },
   ];
-  const countryOptions = [
-    { value: "VN", label: "Việt Nam" },
-    { value: "TH", label: "Thái Lan" },
-    { value: "ID", label: "Indonesia" },
-    { value: "MY", label: "Malaysia" },
-  ];
+
+  // ... (rest of the component)
 
   /*report-section*/
   return (
@@ -233,11 +238,10 @@ export function ReportsPublishers() {
           />
         </Tooltip>
      
-         <MultipleSelectDropdown
+         <MultipleSelectCountryDropdown
           onSelectedChange={setSelectedCountry}
           placeholder="Quốc gia"
-          options={countryOptions}
-            className="w-auto min-w-[120px]"
+          className="w-auto min-w-[120px]"
         />
       </div>
 

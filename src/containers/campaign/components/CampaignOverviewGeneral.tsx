@@ -1,5 +1,5 @@
 import { ChevronDownIcon } from "lucide-react";
-import { DateRangeInput } from "@/components/ui/DateRangeInput";
+import { DateRangeInput, type DateRangeValue } from "@/components/ui/DateRangeInput";
 import { SectionCard } from "@/components/ui/SectionCard";
 
 interface CampaignOverviewGeneralProps {
@@ -11,8 +11,8 @@ interface CampaignOverviewGeneralProps {
   setFixedAmount: (value: string) => void;
   percentageAmount: string;
   setPercentageAmount: (value: string) => void;
-  dateRange: string;
-  setDateRange: (value: string) => void;
+  dateRange: DateRangeValue | null;
+  setDateRange: (value: DateRangeValue) => void;
   ctaName: string;
   setCtaName: (value: string) => void;
   selectedTags: string[];

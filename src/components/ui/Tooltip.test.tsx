@@ -8,10 +8,18 @@ vi.mock('react-dom', () => ({
   createPortal: (children: React.ReactNode, container: Element) => children,
 }))
 
+// Mock useIsMobile hook
+const mockUseIsMobile = vi.fn()
+vi.mock('../../hooks/use-mobile', () => ({
+  useIsMobile: () => mockUseIsMobile(),
+}))
+
 describe('Tooltip', () => {
   beforeEach(() => {
     // Clear any existing tooltips
     document.body.innerHTML = ''
+    // Default to desktop view
+    mockUseIsMobile.mockReturnValue(false)
   })
 
   it('renders without crashing', () => {
@@ -90,6 +98,26 @@ describe('Tooltip', () => {
       )
 
       expect(screen.queryByText('Hidden tooltip')).not.toBeInTheDocument()
+    })
+  })
+
+  describe('mobile behavior', () => {
+    it('does not show tooltip on mouse enter when on mobile', async () => {
+      mockUseIsMobile.mockReturnValue(true)
+
+      render(
+        <Tooltip tooltipsText="Mobile tooltip">
+          <button>Mobile target</button>
+        </Tooltip>
+      )
+
+      const trigger = screen.getByRole('button')
+      fireEvent.mouseEnter(trigger)
+
+      // Wait a bit to ensure it doesn't appear (though it should be immediate)
+      await waitFor(() => {
+        expect(screen.queryByText('Mobile tooltip')).not.toBeInTheDocument()
+      })
     })
   })
 

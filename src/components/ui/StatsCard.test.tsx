@@ -4,7 +4,7 @@ import { StatsCard, CompactStatsCard } from './StatsCard'
 
 // Mock the cn utility
 vi.mock('@/lib/utils/common', () => ({
-  cn: (...classes: any[]) => classes.filter(Boolean).join(' ')
+  cn: (...classes: unknown[]) => classes.filter(Boolean).join(' ')
 }))
 
 describe('StatsCard', () => {
@@ -88,11 +88,14 @@ describe('StatsCard', () => {
         const container = screen.getByText('Test').closest('div')
         expect(container).toHaveClass(
           'flex',
-          'gap-[8px]',
-          'items-center',
+          'md:gap-[8px]',
+          'items-start',
+          'md:items-center',
           'px-[16px]',
           'py-[8px]',
-          'shrink-0'
+          'shrink-0',
+          'flex-col',
+          'md:flex-row'
         )
       })
     })
@@ -284,7 +287,7 @@ describe('StatsCard', () => {
         render(<StatsCard label="" value="" />)
 
         // Should render empty but still have structure
-        const container = document.querySelector('.flex.gap-\\[8px\\]')
+        const container = document.querySelector('.flex.md\\:gap-\\[8px\\]')
         expect(container).toBeInTheDocument()
       })
 

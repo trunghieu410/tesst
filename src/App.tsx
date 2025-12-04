@@ -15,6 +15,7 @@ import { Settings } from "./containers/Settings/Settings";
 import { IncomePerTier } from "./containers/IncomePerTier/IncomePerTier";
 import { CampaignCreate } from "./containers/Campaign/CampaignCreate";
 import { Notifications } from "./containers/Notifications/Notifications";
+import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 
 function App() {
   return (
@@ -29,7 +30,7 @@ function App() {
                 element={<Navigate to="/dashboard/publishers" replace />}
               />
               <Route path="publishers">
-                <Route index element={<Publisher />} />
+                <Route index element={<ProtectedRoute><Publisher /></ProtectedRoute>} />
               </Route>
               <Route path="campaigns">
                 <Route index element={<Campaign />} />

@@ -1,7 +1,7 @@
 import { useEventEmitter } from "@/hooks/useEventEmitter";
 import { useEffect, useState } from "react";
 import { SearchInput } from "@/components/ui/SearchInput";
-import { DateRangeInput } from "@/components/ui/DateRangeInput";
+import { DateRangeInput, type DateRangeValue } from "@/components/ui/DateRangeInput";
 import { Dropdown } from "@/components/ui/Dropdown";
 import {
   Table,
@@ -27,7 +27,14 @@ export function Transactions() {
   const { publish } = useEventEmitter();
   const [activeStatus, setActiveStatus] = useState<StatusType>("all");
   const [searchQuery, setSearchQuery] = useState("");
-  const [dateRange, setDateRange] = useState("1.10 - 30.11");
+  
+  // Initialize with Oct 1 - Nov 30 (approximate for current year based on original string)
+  const [dateRange, setDateRange] = useState<DateRangeValue | null>(() => {
+    const now = new Date();
+    const start = Date.UTC(now.getFullYear(), 9, 1); // Oct 1
+    const end = Date.UTC(now.getFullYear(), 10, 30); // Nov 30
+    return { start, end };
+  });
   const [sender, setSender] = useState("");
   const [receiver, setReceiver] = useState("");
   const [currency, setCurrency] = useState("");

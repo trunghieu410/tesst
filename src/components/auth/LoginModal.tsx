@@ -192,7 +192,7 @@ export function LoginModal({ open, onOpenChange }: LoginModalProps) {
               </h2>
               <p className="text-gray-600 text-base mt-1">
                 {step === "email"
-                  ? "Nhập email để nhận verification code"
+                  ? "Nhập email để nhận mã đăng nhập"
                   : <p>Chúng tôi đã gửi mã xác nhận đến <span className="text-[#7A4DFF]">{email}</span></p>}
               </p>
             </div>
@@ -251,7 +251,7 @@ export function LoginModal({ open, onOpenChange }: LoginModalProps) {
             <div className="space-y-6">
               <div className="space-y-3">
                 <label className="block text-sm font-medium text-gray-700 text-center">
-                  Nhập Verification Code
+                  Nhập mã xác nhận
                 </label>
                 <div className="flex justify-center gap-2 py-2">
                   {otp.map((digit, index) => (

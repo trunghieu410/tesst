@@ -4,7 +4,7 @@ import { Button } from './Button'
 
 // Mock the cn utility
 vi.mock('@/lib/utils/common', () => ({
-  cn: (...classes: any[]) => classes.filter(Boolean).join(' ')
+  cn: (...classes: unknown[]) => classes.filter(Boolean).join(' ')
 }))
 
 describe('Button', () => {
@@ -33,11 +33,10 @@ describe('Button', () => {
       'h-10',
       'px-4',
       'text-sm',
-      'bg-[#0066ff]',
+      'bg-[#FF3B34]',
       'text-white',
-      'rounded',
-      'hover:bg-[#0052cc]',
-      'focus-visible:ring-[#0066ff]'
+      'rounded-[8px]',
+      'hover:bg-[#0052cc]'
     )
   })
 

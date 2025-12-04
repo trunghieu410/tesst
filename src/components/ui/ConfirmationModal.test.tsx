@@ -177,7 +177,7 @@ describe("ConfirmationModal", () => {
     render(<ConfirmationModal {...defaultProps} isLoading={true} />);
 
     const cancelButton = screen.getByText("Đóng");
-    const confirmButton = screen.getByText("Xác nhận");
+    const confirmButton = screen.getByText("Loading...").closest('button');
 
     expect(cancelButton).toBeDisabled();
     expect(confirmButton).toBeDisabled();

@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { SectionCard } from "@/components/ui/SectionCard";
 import { GenderPieChart } from "@/components/charts/GenderPieChart";
 import { IntroductionChart } from "@/components/charts/IntroductionChart";
-import { DateRangeInput } from "@/components/ui/DateRangeInput";
+import { DateRangeInput, type DateRangeValue } from "@/components/ui/DateRangeInput";
 import { Dropdown } from "@/components/ui/Dropdown";
 
 type TabType = "daily" | "view_ads" | "shorten_links";
@@ -11,7 +11,14 @@ type TabType = "daily" | "view_ads" | "shorten_links";
 export function ReportsCampaigns() {
   const { publish } = useEventEmitter();
   const [activeTab, setActiveTab] = useState<TabType>("daily");
-  const [dateRange, setDateRange] = useState("26.10.2025 - 7.11.2025");
+  
+  // Initialize with Oct 26 - Nov 7 (approximate for current year based on original string)
+  const [dateRange, setDateRange] = useState<DateRangeValue | null>(() => {
+    const now = new Date();
+    const start = Date.UTC(now.getFullYear(), 9, 26); // Oct 26
+    const end = Date.UTC(now.getFullYear(), 10, 7); // Nov 7
+    return { start, end };
+  });
   const [selectedCampaign, setSelectedCampaign] = useState("");
 
   useEffect(() => {

@@ -1,6 +1,7 @@
 import { useRef, useState } from "react";
 import type { ReactNode } from "react";
 import { createPortal } from "react-dom";
+import { useIsMobile } from "../../hooks/use-mobile";
 
 interface TooltipProps {
   children: ReactNode;
@@ -16,8 +17,10 @@ export function Tooltip({
 }: TooltipProps) {
   const [isVisible, setIsVisible] = useState(false);
   const triggerRef = useRef<HTMLDivElement>(null);
+  const isMobile = useIsMobile();
 
   const handleMouseEnter = () => {
+    if (isMobile) return;
     setIsVisible(true);
   };
 
@@ -93,12 +96,13 @@ export function Tooltip({
     }
   };
 
-  const tooltipContent = isVisible ? (
-    <div className={getTooltipClasses()} style={getTooltipPosition()}>
-      <span className={getArrowClasses()}></span>
-      {tooltipsText}
-    </div>
-  ) : null;
+  const tooltipContent =
+    isVisible && !isMobile ? (
+      <div className={getTooltipClasses()} style={getTooltipPosition()}>
+        <span className={getArrowClasses()}></span>
+        {tooltipsText}
+      </div>
+    ) : null;
 
   return (
     <>
