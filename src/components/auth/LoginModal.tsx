@@ -3,21 +3,17 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import {
-  X,
-  Mail,
-  Shield,
-  Clock,
+  AtSign,
   RefreshCw,
   ArrowLeft,
   CheckCircle,
-  Send,
   AlertCircle,
-  Sparkles,
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
+import okLogo from "@/assets/ok-logo.svg";
 
 const emailSchema = z.object({
-  email: z.string().email("Invalid email address"),
+  email: z.string().email("Địa chỉ email không hợp lệ"),
 });
 
 interface LoginModalProps {
@@ -178,8 +174,8 @@ export function LoginModal({ open, onOpenChange }: LoginModalProps) {
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       {/* Backdrop */}
       <div
-        className="absolute inset-0 bg-black/50 backdrop-blur-sm"
-        onClick={() => onOpenChange(false)}
+        className="absolute inset-0 bg-linear-to-br from-rose-500/20 via-orange-500/20 to-black/50 backdrop-blur-sm"
+        // onClick={() => onOpenChange(false)}
       />
 
       {/* Dialog */}
@@ -187,36 +183,21 @@ export function LoginModal({ open, onOpenChange }: LoginModalProps) {
         {/* Header */}
         <div className="flex items-start justify-between p-6 border-b border-gray-200">
           <div className="flex items-start gap-3">
-            <div
-              className={`p-2.5 rounded-lg ${
-                step === "email"
-                  ? "bg-blue-100 text-blue-600"
-                  : "bg-green-100 text-green-600"
-              }`}
-            >
-              {step === "email" ? (
-                <Sparkles className="w-6 h-6" />
-              ) : (
-                <Shield className="w-6 h-6" />
-              )}
+            <div className="p-1 rounded-lg bg-white">
+              <img src={okLogo} alt="OK Logo" className="w-8 h-8" />
             </div>
             <div>
               <h2 className="text-2xl font-bold text-gray-900">
-                {step === "email" ? "Welcome Back" : "Verify Your Identity"}
+                {step === "email" ? "Đăng nhập tài khoản" : "Xác nhận tài khoản"}
               </h2>
               <p className="text-gray-600 text-base mt-1">
                 {step === "email"
-                  ? "Enter your email address to receive a verification code"
-                  : `We've sent a 6-digit code to ${email}`}
+                  ? "Nhập email để nhận verification code"
+                  : <p>Chúng tôi đã gửi mã xác nhận đến <span className="text-[#7A4DFF]">{email}</span></p>}
               </p>
             </div>
           </div>
-          <button
-            onClick={() => onOpenChange(false)}
-            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-          >
-            <X className="w-5 h-5 text-gray-600" />
-          </button>
+         
         </div>
 
         {/* Content */}
@@ -224,21 +205,21 @@ export function LoginModal({ open, onOpenChange }: LoginModalProps) {
           {step === "email" ? (
             <form onSubmit={handleSubmit(onEmailSubmit)} className="space-y-6">
               <div className="space-y-2">
-                <label
+                {/* <label
                   htmlFor="email"
                   className="text-sm font-medium text-gray-700 flex items-center gap-2"
                 >
                   Email
-                </label>
+                </label> */}
                 <div className="relative">
                   <input
                     id="email"
                     type="email"
-                    placeholder="your.email@example.com"
+                    placeholder="Email"
                     {...register("email")}
                     className="w-full pl-10 pr-3 py-2.5 bg-gray-50 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   />
-                  <Mail className="w-5 h-5 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                  <AtSign className="w-5 h-5 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
                 </div>
                 {errors.email && (
                   <p className="text-sm text-red-600 flex items-center gap-1.5">
@@ -250,17 +231,18 @@ export function LoginModal({ open, onOpenChange }: LoginModalProps) {
               <button
                 type="submit"
                 disabled={isRequestingOtp}
-                className="w-full py-2.5 bg-linear-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white font-medium rounded-lg shadow-lg shadow-blue-500/20 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2"
+                style={{ background: 'linear-gradient(87deg, rgb(255, 59, 52) -0.68%, rgb(255, 132, 69) 144.62%)' }}
+                className="w-full py-2.5 text-white font-medium rounded-lg shadow-lg shadow-blue-500/20 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2 hover:brightness-110"
               >
                 {isRequestingOtp ? (
                   <>
                     <RefreshCw className="w-4 h-4 animate-spin" />
-                    Sending...
+                    Đang gửi OTP...
                   </>
                 ) : (
                   <>
-                    <Send className="w-4 h-4" />
-                    Send Verification Code
+                    {/* <Send className="w-4 h-4" /> */}
+                    Đăng nhập bằng email
                   </>
                 )}
               </button>
@@ -269,7 +251,7 @@ export function LoginModal({ open, onOpenChange }: LoginModalProps) {
             <div className="space-y-6">
               <div className="space-y-3">
                 <label className="block text-sm font-medium text-gray-700 text-center">
-                  Enter Verification Code
+                  Nhập Verification Code
                 </label>
                 <div className="flex justify-center gap-2 py-2">
                   {otp.map((digit, index) => (
@@ -289,12 +271,10 @@ export function LoginModal({ open, onOpenChange }: LoginModalProps) {
                     />
                   ))}
                 </div>
-                <p className="text-xs text-gray-500 text-center">
-                  Use 123456 as the OTP for demo purposes
-                </p>
+               
               </div>
 
-              {countdown > 0 ? (
+              {/* {countdown > 0 ? (
                 <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
                   <p className="text-center text-sm text-gray-700 flex items-center justify-center gap-2">
                     <Clock className="w-4 h-4 text-blue-600" />
@@ -304,50 +284,50 @@ export function LoginModal({ open, onOpenChange }: LoginModalProps) {
                     </span>
                   </p>
                 </div>
-              ) : (
+              ) : ( */}
                 <button
                   onClick={handleResendOtp}
                   disabled={isRequestingOtp}
-                  className="w-full py-2.5 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 hover:text-gray-900 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                  className="w-full cursor-pointer py-2.5 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 hover:text-gray-900 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                 >
                   {isRequestingOtp ? (
                     <>
                       <RefreshCw className="w-4 h-4 animate-spin" />
-                      Resending...
+                      Đang gửi lại OTP...
                     </>
                   ) : (
                     <>
                       <RefreshCw className="w-4 h-4" />
-                      Resend Code
+                      Gủi lại mã xác nhận
                     </>
                   )}
                 </button>
-              )}
 
               <button
                 onClick={onOtpSubmit}
                 disabled={otp.join("").length !== 6 || isVerifyingOtp}
-                className="w-full py-2.5 bg-linear-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white font-medium rounded-lg shadow-lg shadow-blue-500/20 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2"
+                style={{ background: 'linear-gradient(87deg, rgb(255, 59, 52) -0.68%, rgb(255, 132, 69) 144.62%)' }}
+                className="w-full py-2.5 text-white font-medium rounded-lg shadow-lg shadow-blue-500/20 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2"
               >
                 {isVerifyingOtp ? (
                   <>
                     <RefreshCw className="w-4 h-4 animate-spin" />
-                    Verifying...
+                    Đang xác minh...
                   </>
                 ) : (
                   <>
                     <CheckCircle className="w-4 h-4" />
-                    Verify & Login
+                    Xác nhận & Đăng nhập
                   </>
                 )}
               </button>
 
               <button
                 onClick={handleChangeEmail}
-                className="w-full py-2.5 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-colors flex items-center justify-center gap-2"
+                className="w-full cursor-pointer py-2.5 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-colors flex items-center justify-center gap-2"
               >
                 <ArrowLeft className="w-4 h-4" />
-                Use a different email
+                Sử dụng email khác
               </button>
             </div>
           )}
