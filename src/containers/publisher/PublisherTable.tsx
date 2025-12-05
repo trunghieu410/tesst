@@ -128,12 +128,12 @@ export function PublisherTable({
               <TableCell>
                 <div className="flex items-center gap-2">
                   <img
-                    src={publisher.country.flagUrl}
-                    alt={publisher.country.name}
+                    src={publisher?.country?.flagUrl}
+                  alt={publisher?.country?.name}
                     className="w-4 h-auto"
                   />
                   <span className="text-[13px] leading-4">
-                    {publisher.country.name}
+                    {publisher?.country?.name}
                   </span>
                 </div>
               </TableCell>

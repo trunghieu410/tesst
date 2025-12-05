@@ -66,8 +66,8 @@ export function Publisher() {
     country: selectedCountry || undefined,
     status: selectedStatus || undefined,
     minMembers: minMembers ? parseInt(minMembers) : undefined,
-    // Pass dateRange as string for API compatibility
-    dateRange: dateRange ? `${new Date(dateRange.start).toLocaleDateString("en-GB").replace(/\//g, ".")} - ${new Date(dateRange.end).toLocaleDateString("en-GB").replace(/\//g, ".")}` : undefined,
+    createdFrom: dateRange?.start,
+    createdTo: dateRange?.end,
   });
   const publishers = publishersData?.data.data || [];
   const pagination = publishersData?.data.pagination;
@@ -89,7 +89,10 @@ export function Publisher() {
         <Tooltip position="top" tooltipsText="Thời gian tạo.">
           <DateRangeInput
             value={dateRange}
-            onChange={setDateRange}
+            onChange={(v)=> {
+              console.log('===== ', v);
+              setDateRange(v);
+            }}
             className="w-[140px]"
           />
         </Tooltip>

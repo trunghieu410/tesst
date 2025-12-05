@@ -80,10 +80,11 @@ export const publishersApi = {
       page?: number;
       limit?: number;
       search?: string;
-      country?: string;
-      status?: string;
+      country?: string[];
+      status?: string[];
       minMembers?: number;
-      dateRange?: string;
+      createdFrom?: string;
+      createdTo?: string;
     } = {}
   ) => {
     const {
@@ -93,24 +94,26 @@ export const publishersApi = {
       country,
       status,
       minMembers,
-      // dateRange,
+      createdFrom,
+      createdTo,
     } = params;
 
     const queryParams = new URLSearchParams({
-      _page: page.toString(),
-      _limit: limit.toString(),
-    });
+      page: page.toString(),
+      limit: limit.toString(),
+    }); 
 
     // For now, let's use simpler queries that json-server definitely supports
-    if (search) queryParams.append("q", search);
-    if (country) queryParams.append("country.code", country);
-    if (status) queryParams.append("status", status);
+    if (search) queryParams.append("search", search);
+    if (country) queryParams.append("countries", country.join(","));
+    if (status) queryParams.append("accountStatuses", status.join(","));
     if (minMembers !== undefined && minMembers > 0)
-      queryParams.append("members_gte", minMembers.toString());
+      queryParams.append("minMembers", minMembers.toString());
+    if (createdFrom) queryParams.append("createdFrom", createdFrom);
+    if (createdTo) queryParams.append("createdTo", createdTo);
 
     const response = await api.get(
-      `/admin/publishers`
-      // `/admin/publishers?${queryParams.toString()}`
+      `/admin/publishers?${queryParams.toString()}`
     );
     return {
       data: response.data,
@@ -152,8 +155,8 @@ export const campaignsApi = {
     } = params;
 
     const queryParams = new URLSearchParams({
-      _page: page.toString(),
-      _limit: limit.toString(),
+      page: page.toString(),
+      limit: limit.toString(),
     });
 
     // Add filters

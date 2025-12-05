@@ -3,10 +3,11 @@ import { publishersApi } from "@/lib/api";
 
 export interface PublisherFilters {
   search?: string;
-  country?: string;
-  status?: string;
+  country?: string[];
+  status?: string[];
   minMembers?: number;
-  dateRange?: string;
+  createdFrom?: string;
+  createdTo?: string;
 }
 
 export function usePublishers(
