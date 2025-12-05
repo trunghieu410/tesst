@@ -22,6 +22,7 @@ interface PublisherInfosProps {
       lastActiveTimeAgo?: string;
     };
   };
+  publisherId: string;
 }
 
 export function PublisherInfos({ publisher }: PublisherInfosProps) {

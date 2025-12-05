@@ -7,14 +7,14 @@ import { PublisherMembers } from "./PublisherMembers";
 import { PublisherInfos } from "./PublisherInfos";
 import { DangerIcon } from "@/icon/DangerIcon";
 import { XIcon } from "@/icon/XIcon";
-import { useEventEmitter, useEventListener } from "@/hooks/useEventEmitter";
+import { useEventEmitter } from "@/hooks/useEventEmitter";
 import { Tabs } from "@/components/ui/Tabs";
 import { PublisherHistory } from "./PublisherHistory";
 import {
   usePublisher,
   usePublisherOverview,
 } from "@/lib/queries/usePublishers";
-import { useState } from "react";
+import { useSearchParams } from "react-router-dom";
 
 const tabs = [
   {
@@ -40,47 +40,29 @@ const tabs = [
   },
 ];
 
-interface PublisherDetailsProps {
-  publisherId?: number;
-}
 
-export function PublisherDetails({
-  publisherId: propPublisherId,
-}: PublisherDetailsProps) {
+export function PublisherDetails() {
   const { publish } = useEventEmitter();
+  const [searchParams, setSearchParams] = useSearchParams();
 
-  // Normalize ID to API format (pub-X or just use as-is if already in correct format)
-  const normalizeId = (id: string | number | undefined): string => {
-    if (!id) return "";
-    const idStr = id.toString();
-    // If it's already in pub-X format, use it; otherwise assume it's a number and convert
-    if (idStr.startsWith("pub-")) {
-      return idStr;
-    }
-    // If it's a plain number, convert to pub-X format
-    return `pub-${idStr}`;
-  };
+ 
 
-  const [publisherId, setPublisherId] = useState<string>(
-    normalizeId(propPublisherId)
-  );
-
-  // Listen for publisher selection from the table
-  useEventListener<string>("show-right-panel", (id) => {
-    setPublisherId(normalizeId(id));
-  });
+  // Get publisherId from URL params first, then from props
+  const publisherId = searchParams.get("publisherId");
 
   const { data: publisherData, isLoading, error } = usePublisher(publisherId);
 
   const {
     data: publisherOverviewData,
     isLoading: isPublisherOverviewLoading,
-    error: publisherOverviewError,
   } = usePublisherOverview(publisherId);
 
   console.log(publisherOverviewData);
 
   const handleClose = () => {
+    // Remove publisherId from URL when closing
+    searchParams.delete("publisherId");
+    setSearchParams(searchParams);
     publish("hide-right-panel");
   };
 
@@ -155,18 +137,32 @@ export function PublisherDetails({
                 {/* Scrollable Content */}
 
                 {activeTab === "overview" && (
-                  <PublisherOverview publisher={publisherData} />
+                  <PublisherOverview
+                    publisher={publisherData}
+                    publisherId={publisherId}
+                    overviewData={publisherOverviewData}
+                    isLoading={isPublisherOverviewLoading}
+                  />
                 )}
 
                 {activeTab === "info" && (
-                  <PublisherInfos publisher={publisherData} />
+                  <PublisherInfos
+                    publisher={publisherData}
+                    publisherId={publisherId}
+                  />
                 )}
 
-                {activeTab === "kyc" && <PublisherKYC />}
+                {activeTab === "kyc" && (
+                  <PublisherKYC publisherId={publisherId} />
+                )}
 
-                {activeTab === "members" && <PublisherMembers />}
+                {activeTab === "members" && (
+                  <PublisherMembers publisherId={publisherId} />
+                )}
 
-                {activeTab === "action-history" && <PublisherHistory />}
+                {activeTab === "action-history" && (
+                  <PublisherHistory publisherId={publisherId} />
+                )}
               </div>
             );
           }}

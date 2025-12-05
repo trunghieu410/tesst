@@ -1,8 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
+import { useSearchParams } from "react-router-dom";
 
 import { SearchInput } from "@/components/ui/SearchInput";
 import { DateRangeInput, type DateRangeValue } from "@/components/ui/DateRangeInput";
-import { Dropdown } from "@/components/ui/Dropdown";
 import { Pagination } from "@/components/ui/Pagination";
 import { RightSidePanel } from "@/components/features/RightSidePanel";
 import { useEventEmitter } from "@/hooks/useEventEmitter";
@@ -19,52 +19,112 @@ const statusOptions = [
   { value: "suspended", label: "Tạm dừng" },
 ];
 
+const toUtcIsoString = (date: Date): string => {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}T00:00:00Z`;
+};
+
+// Get default date range: 1st of previous month - end of current month
+const getDefaultDateRange = (): DateRangeValue => {
+  const now = new Date();
+  // First day of previous month
+  const start = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+  // Last day of current month
+  const end = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+  return {
+    start: toUtcIsoString(start),
+    end: toUtcIsoString(end),
+  };
+};
+
 export function Publisher() {
   const { publish } = useEventEmitter();
-  const [searchQuery, setSearchQuery] = useState("");
-  const [debouncedSearchQuery, setDebouncedSearchQuery] = useState("");
-  
-  // Initialize with Oct 1 - Nov 30 (approximate for current year based on original string)
-  const [dateRange, setDateRange] = useState<DateRangeValue | null>(() => {
-    const now = new Date();
-    const start = Date.UTC(now.getFullYear(), 9, 1); // Oct 1
-    const end = Date.UTC(now.getFullYear(), 10, 30); // Nov 30
-    return { start, end };
-  });
-  const [selectedCountry, setSelectedCountry] = useState<string[]>([]);
-  const [selectedStatus, setSelectedStatus] =  useState<string[]>([]);
-  const [minMembers, setMinMembers] = useState("0");
-  const [currentPage, setCurrentPage] = useState(1);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [searchParams, setSearchParams] = useSearchParams();
 
-  // Debounce search query
+  // Helper to get initial values from URL or defaults
+  const getInitialState = useCallback(() => {
+    const urlPublisherId = searchParams.get("publisherId") || "";
+    const urlCountry = searchParams.get("country");
+    const urlStatus = searchParams.get("status");
+    const urlMinMembers = searchParams.get("minMembers") || "0";
+    const urlPage = searchParams.get("page");
+    const urlLimit = searchParams.get("limit");
+    const urlStartDate = searchParams.get("startDate");
+    const urlEndDate = searchParams.get("endDate");
+    const urlSearchQuery = searchParams.get("q");
+
+    const defaultRange = getDefaultDateRange();
+
+    return {
+      searchQuery: urlSearchQuery || "",
+      publisherId: urlPublisherId,
+      selectedCountry: urlCountry ? urlCountry.split(",") : [],
+      selectedStatus: urlStatus ? urlStatus.split(",") : [],
+      minMembers: urlMinMembers,
+      currentPage: urlPage ? parseInt(urlPage, 10) : 1,
+      rowsPerPage: urlLimit ? parseInt(urlLimit, 10) : 10,
+      dateRange: {
+        start: urlStartDate || defaultRange.start,
+        end: urlEndDate || defaultRange.end,
+      } as DateRangeValue,
+    };
+  }, [searchParams]);
+
+  // Initialize state from URL params
+  const initial = getInitialState();
+  const [publisherId, setPublisherId] = useState(initial.publisherId);
+  const [searchQuery, setSearchQuery] = useState(initial.searchQuery);
+  const [dateRange, setDateRange] = useState<DateRangeValue | null>(initial.dateRange);
+  const [selectedCountry, setSelectedCountry] = useState<string[]>(initial.selectedCountry);
+  const [selectedStatus, setSelectedStatus] = useState<string[]>(initial.selectedStatus);
+  const [minMembers, setMinMembers] = useState(initial.minMembers);
+  const [currentPage, setCurrentPage] = useState(initial.currentPage);
+  const [rowsPerPage, setRowsPerPage] = useState(initial.rowsPerPage);
+
+  // Sync state to URL params
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setDebouncedSearchQuery(searchQuery);
-      setCurrentPage(1); // Reset to first page when search changes
-    }, 500);
+    const params = new URLSearchParams();
 
-    return () => clearTimeout(timer);
-  }, [searchQuery]);
+    if (publisherId) params.set("publisherId", publisherId);
+    if (searchQuery) params.set("q", searchQuery);
+    if (selectedCountry.length > 0) params.set("country", selectedCountry.join(","));
+    if (selectedStatus.length > 0) params.set("status", selectedStatus.join(","));
+    if (minMembers && minMembers !== "0") params.set("minMembers", minMembers);
+    if (currentPage > 1) params.set("page", currentPage.toString());
+    if (rowsPerPage !== 10) params.set("limit", rowsPerPage.toString());
+    if (dateRange?.start) params.set("startDate", dateRange.start);
+    if (dateRange?.end) params.set("endDate", dateRange.end);
+
+    setSearchParams(params, { replace: true });
+  }, [searchQuery, publisherId, selectedCountry, selectedStatus, minMembers, currentPage, rowsPerPage, dateRange, setSearchParams]);
 
   // Reset page when filters or rows per page change
   useEffect(() => {
     setCurrentPage(1);
-  }, [selectedCountry, selectedStatus, minMembers, rowsPerPage]);
+  }, [searchQuery, selectedCountry, selectedStatus, minMembers, rowsPerPage]);
 
   useEffect(() => {
     publish("title-change", { title: "Publisher" });
   }, [publish]);
-  //
+
+  // Show right panel if publisherId is present in URL on initial load
+  useEffect(() => {
+    if (initial.publisherId) {
+      publish("show-right-panel", initial.publisherId);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const {
     data: publishersData,
     isLoading,
     error,
   } = usePublishers(currentPage, rowsPerPage, {
-    search: debouncedSearchQuery || undefined,
-    country: selectedCountry || undefined,
-    status: selectedStatus || undefined,
+    search: searchQuery || undefined,
+    country: selectedCountry.length > 0 ? selectedCountry : undefined,
+    status: selectedStatus.length > 0 ? selectedStatus : undefined,
     minMembers: minMembers ? parseInt(minMembers) : undefined,
     createdFrom: dateRange?.start,
     createdTo: dateRange?.end,
@@ -72,8 +132,9 @@ export function Publisher() {
   const publishers = publishersData?.data.data || [];
   const pagination = publishersData?.data.pagination;
 
-  const handlePublisherClick = (publisherId: string) => {
-    publish("show-right-panel", publisherId); // Mở panel
+  const handlePublisherClick = (id: string) => {
+    setPublisherId(id);
+    publish("show-right-panel", id);
   };
 
   return (
@@ -89,35 +150,16 @@ export function Publisher() {
         <Tooltip position="top" tooltipsText="Thời gian tạo.">
           <DateRangeInput
             value={dateRange}
-            onChange={(v)=> {
-              console.log('===== ', v);
-              setDateRange(v);
-            }}
+            onChange={setDateRange}
             className="w-[140px]"
           />
         </Tooltip>
 
-        {/* <Dropdown
-          value={selectedCountry}
-          onChange={setSelectedCountry}
+        <MultipleSelectCountryDropdown
+          onSelectedChange={setSelectedCountry}
           placeholder="Quốc gia"
-          options={countryOptions}
           className="w-auto min-w-[120px]"
-        /> */}
-
-          <MultipleSelectCountryDropdown
-            onSelectedChange={setSelectedCountry}
-            placeholder="Quốc gia"
-            className="w-auto min-w-[120px]"
-          />
-
-        {/* <Dropdown
-          value={selectedStatus}
-          onChange={setSelectedStatus}
-          placeholder="Trạng thái"
-          options={statusOptions}
-          className="w-auto min-w-[120px]"
-        /> */}
+        />
 
         <MultipleSelectDropdown
           onSelectedChange={setSelectedStatus}
@@ -187,10 +229,12 @@ export function Publisher() {
         )}
       </div>
 
-      {/* Right-side-panel */}
-      <RightSidePanel>
-        <PublisherDetails />
-      </RightSidePanel>
+      {/* Right-side-panel - only show when publisherId is in URL */}
+      {publisherId && (
+        <RightSidePanel>
+          <PublisherDetails />
+        </RightSidePanel>
+      )}
     </div>
   );
 }
