@@ -6,7 +6,6 @@ import {
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
-  Cell,
   LabelList,
 } from "recharts";
 import { useIsMobile } from "../../hooks/use-mobile";
@@ -68,7 +67,7 @@ export function IntroductionChart({ data, className }: IntroductionChartProps) {
 
   // Scroll logic
   const minItemsToShow = isMobile ? 5 : 14;
-  const itemWidthPercent = 100 / minItemsToShow;
+  // const itemWidthPercent = 100 / minItemsToShow;
   // If data.length > minItemsToShow, we need to expand the width
   // The width should be proportional: (totalItems / minItems) * 100%
   const chartWidthPercent =
@@ -77,8 +76,9 @@ export function IntroductionChart({ data, className }: IntroductionChartProps) {
       : 100;
 
   // Custom tooltip
-  const CustomTooltip = ({ active, payload }: any) => {
-    if (active && payload && payload.length) {
+  const CustomTooltip = () => {
+  // const CustomTooltip = ({ active, payload }) => {
+    // if (active && payload && payload.length) {
       // Example logic for tooltip content based on requirements
       // "Decreased 1.22%" - this would ideally come from data comparison, 
       // but for now I'll mock it or calculate based on previous day if possible.
@@ -90,8 +90,8 @@ export function IntroductionChart({ data, className }: IntroductionChartProps) {
           Decreased 1.22%
         </div>
       );
-    }
-    return null;
+    // }
+    // return null;
   };
 
   const formatValue = (value: number) => {

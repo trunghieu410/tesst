@@ -24,7 +24,7 @@ import { useNavigate } from "react-router-dom";
 import {
   usePublisherNotes,
   useCreateNote,
-  useDeleteNote,
+  // useDeleteNote,
 } from "@/lib/queries/usePublishers";
 
 import type { PublisherType, PublisherOverviewResponse } from "@/types";
@@ -69,7 +69,7 @@ export function PublisherOverview({
   // Notes API
   const { data: notes = [] } = usePublisherNotes(publisherId);
   const createNoteMutation = useCreateNote();
-  const deleteNoteMutation = useDeleteNote();
+  // const deleteNoteMutation = useDeleteNote();
 
   // Use API data or fallback to publisher data
   const memberSummary = overviewData?.memberSummary || {
@@ -99,9 +99,9 @@ export function PublisherOverview({
     );
   };
 
-  const handleDeleteNote = (noteId: string) => {
-    deleteNoteMutation.mutate({ publisherId, noteId });
-  };
+  // const handleDeleteNote = (noteId: string) => {
+  //   deleteNoteMutation.mutate({ publisherId, noteId });
+  // };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" && !e.shiftKey) {

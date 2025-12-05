@@ -8,7 +8,7 @@ import { CampaignTable } from "./CampaignTable";
 import { Pagination } from "@/components/ui/Pagination";
 import { useEventEmitter } from "@/hooks/useEventEmitter";
 import { useCampaigns } from "@/lib/queries/useCampaigns";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 import { RightSidePanel } from "@/components/features/RightSidePanel";
 import { CampaignCreate } from "./CampaignCreate";
 
@@ -17,21 +17,30 @@ import {
   IMAGE_TYPE_OPTIONS,
   STATUS_OPTIONS,
 } from "./constants";
+import { toUtcIsoString } from "@/lib/utils/date";
+
+// Get default date range: 1st of previous month - end of current month
+const getDefaultDateRange = (): DateRangeValue => {
+  const now = new Date();
+  // First day of previous month
+  const start = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+  // Last day of current month
+  const end = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+  return {
+    start: toUtcIsoString(start),
+    end: toUtcIsoString(end),
+  };
+};
 
 export function Campaign() {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const { publish } = useEventEmitter();
 
   const [searchQuery, setSearchQuery] = useState("");
   const [debouncedSearchQuery, setDebouncedSearchQuery] = useState("");
   
   // Initialize with Oct 1 - Nov 30 (approximate for current year based on original string)
-  const [dateRange, setDateRange] = useState<DateRangeValue | null>(() => {
-    const now = new Date();
-    const start = Date.UTC(now.getFullYear(), 9, 1); // Oct 1
-    const end = Date.UTC(now.getFullYear(), 10, 30); // Nov 30
-    return { start, end };
-  });
+  const [dateRange, setDateRange] = useState<DateRangeValue | null>(getDefaultDateRange);
   const [selectedCountry, setSelectedCountry] = useState("");
   const [selectedImageType, setSelectedImageType] = useState("");
   const [selectedStatus, setSelectedStatus] = useState("");

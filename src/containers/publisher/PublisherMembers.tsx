@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Badge } from "@/components/ui/Badge";
+import { Badge, type BadgeVariant } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { SearchInput } from "@/components/ui/SearchInput";
 import { MultipleSelectDropdown } from "@/components/ui/MultipleSelectDropdown";
@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/Table";
 import { usePublisherMembers } from "@/lib/queries/usePublishers";
 import MultipleSelectCountryDropdown from "@/components/ui/MultipleSelectCountryDropdown";
+import type { PublisherType } from "@/types";
 
 interface PublisherMembersProps {
   publisherId: string;

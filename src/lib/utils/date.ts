@@ -85,8 +85,8 @@ export const formatDateTimeTo = (datetime: string, toFormat: string = 'dd.MM.yyy
 
   const pad = (num: number) => num.toString().padStart(2, '0');
 
-  const tokens = {
-    'yyyy': date.getFullYear(),
+  const tokens: Record<string, string> = {
+    'yyyy': date.getFullYear().toString(),
     'MM': pad(date.getMonth() + 1), // Tháng trong JS bắt đầu từ 0
     'dd': pad(date.getDate()),
     'HH': pad(date.getHours()),     // Giờ 24

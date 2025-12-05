@@ -20,8 +20,22 @@ import { Button } from "@/components/ui/Button";
 import { RightSidePanel } from "@/components/features/RightSidePanel";
 import { TransactionDetails } from "./TransactionDetails";
 import type { Transaction } from "@/types";
+import { toUtcIsoString } from "@/lib/utils/date";
 
 type StatusType = "all" | "pending" | "approving" | "approved" | "rejected";
+
+// Get default date range: 1st of previous month - end of current month
+const getDefaultDateRange = (): DateRangeValue => {
+  const now = new Date();
+  // First day of previous month
+  const start = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+  // Last day of current month
+  const end = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+  return {
+    start: toUtcIsoString(start),
+    end: toUtcIsoString(end),
+  };
+};
 
 export function Transactions() {
   const { publish } = useEventEmitter();
@@ -29,12 +43,7 @@ export function Transactions() {
   const [searchQuery, setSearchQuery] = useState("");
   
   // Initialize with Oct 1 - Nov 30 (approximate for current year based on original string)
-  const [dateRange, setDateRange] = useState<DateRangeValue | null>(() => {
-    const now = new Date();
-    const start = Date.UTC(now.getFullYear(), 9, 1); // Oct 1
-    const end = Date.UTC(now.getFullYear(), 10, 30); // Nov 30
-    return { start, end };
-  });
+  const [dateRange, setDateRange] = useState<DateRangeValue | null>(getDefaultDateRange);
   const [sender, setSender] = useState("");
   const [receiver, setReceiver] = useState("");
   const [currency, setCurrency] = useState("");

@@ -5,20 +5,30 @@ import { GenderPieChart } from "@/components/charts/GenderPieChart";
 import { IntroductionChart } from "@/components/charts/IntroductionChart";
 import { DateRangeInput, type DateRangeValue } from "@/components/ui/DateRangeInput";
 import { Dropdown } from "@/components/ui/Dropdown";
+import { toUtcIsoString } from "@/lib/utils/date";
 
 type TabType = "daily" | "view_ads" | "shorten_links";
+
+// Get default date range: 1st of previous month - end of current month
+const getDefaultDateRange = (): DateRangeValue => {
+  const now = new Date();
+  // First day of previous month
+  const start = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+  // Last day of current month
+  const end = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+  return {
+    start: toUtcIsoString(start),
+    end: toUtcIsoString(end),
+  };
+};
 
 export function ReportsCampaigns() {
   const { publish } = useEventEmitter();
   const [activeTab, setActiveTab] = useState<TabType>("daily");
   
   // Initialize with Oct 26 - Nov 7 (approximate for current year based on original string)
-  const [dateRange, setDateRange] = useState<DateRangeValue | null>(() => {
-    const now = new Date();
-    const start = Date.UTC(now.getFullYear(), 9, 26); // Oct 26
-    const end = Date.UTC(now.getFullYear(), 10, 7); // Nov 7
-    return { start, end };
-  });
+  const [dateRange, setDateRange] = useState<DateRangeValue | null>(getDefaultDateRange);
+
   const [selectedCampaign, setSelectedCampaign] = useState("");
 
   useEffect(() => {
@@ -26,21 +36,21 @@ export function ReportsCampaigns() {
   }, [publish]);
 
   // Sample data for daily check-in chart
-  const checkinData = [
-    { date: "26.10", primary: 11900, secondary: 11900 },
-    { date: "26.10", primary: 11900, secondary: 11800 },
-    { date: "26.10", primary: 11500, secondary: 11900 },
-    { date: "26.10", primary: 11800, secondary: 11800 },
-    { date: "26.10", primary: 11900, secondary: 11800 },
-    { date: "26.10", primary: 11900, secondary: 11800 },
-    { date: "26.10", primary: 11900, secondary: 11800 },
-    { date: "26.10", primary: 11800, secondary: 11900 },
-    { date: "26.10", primary: 11900, secondary: 11900 },
-    { date: "26.10", primary: 11900, secondary: 11900 },
-    { date: "26.10", primary: 11900, secondary: 11800 },
-    { date: "26.10", primary: 11000, secondary: 11900 },
-    { date: "26.10", primary: 11900, secondary: 11900 },
-    { date: "26.10", primary: 11900, secondary: 11800 },
+  const introductionData = [
+    { date: "26.10", referrals: 11900, newAccounts: 11900 },
+    { date: "27.10", referrals: 12500, newAccounts: 11000 },
+    { date: "28.10", referrals: 13000, newAccounts: 12500 },
+    { date: "29.10", referrals: 11500, newAccounts: 10000 },
+    { date: "30.10", referrals: 14000, newAccounts: 13000 },
+    { date: "31.10", referrals: 12000, newAccounts: 11500 },
+    { date: "01.11", referrals: 13500, newAccounts: 12000 },
+    { date: "02.11", referrals: 14500, newAccounts: 13500 },
+    { date: "03.11", referrals: 12500, newAccounts: 11000 },
+    { date: "04.11", referrals: 13000, newAccounts: 12000 },
+    { date: "05.11", referrals: 15000, newAccounts: 14000 },
+    { date: "06.11", referrals: 14000, newAccounts: 13000 },
+    { date: "07.11", referrals: 13500, newAccounts: 12500 },
+    { date: "08.11", referrals: 14500, newAccounts: 13500 },
   ];
 
   // Sample data for token distribution chart
@@ -282,7 +292,7 @@ export function ReportsCampaigns() {
           </div>
 
           {/* Chart */}
-          <IntroductionChart data={checkinData} />
+          <IntroductionChart data={introductionData} />
         </SectionCard>
 
         {/* Token Distribution and Transaction Status Row */}
@@ -324,9 +334,9 @@ export function ReportsCampaigns() {
 
               {/* Chart with custom colors for personal/member */}
               <IntroductionChart
-                data={tokenData}
-                primaryColor="#9333ea"
-                secondaryColor="#ff3b34"
+                data={introductionData}
+                // primaryColor="#9333ea"
+                // secondaryColor="#ff3b34"
               />
             </SectionCard>
           </div>
