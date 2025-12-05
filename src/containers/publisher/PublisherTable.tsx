@@ -48,7 +48,6 @@ export function PublisherTable({
       onRowClick(publisherId);
     }
   };
-  console.log("====>", publishers);
   return (
     <Table>
       <TableHead>

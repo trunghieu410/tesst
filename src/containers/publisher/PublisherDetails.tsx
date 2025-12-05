@@ -41,14 +41,13 @@ const tabs = [
 ];
 
 
-export function PublisherDetails() {
+interface PublisherDetailsProps {
+  publisherId: string;
+}
+
+export function PublisherDetails({ publisherId }: PublisherDetailsProps) {
   const { publish } = useEventEmitter();
   const [searchParams, setSearchParams] = useSearchParams();
-
- 
-
-  // Get publisherId from URL params first, then from props
-  const publisherId = searchParams.get("publisherId");
 
   const { data: publisherData, isLoading, error } = usePublisher(publisherId);
 
@@ -56,8 +55,6 @@ export function PublisherDetails() {
     data: publisherOverviewData,
     isLoading: isPublisherOverviewLoading,
   } = usePublisherOverview(publisherId);
-
-  console.log(publisherOverviewData);
 
   const handleClose = () => {
     // Remove publisherId from URL when closing

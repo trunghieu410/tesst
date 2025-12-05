@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { useSearchParams } from "react-router-dom";
 
 import { SearchInput } from "@/components/ui/SearchInput";
@@ -12,19 +12,13 @@ import { PublisherDetails } from "./PublisherDetails";
 import { PublisherTable } from "./PublisherTable";
 import { MultipleSelectCountryDropdown } from "@/components/ui/MultipleSelectCountryDropdown";
 import MultipleSelectDropdown from "@/components/ui/MultipleSelectDropdown";
+import { toUtcIsoString } from "@/lib/utils/date";
 
 const statusOptions = [
   { value: "active", label: "Kích hoạt" },
   { value: "deleted", label: "Đã xoá" },
   { value: "suspended", label: "Tạm dừng" },
 ];
-
-const toUtcIsoString = (date: Date): string => {
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, "0");
-  const day = String(date.getDate()).padStart(2, "0");
-  return `${year}-${month}-${day}T00:00:00Z`;
-};
 
 // Get default date range: 1st of previous month - end of current month
 const getDefaultDateRange = (): DateRangeValue => {
@@ -110,12 +104,13 @@ export function Publisher() {
   }, [publish]);
 
   // Show right panel if publisherId is present in URL on initial load
+  const hasMountedRef = useRef(false);
   useEffect(() => {
-    if (initial.publisherId) {
+    if (!hasMountedRef.current && initial.publisherId) {
       publish("show-right-panel", initial.publisherId);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    hasMountedRef.current = true;
+  }, [initial.publisherId, publish]);
 
   const {
     data: publishersData,
@@ -138,7 +133,7 @@ export function Publisher() {
   };
 
   return (
-    <div className="p-3 flex flex-col gap-4 items-center relative">
+    <div className="p-3 flex flex-col gap-4 items-center relative pb-[100px]">
       {/* Filters */}
       <div className="flex items-start gap-2.5 flex-wrap w-full">
         <SearchInput
@@ -156,18 +151,21 @@ export function Publisher() {
         </Tooltip>
 
         <MultipleSelectCountryDropdown
+          initialValues={selectedCountry}
           onSelectedChange={setSelectedCountry}
           placeholder="Quốc gia"
           className="w-auto min-w-[120px]"
         />
 
         <MultipleSelectDropdown
+          initialValues={selectedStatus}
           onSelectedChange={setSelectedStatus}
           placeholder="Trạng thái"
           options={statusOptions}
-         className="w-auto min-w-[120px]"
+          className="w-auto min-w-[120px]"
         />
 
+        {/* Number of members */} 
         <div className="relative">
           <div className="h-8 bg-white border border-[#cfd6de] rounded-md flex items-center">
             <div className="px-3 border-r border-[#cfd6de] h-full flex items-center">
@@ -229,12 +227,9 @@ export function Publisher() {
         )}
       </div>
 
-      {/* Right-side-panel - only show when publisherId is in URL */}
-      {publisherId && (
-        <RightSidePanel>
-          <PublisherDetails />
-        </RightSidePanel>
-      )}
+      <RightSidePanel>
+        {publisherId && <PublisherDetails publisherId={publisherId} />}
+      </RightSidePanel>
     </div>
   );
 }

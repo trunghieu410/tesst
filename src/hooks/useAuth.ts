@@ -17,6 +17,7 @@ export function useAuth() {
 
   const logout = () => {
     localStorage.removeItem("authToken");
+    localStorage.removeItem("rfk");
     navigate("/");
   };
 
@@ -32,6 +33,7 @@ export function useAuth() {
       authApi.verifyOtp(email, otp),
     onSuccess: (data) => {
       login(data.accessToken);
+      localStorage.setItem("rfk", data.refreshToken);
       success("Login successful");
       navigate("/dashboard");
     },

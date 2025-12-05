@@ -121,6 +121,11 @@ export function ClickToCopy({
     </span>
   );
 
+  // Return plain text for empty/placeholder values - no tooltip or copy functionality
+  if (children === "--") {
+    return "--";
+  }
+
   return showIcon ? (
     content
   ) : (

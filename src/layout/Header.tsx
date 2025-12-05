@@ -56,9 +56,9 @@ export function Header({ defaultTitle = "Publisher" }: HeaderProps) {
     logout();
   };
 
-  const handleAccount = () => {
-    setIsDropdownOpen(false);
-  };
+  // const handleAccount = () => {
+  //   setIsDropdownOpen(false);
+  // };
 
   return (
     <div className="h-[68px] border-b border-[#d0d5dd] bg-white flex items-center justify-between px-4 py-4.5">
@@ -102,7 +102,7 @@ export function Header({ defaultTitle = "Publisher" }: HeaderProps) {
         <div className="relative " ref={dropdownRef}>
           <button
             onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-            className="flex items-center gap-2 hover:bg-gray-50 rounded-lg px-2 py-1 transition-colors"
+            className="flex items-center gap-2 hover:bg-gray-50 rounded-lg px-2 py-1 transition-colors cursor-pointer"
           >
             <ProfilePicture name="Katie Pena" size="medium" />
             <div className="flex flex-col gap-0.5">
@@ -126,14 +126,14 @@ export function Header({ defaultTitle = "Publisher" }: HeaderProps) {
           {/* Dropdown Menu */}
           {isDropdownOpen && (
             <div className="absolute right-0 mt-1 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-50">
-              <Button
+              {/* <Button
                 variant="ghost"
                 size="sm"
                 onClick={handleAccount}
                 className="w-full justify-start rounded-none hover:bg-[#f1caca]"
               >
                 Tài khoản
-              </Button>
+              </Button> */}
               <Button
                 variant="ghost"
                 size="sm"

@@ -5,7 +5,7 @@ import useClickOutside from "@/hooks/useClickOutside";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { BottomSheet } from "./BottomSheet";
 import { Button } from "./Button";
-import { areDatesEqual, formatDateForDisplay, isDayInRange } from "@/lib/utils/date";
+import { areDatesEqual, formatDateForDisplay, isDayInRange, toUtcIsoString } from "@/lib/utils/date";
 
 export interface DateRangeValue {
   start: string;  // ISO 8601 UTC format: "YYYY-MM-DDTHH:mm:ssZ"
@@ -77,14 +77,6 @@ export function DateRangeInput({
     }
     setIsInitialized(true);
   }, [value]);
-
-  // Helper to get UTC start of day as ISO 8601 string (e.g., "2024-01-01T00:00:00Z")
-  const toUtcIsoString = (date: Date): string => {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}T00:00:00Z`;
-  };
 
   // Update parent value when dates change (desktop only)
   useEffect(() => {
