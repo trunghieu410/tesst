@@ -127,8 +127,8 @@ export const publishersApi = {
       limit?: number;
       search?: string;
       tier?: string;
-      countries?: string[];
-      accountStatuses?: string[];
+      countries?: string;
+      accountStatuses?: string;
       includeStats?: boolean;
     } = {}
   ) => {
@@ -137,16 +137,8 @@ export const publishersApi = {
     if (params.limit) queryParams.append("limit", params.limit.toString());
     if (params.search) queryParams.append("search", params.search);
     if (params.tier) queryParams.append("tier", params.tier);
-    if (params.countries) {
-      params.countries.forEach((code) =>
-        queryParams.append("countries[]", code)
-      );
-    }
-    if (params.accountStatuses) {
-      params.accountStatuses.forEach((status) =>
-        queryParams.append("accountStatuses[]", status)
-      );
-    }
+    if (params.countries) queryParams.append("countries", params.countries);
+    if (params.accountStatuses) queryParams.append("accountStatuses", params.accountStatuses);
     if (params.includeStats) queryParams.append("includeStats", "true");
 
     const response = await api.get(

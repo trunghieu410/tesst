@@ -40,6 +40,7 @@ interface DropdownProps {
    * Custom trigger content
    */
   children?: ReactNode;
+  align?: "left" | "right";
 }
 
 export function Dropdown({
@@ -50,6 +51,7 @@ export function Dropdown({
   className,
   disabled = false,
   children,
+  align = "right",
 }: DropdownProps) {
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
@@ -90,7 +92,8 @@ export function Dropdown({
       {/* Dropdown Menu */}
       <div
         className={cn(
-          "absolute right-0 mt-1 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-50 transition-all duration-200",
+          "absolute mt-1 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-50 transition-all duration-200",
+          align === "right" ? "right-0" : "left-0",
           dropdownOpen
             ? "top-full opacity-100 visible"
             : "top-[110%] invisible opacity-0"

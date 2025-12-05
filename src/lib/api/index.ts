@@ -58,6 +58,7 @@ api.interceptors.response.use(
       isRefreshing = true;
 
       const refreshToken = localStorage.getItem("rfk");
+      console.log("=====refreshToken ",refreshToken);
       if (!refreshToken) {
         localStorage.removeItem("authToken");
         localStorage.removeItem("rfk");
@@ -70,6 +71,7 @@ api.interceptors.response.use(
           refreshToken,
         });
         const { accessToken } = response.data;
+        console.log("=====response after refresh", accessToken);
 
         localStorage.setItem("authToken", accessToken);
 
@@ -103,6 +105,11 @@ export const authApi = {
 
   verifyOtp: async (email: string, otp: string) => {
     const response = await api.post("/auth/otp/verify", { email, otp });
+    return response.data;
+  },
+
+  getMe: async () => {
+    const response = await api.get("/auth/me");
     return response.data;
   },
 };

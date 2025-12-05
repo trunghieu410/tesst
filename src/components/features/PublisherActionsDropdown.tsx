@@ -59,7 +59,9 @@ export function PublisherActionsDropdown({
   };
 
   const validActions = ACTIONS.filter((s) => s.value !== accountState);
-
+  // active
+// deleted
+// suspended
   return (
     <div ref={dropdownRef} className="relative">
       <Button

@@ -289,22 +289,22 @@ export function PublisherOverview({
                   <div key={note.id} className="border-b border-[#cfd6de] pb-3">
                     <div className="flex items-center gap-2 mb-2">
                       <p className="text-xs text-[#677187]">
-                        {new Date(note.createdAt).toLocaleString("vi-VN")}
+                        {note.createdAtFormatted}
                       </p>
                       <div className="w-1.5 h-1.5 bg-[#677187] rounded-full"></div>
                       <p className="text-xs font-medium text-[#677187]">
-                        {note.author.name}
+                        {note?.actor?.displayName}
                       </p>
                       <p className="text-xs text-[#677187]">
-                        {note.author.email}
+                        {note?.actor?.email}
                       </p>
-                      <button
+                      {/* <button
                         onClick={() => handleDeleteNote(note.id)}
                         className="ml-auto text-xs text-red-500 hover:text-red-700"
                         disabled={deleteNoteMutation.isPending}
                       >
                         Xoá
-                      </button>
+                      </button> */}
                     </div>
                     <p className="text-sm text-[#021337]">{note.content}</p>
                   </div>

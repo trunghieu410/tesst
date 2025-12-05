@@ -74,3 +74,28 @@ export const toUtcIsoString = (date: Date): string => {
   const day = String(date.getDate()).padStart(2, "0");
   return `${year}-${month}-${day}T00:00:00Z`;
 };
+
+export const formatDateTimeTo = (datetime: string, toFormat: string = 'dd.MM.yyyy - HH:mm') => {
+  const date = new Date(datetime);
+
+  // Kiểm tra nếu date không hợp lệ
+  if (isNaN(date.getTime())) {
+    return datetime; // Trả về chuỗi gốc nếu không parse được
+  }
+
+  const pad = (num: number) => num.toString().padStart(2, '0');
+
+  const tokens = {
+    'yyyy': date.getFullYear(),
+    'MM': pad(date.getMonth() + 1), // Tháng trong JS bắt đầu từ 0
+    'dd': pad(date.getDate()),
+    'HH': pad(date.getHours()),     // Giờ 24
+    'hh': pad(date.getHours() % 12 || 12), // Giờ 12
+    'mm': pad(date.getMinutes()),
+    'ss': pad(date.getSeconds()),
+    'a': date.getHours() >= 12 ? 'PM' : 'AM'
+  } 
+
+  // Thay thế format string bằng giá trị thực
+  return toFormat.replace(/yyyy|MM|dd|HH|hh|mm|ss|a/g, (match) => tokens[match]);
+};

@@ -14,10 +14,20 @@ import {
   TableCell,
 } from "@/components/ui/Table";
 import { usePublisherMembers } from "@/lib/queries/usePublishers";
+import MultipleSelectCountryDropdown from "@/components/ui/MultipleSelectCountryDropdown";
 
 interface PublisherMembersProps {
   publisherId: string;
 }
+
+const accountStatusMap: Record<
+  PublisherType["accountStatus"],
+  { label: string; variant: BadgeVariant }
+> = {
+  active: { label: "Kích hoạt", variant: "success" },
+  deleted: { label: "Đã xoá", variant: "error" },
+  suspended: { label: "Tạm dừng", variant: "pending" },
+};
 
 export function PublisherMembers({ publisherId }: PublisherMembersProps) {
   const [memberSearch, setMemberSearch] = useState("");
@@ -25,8 +35,8 @@ export function PublisherMembers({ publisherId }: PublisherMembersProps) {
   const [selectedCountry, setSelectedCountry] = useState<string[]>([]);
   const [selectedStatuses, setSelectedStatuses] = useState<string[]>([]);
   const [selectedTier, setSelectedTier] = useState<
-    "ALL" | "TIER1" | "TIER2" | "TIER3"
-  >("ALL");
+    "all" | "tier1" | "tier2" | "tier3"
+  >("all");
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(20);
 
@@ -51,12 +61,11 @@ export function PublisherMembers({ publisherId }: PublisherMembersProps) {
   } = usePublisherMembers(
     publisherId,
     {
-      search: debouncedSearch || undefined,
+      search: debouncedSearch || '',
       tier: selectedTier,
-      countries: selectedCountry.length > 0 ? selectedCountry : undefined,
+      countries: selectedCountry.length > 0 ? selectedCountry.sort().join(",") : '',
       accountStatuses:
-        selectedStatuses.length > 0 ? selectedStatuses : undefined,
-      includeStats: true,
+        selectedStatuses.length > 0 ? selectedStatuses.sort().join(",") : '',
     },
     currentPage,
     rowsPerPage
@@ -78,7 +87,7 @@ export function PublisherMembers({ publisherId }: PublisherMembersProps) {
       </div>
     );
   }
-
+  
   return (
     <div className="p-3 pb-4">
       {/* Filters Section */}
@@ -90,15 +99,10 @@ export function PublisherMembers({ publisherId }: PublisherMembersProps) {
           className="w-[250px]"
         />
 
-        <MultipleSelectDropdown
+        <MultipleSelectCountryDropdown
+          initialValues={selectedCountry}
           onSelectedChange={setSelectedCountry}
           placeholder="Quốc gia"
-          options={[
-            { value: "VN", label: "Vietnam" },
-            { value: "TH", label: "Thailand" },
-            { value: "ID", label: "Indonesia" },
-            { value: "MY", label: "Malaysia" },
-          ]}
           className="w-auto min-w-[120px]"
         />
 
@@ -120,23 +124,23 @@ export function PublisherMembers({ publisherId }: PublisherMembersProps) {
         <div className="flex gap-0">
           <Button
             variant="tab"
-            isActive={selectedTier === "ALL"}
-            onClick={() => setSelectedTier("ALL")}
+            isActive={selectedTier === "all"}
+            onClick={() => setSelectedTier("all")}
           >
             Tất cả
             <Badge variant="default">{stats.total}</Badge>
           </Button>
           <Button
             variant="tab"
-            isActive={selectedTier === "TIER1"}
-            onClick={() => setSelectedTier("TIER1")}
+            isActive={selectedTier === "tier1"}
+            onClick={() => setSelectedTier("tier1")}
           >
             Tầng 1<Badge variant="default">{stats.tier1}</Badge>
           </Button>
           <Button
             variant="tab"
-            isActive={selectedTier === "TIER2"}
-            onClick={() => setSelectedTier("TIER2")}
+            isActive={selectedTier === "tier2"}
+            onClick={() => setSelectedTier("tier2")}
           >
             Tầng 2
             <InfoIcon className="w-4 h-4" />
@@ -144,8 +148,8 @@ export function PublisherMembers({ publisherId }: PublisherMembersProps) {
           </Button>
           <Button
             variant="tab"
-            isActive={selectedTier === "TIER3"}
-            onClick={() => setSelectedTier("TIER3")}
+            isActive={selectedTier === "tier3"}
+            onClick={() => setSelectedTier("tier3")}
           >
             Tầng 3<Badge variant="default">{stats.tier3}</Badge>
           </Button>
@@ -196,7 +200,9 @@ export function PublisherMembers({ publisherId }: PublisherMembersProps) {
               </TableCell>
             </TableRow>
           ) : (
-            members.map((member, index) => (
+            members.map((member, index) => {
+              const accountStatus = accountStatusMap[member.accountStatus];
+              return (
               <TableRow key={member.id}>
                 <TableCell data-sticky="left-1">
                   {(currentPage - 1) * rowsPerPage + index + 1}
@@ -209,9 +215,9 @@ export function PublisherMembers({ publisherId }: PublisherMembersProps) {
                   </div>
                 </TableCell>
                 <TableCell>
-                  {member.tier === "TIER1"
+                  {member.tier === "tier1"
                     ? "F1"
-                    : member.tier === "TIER2"
+                    : member.tier === "tier2"
                     ? "F2"
                     : "F3"}
                 </TableCell>
@@ -219,18 +225,12 @@ export function PublisherMembers({ publisherId }: PublisherMembersProps) {
                   {new Date(member.createdAt).toLocaleString("vi-VN")}
                 </TableCell>
                 <TableCell data-sticky="right">
-                  {member.accountStatus === "active" && (
-                    <Badge variant="success">Kích hoạt</Badge>
-                  )}
-                  {member.accountStatus === "deleted" && (
-                    <Badge variant="error">Đã xoá</Badge>
-                  )}
-                  {member.accountStatus === "suspended" && (
-                    <Badge variant="error">Tạm dừng</Badge>
-                  )}
+                  <Badge variant={accountStatus.variant}>
+                    {accountStatus.label}
+                  </Badge>
                 </TableCell>
               </TableRow>
-            ))
+            )})
           )}
         </TableBody>
       </Table>

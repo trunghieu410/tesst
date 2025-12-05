@@ -12,6 +12,8 @@ import {
 import { Tooltip } from "@/components/ui/Tooltip";
 import { ClickToCopy } from "@/components/ui/ClickToCopy";
 import type { PublisherType } from "@/types";
+import { text } from "@/lib/utils/common";
+import { formatDateTimeTo } from "@/lib/utils/date";
 
 interface PublisherTableProps {
   publishers: PublisherType[];
@@ -36,8 +38,6 @@ const accountStatusMap: Record<
   deleted: { label: "Đã xoá", variant: "error" },
   suspended: { label: "Tạm dừng", variant: "pending" },
 };
-
-const text = (text: string, placeholder: string = "--") => text || placeholder;
 
 export function PublisherTable({
   publishers,
@@ -87,8 +87,8 @@ export function PublisherTable({
       <TableBody>
         {publishers.map((publisher) => {
           const kycStatus = kycStatusMap[publisher.kycStatus];
-          const accountStatus = accountStatusMap[publisher.accountStatus];
-
+          const accountStatus = accountStatusMap[publisher.accountStatus]; 
+          console.log(publisher);
           return (
             <TableRow key={publisher.id}>
               <TableCell
@@ -106,9 +106,11 @@ export function PublisherTable({
                   <span className="font-medium text-sm leading-5 text-[#021337]">
                     {publisher.fullName}
                   </span>
-                  <Tooltip position="right" tooltipsText="Ghi chú này hơi dài.">
-                    <DangerRedIcon className="w-4 h-4" />
-                  </Tooltip>
+                  {publisher.isBlacklisted && (
+                    <Tooltip position="right" tooltipsText="Pub có dấu hiện gian lận">
+                      <DangerRedIcon className="w-4 h-4" />
+                    </Tooltip>
+                  )}
                 </div>
                 <p className="font-normal text-xs leading-4 text-[#677187]">
                   {publisher.email}
@@ -125,19 +127,17 @@ export function PublisherTable({
                 </ClickToCopy>
               </TableCell>
               <TableCell>
-                <div className="flex items-center gap-2">
-                  <img
-                    src={publisher?.country?.flagUrl}
-                  alt={publisher?.country?.name}
-                    className="w-4 h-auto"
-                  />
-                  <span className="text-[13px] leading-4">
-                    {publisher?.country?.name}
-                  </span>
-                </div>
+                {publisher.country && (
+                  <div className="flex items-center gap-2">
+                    <span className={`flag flag-${publisher.country.code.toLowerCase()} shrink-0 inline-block w-[13px] h-[10px]`}></span>
+                    <span className="text-[13px] leading-4">
+                      {publisher.country.name}
+                    </span>
+                  </div>
+                )}
               </TableCell>
               <TableCell align="right">{publisher.memberCount.total}</TableCell>
-              <TableCell>{publisher.createdAt}</TableCell>
+              <TableCell>{formatDateTimeTo(publisher.createdAt)}</TableCell>
               <TableCell>
                 <Badge variant={kycStatus.variant}>{kycStatus.label}</Badge>
               </TableCell>

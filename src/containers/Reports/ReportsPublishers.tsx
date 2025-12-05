@@ -11,29 +11,37 @@ import { GeneralPieChart } from "@/components/charts/GeneralPieChart";
 import { KYCStatsGrid } from "@/components/features/KYCStatsGrid";
 import { CountriesTable } from "@/components/features/CountriesTable";
 import { MembersTable } from "@/components/features/MembersTable";
-import { Dropdown } from "@/components/ui/Dropdown";
 import { DateRangeInput, type DateRangeValue } from "@/components/ui/DateRangeInput";
 import { Tooltip } from "@/components/ui/Tooltip";
 import { MultipleSelectCountryDropdown } from "@/components/ui/MultipleSelectCountryDropdown";
+import { toUtcIsoString } from "@/lib/utils/date";
 
 type CountryTabType = "members" | "airdrop" | "camp";
 type MembersTabType = "members" | "airdrop" | "camp";
+
+// Get default date range: 1st of previous month - end of current month
+const getDefaultDateRange = (): DateRangeValue => {
+  const now = new Date();
+  // First day of previous month
+  const start = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+  // Last day of current month
+  const end = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+  return {
+    start: toUtcIsoString(start),
+    end: toUtcIsoString(end),
+  };
+};
 
 export function ReportsPublishers() {
   const { publish } = useEventEmitter();
   const [countryTab, setCountryTab] = useState<CountryTabType>("members");
   const [membersTab, setMembersTab] = useState<MembersTabType>("members");
-  const [selectedCountry, setSelectedCountry] = useState<string[]>([]);
+  const [, setSelectedCountry] = useState<string[]>([]);
   
   // Initialize with Oct 1 - Nov 30 (approximate for current year)
   // Or just use null if no default is strictly required, but the original code had "1.10 - 30.11"
   // Let's assume current year.
-  const [dateRange, setDateRange] = useState<DateRangeValue | null>(() => {
-    const now = new Date();
-    const start = Date.UTC(now.getFullYear(), 9, 1); // Oct 1
-    const end = Date.UTC(now.getFullYear(), 10, 30); // Nov 30
-    return { start, end };
-  });
+  const [dateRange, setDateRange] = useState<DateRangeValue | null>(getDefaultDateRange);
 
   useEffect(() => {
     publish("title-change", { title: "Publishers" });

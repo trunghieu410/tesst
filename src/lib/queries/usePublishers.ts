@@ -212,7 +212,6 @@ export function usePublisherMembers(
       publishersApi.getMembers(publisherId, {
         page,
         limit,
-        includeStats: true,
         ...filters,
       }),
     enabled: !!publisherId,

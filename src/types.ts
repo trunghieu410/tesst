@@ -6,6 +6,7 @@ export interface PublisherType {
   email: string;
   referralCode: string;
   referredByCode: string;
+  isBlacklisted: boolean;
   memberCount: {
     total: number;
     byTier: {
@@ -114,8 +115,9 @@ export interface PublisherNote {
   id: string;
   content: string;
   createdAt: string;
-  author: {
-    name: string;
+  createdAtFormatted: string;
+  actor: {
+    displayName: string;
     email: string;
   };
 }
@@ -198,7 +200,7 @@ export interface PublisherMember {
   id: string;
   email: string;
   fullName: string;
-  tier: "TIER1" | "TIER2" | "TIER3";
+  tier: "tier1" | "tier2" | "tier3";
   country: {
     code: string;
     name: string;
@@ -211,9 +213,9 @@ export interface MembersFilters {
   page?: number;
   limit?: number;
   search?: string;
-  tier?: "ALL" | "TIER1" | "TIER2" | "TIER3";
-  countries?: string[];
-  accountStatuses?: string[];
+  tier?: "all" | "tier1" | "tier2" | "tier3";
+  countries?: string;
+  accountStatuses?: string;
   includeStats?: boolean;
 }
 
@@ -232,17 +234,19 @@ export interface MembersResponse {
 // Activity Log types
 export interface ActivityLog {
   id: string;
-  actorUserId: string;
-  actorName?: string;
-  actorEmail?: string;
-  action: string;
-  entity: string;
-  entityId: string;
-  reason: string;
-  diff: Record<string, unknown>;
-  ip: string;
-  ua: string;
+  code: string;
   createdAt: string;
+  timeAgo: string;
+  ip?: string;
+  actor: {
+    type: string;
+    id: string | null;
+    displayName: string;
+    email: string | null;
+  };
+  payload: {
+    noteId: string;
+  };
 }
 
 export interface ActivityLogsFilters {

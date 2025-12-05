@@ -10,6 +10,7 @@ import {
   TableCell,
 } from "@/components/ui/Table";
 import { usePublisherActivityLogs } from "@/lib/queries/usePublishers";
+import { formatDateTimeTo } from "@/lib/utils/date";
 
 interface PublisherHistoryProps {
   publisherId: string;
@@ -24,8 +25,8 @@ const FILTER_OPTIONS = [
 
 export function PublisherHistory({ publisherId }: PublisherHistoryProps) {
   const [filter, setFilter] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
-  const [rowsPerPage, setRowsPerPage] = useState(20);
+  const [currentPage] = useState(1);
+  const [rowsPerPage] = useState(100);
 
   const {
     data: logsData,
@@ -41,12 +42,12 @@ export function PublisherHistory({ publisherId }: PublisherHistoryProps) {
   );
 
   const logs = logsData?.data || [];
-  const pagination = logsData?.pagination || {
-    page: 1,
-    limit: 20,
-    total: 0,
-    totalPages: 1,
-  };
+  // const pagination = logsData?.pagination || {
+  //   page: 1,
+  //   limit: 20,
+  //   total: 0,
+  //   totalPages: 1,
+  // };
 
   if (error) {
     return (
@@ -60,6 +61,7 @@ export function PublisherHistory({ publisherId }: PublisherHistoryProps) {
     <div className=" border-r border-[#b5bcc4] flex flex-col py-6 px-5 pb-20">
       <div className="mb-3 flex items-center gap-3">
         <Dropdown
+          align="left"
           value={filter}
           onChange={setFilter}
           placeholder="Tất cả"
@@ -102,28 +104,28 @@ export function PublisherHistory({ publisherId }: PublisherHistoryProps) {
                   <TableCell>
                     <div className="flex flex-col">
                       <span className="text-sm leading-5 text-[#021337]">
-                        {item.actorName || "Unknown"}
+                        {item.actor.displayName}
                       </span>
                       <span className="text-[10px] leading-3.5 text-[#021337] opacity-80">
-                        {item.actorEmail || item.actorUserId}
+                        {item.actor.email || 'placeholder@email.com'}
                       </span>
                     </div>
                   </TableCell>
                   <TableCell className="align-top">
                     <div className="flex flex-col">
                       <span className="text-sm leading-5 text-[#021337]">
-                        {item.action}
+                        {/* {item.action} */} 
+                        AAAA
                       </span>
-                      {item.reason && (
-                        <span className="text-xs text-[#677187]">
-                          Lí do: {item.reason}
-                        </span>
-                      )}
+                      <span className="text-xs text-[#677187]">
+                        {/* Lí do: {item.reason} */}
+                        BBBB
+                      </span>
                     </div>
                   </TableCell>
-                  <TableCell>{item.ip || "N/A"}</TableCell>
+                  <TableCell>{item?.ip || "N/A"}</TableCell>
                   <TableCell>
-                    {new Date(item.createdAt).toLocaleString("vi-VN")}
+                    {formatDateTimeTo(item.createdAt)}
                   </TableCell>
                 </TableRow>
               ))
@@ -131,7 +133,7 @@ export function PublisherHistory({ publisherId }: PublisherHistoryProps) {
           </TableBody>
         </Table>
       </div>
-      {/* Pagination */}
+      {/* Pagination
       <div className="flex items-center gap-2 p-2 mt-3">
         <p className="font-normal text-sm leading-5 text-[#021337]">
           {pagination.total.toLocaleString()} kết quả
@@ -143,7 +145,7 @@ export function PublisherHistory({ publisherId }: PublisherHistoryProps) {
           rowsPerPage={rowsPerPage}
           onRowsPerPageChange={setRowsPerPage}
         />
-      </div>
+      </div> */}
     </div>
   );
 }

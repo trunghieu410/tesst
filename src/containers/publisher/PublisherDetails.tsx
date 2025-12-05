@@ -1,4 +1,4 @@
-import { Badge } from "@/components/ui/Badge";
+import { Badge, type BadgeVariant } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { PublisherActionsDropdown } from "@/components/features/PublisherActionsDropdown";
 import { PublisherOverview } from "./PublisherOverview";
@@ -15,6 +15,36 @@ import {
   usePublisherOverview,
 } from "@/lib/queries/usePublishers";
 import { useSearchParams } from "react-router-dom";
+import type { PublisherType } from "@/types";
+
+const AVATAR_COLORS = [
+  "bg-red-500",
+  "bg-orange-500",
+  "bg-amber-500",
+  "bg-yellow-500",
+  "bg-lime-500",
+  "bg-green-500",
+  "bg-emerald-500",
+  "bg-teal-500",
+  "bg-cyan-500",
+  "bg-sky-500",
+  "bg-blue-500",
+  "bg-indigo-500",
+  "bg-violet-500",
+  "bg-purple-500",
+  "bg-fuchsia-500",
+  "bg-pink-500",
+  "bg-rose-500",
+];
+
+const getAvatarColor = (identifier: string) => {
+  let hash = 0;
+  for (let i = 0; i < identifier.length; i++) {
+    hash = identifier.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  const index = Math.abs(hash % AVATAR_COLORS.length);
+  return AVATAR_COLORS[index];
+};
 
 const tabs = [
   {
@@ -40,12 +70,16 @@ const tabs = [
   },
 ];
 
+const accountStatusMap: Record<
+  PublisherType["accountStatus"],
+  { label: string; variant: BadgeVariant }
+> = {
+  active: { label: "Kích hoạt", variant: "success" },
+  deleted: { label: "Đã xoá", variant: "error" },
+  suspended: { label: "Tạm dừng", variant: "pending" },
+};
 
-interface PublisherDetailsProps {
-  publisherId: string;
-}
-
-export function PublisherDetails({ publisherId }: PublisherDetailsProps) {
+export function PublisherDetails({ publisherId }: { publisherId: string }) {
   const { publish } = useEventEmitter();
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -55,7 +89,7 @@ export function PublisherDetails({ publisherId }: PublisherDetailsProps) {
     data: publisherOverviewData,
     isLoading: isPublisherOverviewLoading,
   } = usePublisherOverview(publisherId);
-
+  console.log("publisherData isLoading", isLoading);
   const handleClose = () => {
     // Remove publisherId from URL when closing
     searchParams.delete("publisherId");
@@ -84,6 +118,8 @@ export function PublisherDetails({ publisherId }: PublisherDetailsProps) {
     );
   }
 
+  const accountStatus = accountStatusMap[publisherData.accountStatus];
+  const avatarUrl = publisherData.personalInfo?.avatarUrl;
   return (
     <div className="flex flex-col w-full h-screen bg-white relative rounded-none md:rounded-tl-3xl">
       {/* Title Bar */}
@@ -94,19 +130,27 @@ export function PublisherDetails({ publisherId }: PublisherDetailsProps) {
         <Button variant="ghost" size="sm" onClick={handleClose} className="p-1">
           <XIcon className="w-6 h-6" />
         </Button>
-      </div>
+      </div> 
 
       {/* Avatar and Name Content */}
       <div className="flex items-center gap-3 mb-3 px-5 pb-4">
-        <div className="w-20 h-20 rounded-[80px] bg-gray-200" />
+        {avatarUrl ? (
+          <img src={avatarUrl} alt="Avatar" className="w-20 h-20 rounded-[80px]" />
+        ) : (
+          <div className={`w-20 h-20 rounded-[80px] flex items-center justify-center text-3xl font-semibold text-white ${getAvatarColor(publisherData.email || publisherData.fullName)}`}>
+            {(publisherData.email || publisherData.fullName || "?").charAt(0).toUpperCase()}
+          </div>
+        )}
         <div className="flex-1">
-          <p className="font-semibold text-xl leading-7 text-[#021337]">
+          <p className="font-semibold text-xl leading-7 text-[#021337]"> 
             {publisherData.fullName}
           </p>
-          <Badge variant="success">Kích hoạt</Badge>
+          <Badge variant={accountStatus.variant}>
+            {accountStatus.label}
+          </Badge>
         </div>
         <PublisherActionsDropdown
-          accountState="suspend"
+          accountState={publisherData.accountStatus}
           onAction={handleActionSelect}
         />
       </div>
