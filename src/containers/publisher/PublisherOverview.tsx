@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/Table";
 import { TetherIcon } from "@/icon/TetherIcon";
 import { RoiIcon } from "@/icon/RoiIcon";
-import { Timeline } from "@/components/features/Timeline";
+import { Timeline, type TimelineItem } from "@/components/features/Timeline";
 import { Notes } from "@/icon/Notes";
 import { HistoricalIcon } from "@/icon/HistoricalIcon";
 import { ClockIcon } from "@/icon/ClockIcon";
@@ -78,11 +78,13 @@ export function PublisherOverview({
       publisher.memberCount.byTier.tier1 +
       publisher.memberCount.byTier.tier2 +
       publisher.memberCount.byTier.tier3,
-    tier1: publisher.memberCount.byTier.tier1,
-    tier2: publisher.memberCount.byTier.tier2,
-    tier3: publisher.memberCount.byTier.tier3,
+    byTier: {
+      tier1: publisher.memberCount.byTier.tier1,
+      tier2: publisher.memberCount.byTier.tier2,
+      tier3: publisher.memberCount.byTier.tier3,
+    },
   };
-
+  console.log("overviewData", overviewData);
   const walletAssets = overviewData?.wallet?.assets || [];
   const totalBalanceUsd = overviewData?.wallet?.totalBalanceUsd || 0;
   const accountStatusHistory = overviewData?.accountStatusHistory || [];
@@ -145,7 +147,7 @@ export function PublisherOverview({
               Tầng 1
             </p>
             <p className="font-semibold text-base leading-6 text-[#021337] text-center w-full">
-              {memberSummary.tier1}
+              {memberSummary.byTier.tier1}
             </p>
           </div>
 
@@ -155,7 +157,7 @@ export function PublisherOverview({
               Tầng 2
             </p>
             <p className="font-semibold text-base leading-6 text-[#021337] text-center w-full">
-              {memberSummary.tier2}
+              {memberSummary.byTier.tier2}
             </p>
           </div>
 
@@ -165,7 +167,7 @@ export function PublisherOverview({
               Tầng 3
             </p>
             <p className="font-semibold text-base leading-6 text-[#021337] text-center w-full">
-              {memberSummary.tier3}
+              {memberSummary.byTier.tier3}
             </p>
           </div>
         </div>
@@ -333,11 +335,11 @@ export function PublisherOverview({
               title="Giao dịch mới nhất"
               icon={ClockIcon}
               items={
-                latestTransaction
+                (latestTransaction
                   ? [
                       {
-                        timestamp: latestTransaction.createdAt,
-                        description: `${latestTransaction.type} ${latestTransaction.amount} ${latestTransaction.token}`,
+                        timestamp: latestTransaction.timeAgo,
+                        description: `${latestTransaction.description}`,
                       },
                     ]
                   : [
@@ -345,7 +347,7 @@ export function PublisherOverview({
                         timestamp: "",
                         description: "Chưa có giao dịch",
                       },
-                    ]
+                    ])as TimelineItem[]
               }
               maxHeight="189px"
             />

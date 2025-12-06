@@ -85,9 +85,11 @@ export interface Transaction {
 // Publisher Overview types
 export interface MemberSummary {
   total: number;
-  tier1: number;
-  tier2: number;
-  tier3: number;
+  byTier: {
+    tier1: number;
+    tier2: number;
+    tier3: number;
+  };
 }
 
 export interface WalletAsset {
@@ -124,10 +126,10 @@ export interface PublisherNote {
 
 export interface LatestTransaction {
   id: string;
-  type: string;
-  amount: number;
+  occurredAt: string;
+  timeAgo: number;
   token: string;
-  createdAt: string;
+  description: string;
 }
 
 export interface BlacklistCampaign {

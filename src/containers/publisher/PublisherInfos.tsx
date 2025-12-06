@@ -4,6 +4,7 @@ import { AppleIcon } from "@/icon/AppleIcon";
 import { ClickToCopy } from "@/components/ui/ClickToCopy";
 import type { PublisherType } from "@/types";
 import { text } from "@/lib/utils/common";
+import { formatDateTimeTo, calculateAge } from "@/lib/utils/date";
 
 interface PublisherInfosProps {
   publisher: PublisherType & {
@@ -91,7 +92,10 @@ export function PublisherInfos({ publisher }: PublisherInfosProps) {
         <div className="flex gap-2.5">
           <p className="text-xs leading-4 text-[#677187] w-[110px]">DOB</p>
           <p className="text-[14px] leading-4 text-[#021337]">
-            {text(personalInfo?.dateOfBirth)}
+            {formatDateTimeTo(personalInfo?.dateOfBirth, 'dd.MM.yyyy')}
+          </p>
+          <p className="text-xs leading-4 text-[#677187]">
+            {calculateAge(personalInfo?.dateOfBirth)}
           </p>
         </div>
         <div className="flex gap-2.5">

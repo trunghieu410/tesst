@@ -75,7 +75,8 @@ export const toUtcIsoString = (date: Date): string => {
   return `${year}-${month}-${day}T00:00:00Z`;
 };
 
-export const formatDateTimeTo = (datetime: string, toFormat: string = 'dd.MM.yyyy - HH:mm') => {
+export const formatDateTimeTo = (datetime: string | null | undefined, toFormat: string = 'dd.MM.yyyy - HH:mm') => {
+  if (!datetime) return '';
   const date = new Date(datetime);
 
   // Kiểm tra nếu date không hợp lệ
@@ -98,4 +99,22 @@ export const formatDateTimeTo = (datetime: string, toFormat: string = 'dd.MM.yyy
 
   // Thay thế format string bằng giá trị thực
   return toFormat.replace(/yyyy|MM|dd|HH|hh|mm|ss|a/g, (match) => tokens[match]);
+};
+
+export const calculateAge = (dateOfBirth: string | Date | number | null | undefined): string | null => {
+  if (!dateOfBirth) return null;
+  const dob = new Date(dateOfBirth);
+  // Check if date is valid
+  if (isNaN(dob.getTime())) return null;
+
+  const today = new Date();
+  let age = today.getFullYear() - dob.getFullYear();
+  const m = today.getMonth() - dob.getMonth();
+  
+  // Adjust age if birthday hasn't occurred this year yet
+  if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) {
+    age--;
+  }
+  
+  return `${age} tuổi`;
 };
