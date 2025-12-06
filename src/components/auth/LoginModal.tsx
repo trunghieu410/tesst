@@ -298,7 +298,7 @@ export function LoginModal({ open, onOpenChange }: LoginModalProps) {
                   ) : (
                     <>
                       <RefreshCw className="w-4 h-4" />
-                      Gủi lại mã xác nhận
+                      Gửi lại mã xác nhận
                     </>
                   )}
                 </button>

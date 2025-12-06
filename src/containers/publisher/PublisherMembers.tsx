@@ -79,8 +79,8 @@ export function PublisherMembers({ publisherId }: PublisherMembersProps) {
     total: 0,
     totalPages: 1,
   };
-  const stats = membersData?.stats || { total: 0, tier1: 0, tier2: 0, tier3: 0 };
-
+  const stats = membersData?.counters || { total: 0, tier1: 0, tier2: 0, tier3: 0 };
+  console.log(stats); 
   if (error) {
     return (
       <div className="p-4 flex items-center justify-center">

@@ -90,6 +90,9 @@ export interface MemberSummary {
     tier2: number;
     tier3: number;
   };
+  tier1?: number;
+  tier2?: number;
+  tier3?: number;
 }
 
 export interface WalletAsset {
