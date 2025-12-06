@@ -32,16 +32,22 @@ export default defineConfig({
         assetFileNames: "assets/[ext]/[name]-[hash].[ext]",
         // Chunk splitting for major libraries to improve caching and parallel downloads
         manualChunks(id) {
-          if (!id.includes("node_modules")) return undefined;
-          if (id.includes("react-router")) return "router";
-          if (id.includes("@tanstack/react-query")) return "react-query";
-          if (id.includes("recharts")) return "charts";
-          if (id.includes("date-fns")) return "date-fns";
-          if (id.includes("zod")) return "zod";
-          if (id.includes("axios")) return "axios";
-          if (id.includes("lucide-react")) return "icons";
-          if (id.includes("react")) return "react"; // react, react-dom
-          return "vendor";
+          if (id.includes("node_modules")) {
+            // Group core React dependencies to avoid initialization issues
+            // Group core React dependencies strictly
+            if (
+              /[\\/]node_modules[\\/](react|react-dom|react-router|react-router-dom|scheduler)[\\/]/.test(id)
+            ) {
+              return "react-vendor";
+            }
+            // Split other large independent libraries
+            if (id.includes("recharts")) return "charts";
+            if (id.includes("axios")) return "axios";
+            if (id.includes("zod")) return "zod";
+            if (id.includes("lucide-react")) return "icons";
+            
+            return "vendor";
+          }
         },
       },
     },
